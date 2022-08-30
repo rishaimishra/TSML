@@ -19,6 +19,26 @@ use Illuminate\Http\Request;
 Route::post('login', 'AuthController@login');
 Route::post('register', 'AuthController@register');
 
+Route::group(['namespace'=>'Modules\Api'],function(){
+
+	// Category Routes....
+	Route::post('store-category', 'Category\CategoryController@storeCategory')->name('store_category');
+	Route::get('category-list', 'Category\CategoryController@categoryList')->name('category_list');
+	Route::put('edit-category/{catId}', 'Category\CategoryController@editCategory')->name('edit_category');
+	Route::get('inactive-category/{catId}', 'Category\CategoryController@inactiveCategory')->name('inactive_category');
+	Route::get('active-category/{catId}', 'Category\CategoryController@activeCategory')->name('active_category');
+	Route::get('category-list-my', 'Category\CategoryController@categoryListMy')->name('category_list_my');
+
+	// Sub Category Routes ....
+	Route::post('store-sub-category', 'SubCategory\SubCategoryController@storeSubCategory')->name('store_sub_category');
+	Route::put('edit-sub-category/{subCatId}', 'SubCategory\SubCategoryController@editSubCategory')->name('edit_sub_category');
+	Route::get('inactive-sub-category/{subCatId}', 'SubCategory\SubCategoryController@inactiveSubCategory')->name('inactive_sub_category');
+	Route::get('active-sub-category/{subCatId}', 'SubCategory\SubCategoryController@activeSubCategory')->name('active_sub_category');
+	Route::get('sub-category-list', 'SubCategory\SubCategoryController@subCategoryList')->name('sub_category_list');
+	Route::get('sub-category-list-my', 'SubCategory\SubCategoryController@subCategoryListMy')->name('sub_category_list_my');
+
+});
+
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
