@@ -14,21 +14,33 @@ use Illuminate\Http\Request;
 */
 
 Route::post('/register', 'UserController@store');
-Route::get('users', 'UserController@index');
+Route::post('login', 'AuthController@login');
 
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
- });
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+//     return $request->user();
+//  });
   
- Route::group([
+//  Route::group([
   
-    'middleware' => 'api',
+//     'middleware' => 'api',
+//     'jwt.auth'
   
- ], function ($router) {
+//  ], function ($router) {
   
-    Route::post('login', 'AuthController@login');
+    
+
+//  });
+
+ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users','jwt.auth']],function ()
+{
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
     Route::post('me', 'AuthController@me');
- });
+   Route::get('list', 'UserController@index');	
+});
+
+ Route::group(['prefix' => 'admin','middleware' => ['assign.guard:admins','jwt.auth']],function ()
+{
+	Route::get('/demo','AdminController@demo');	
+});
