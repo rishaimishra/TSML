@@ -40,10 +40,10 @@ class CreateUsersTable extends Migration
             $table->string('state')->nullable();
             $table->string('pincode')->nullable();
             $table->string('address_type')->nullable();
-            $table->string('address_proof_file');
-            $table->string('cancel_cheque_file');
-            $table->string('pan_card_file');
-            $table->string('gst_certificate');
+            $table->string('address_proof_file')->nullable();
+            $table->string('cancel_cheque_file')->nullable();
+            $table->string('pan_card_file')->nullable();
+            $table->string('gst_certificate')->nullable();
             $table->string('turnover_declare')->nullable();
             $table->string('itr_last_yr')->nullable();
             $table->string('form_d')->nullable();
