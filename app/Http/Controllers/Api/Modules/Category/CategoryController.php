@@ -1,6 +1,6 @@
-	<?php
+<?php
 
-	namespace App\Http\Controllers\Modules\Api\Category;
+	namespace App\Http\Controllers\Api\Modules\Category;
 
 	use Illuminate\Http\Request;
 	use App\Http\Controllers\Controller;
@@ -85,6 +85,7 @@
 	    */
 	    public function categoryList(Request $request)
 	    {
+	    	 
 	        $response = [];
 	        try{         
 	         $data = Category::where('status','!=',2)->orderBy('id','desc')->get();

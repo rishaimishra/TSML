@@ -13,10 +13,10 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::post('/register', 'UserController@store');
+Route::post('register', 'UserController@store');
 Route::post('login', 'AuthController@login');
 
-Route::group(['namespace'=>'Modules\Api'],function(){
+Route::group(['namespace'=>'Api\Modules'],function(){
 
 	// Category Routes....
 	Route::post('store-category', 'Category\CategoryController@storeCategory')->name('store_category');
@@ -28,10 +28,10 @@ Route::group(['namespace'=>'Modules\Api'],function(){
 
 	// Sub Category Routes ....
 	Route::post('store-sub-category', 'SubCategory\SubCategoryController@storeSubCategory')->name('store_sub_category');
+	Route::get('sub-category-list', 'SubCategory\SubCategoryController@subCategoryList')->name('sub_category_list');
 	Route::put('edit-sub-category/{subCatId}', 'SubCategory\SubCategoryController@editSubCategory')->name('edit_sub_category');
 	Route::get('inactive-sub-category/{subCatId}', 'SubCategory\SubCategoryController@inactiveSubCategory')->name('inactive_sub_category');
-	Route::get('active-sub-category/{subCatId}', 'SubCategory\SubCategoryController@activeSubCategory')->name('active_sub_category');
-	Route::get('sub-category-list', 'SubCategory\SubCategoryController@subCategoryList')->name('sub_category_list');
+	Route::get('active-sub-category/{subCatId}', 'SubCategory\SubCategoryController@activeSubCategory')->name('active_sub_category');	
 	Route::get('sub-category-list-my', 'SubCategory\SubCategoryController@subCategoryListMy')->name('sub_category_list_my');
 
 });
@@ -57,10 +57,10 @@ Route::group(['namespace'=>'Modules\Api'],function(){
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
     Route::post('me', 'AuthController@me');
-   	Route::resource('customer', 'UserController');	
+   Route::get('list', 'UserController@index');	
 });
 
- Route::group(['prefix' => 'admin','middleware' => ['assign.guard:admins','jwt.auth']],function ()
+Route::group(['prefix' => 'admin','middleware' => ['assign.guard:admins','jwt.auth']],function ()
 {
 	Route::get('/demo','AdminController@demo');	
 });
