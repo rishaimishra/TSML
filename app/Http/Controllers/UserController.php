@@ -192,12 +192,12 @@ class UserController extends Controller
                     $up['tcs']=$request->tcs;
                 }
                
-               // dd($up);
+                    
                     $update=User::where('id',$id)->update($up);
                     $fetch_user=User::where('id',$id)->first();
-                        $response['success']['message'] = "User updated";
-                        $response['success']['region'] = $fetch_user;
-                        return Response::json($response);
+                    $response['success']['message'] = "User updated";
+                    $response['success']['region'] = $fetch_user;
+                    return Response::json($response);
             }else{
                 $response['error']['message'] = "This id does not exists for update";
                 return Response::json($response);
