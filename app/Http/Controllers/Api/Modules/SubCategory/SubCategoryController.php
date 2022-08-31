@@ -1,6 +1,6 @@
 <?php
 
-  namespace App\Http\Controllers\Modules\Api\SubCategory;
+  namespace App\Http\Controllers\Api\Modules\SubCategory;
 
   use Illuminate\Http\Request;
   use App\Http\Controllers\Controller;
@@ -272,17 +272,17 @@
     		    	 
     		    	$totalData = ProductSubCategory::count();
 
-    		    	$getpaymentlist = [];
+    		    	$getsubcategorylist = [];
 
     		    	if($getsubcategory!=null)
     		    	{	
 
     		    		foreach ($getsubcategory as $key => $value) { 
-    		    		 	$getpaymentlist[]= array('sub_category_id'=>$value->id,'sub_category_name'=>$value->sub_cat_name,'sub_category_desc'=>$value->sub_cat_dese,'sub_category_status'=>$value->status,'category_id'=>$value->getCategoryDetails->id,'category_name'=>$value->getCategoryDetails->cat_name);
+    		    		 	$getsubcategorylist[]= array('sub_category_id'=>$value->id,'sub_category_name'=>$value->sub_cat_name,'sub_category_desc'=>$value->sub_cat_dese,'sub_category_status'=>$value->status,'category_id'=>$value->getCategoryDetails->id,'category_name'=>$value->getCategoryDetails->cat_name);
     		    		}
 
 
-    		    		return response()->json(['status'=>1,'message'=>'success','data' =>array('total_data' => $totalData,'perPage_count'=>$limit,'current_page'=>$page,'sub_category_list'=>$getpaymentlist )], 200);
+    		    		return response()->json(['status'=>1,'message'=>'success','data' =>array('total_data' => $totalData,'perPage_count'=>$limit,'current_page'=>$page,'sub_category_list'=>$getsubcategorylist )], 200);
     		    	}
     		    	else
     		    	{

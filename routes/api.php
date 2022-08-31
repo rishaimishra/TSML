@@ -16,7 +16,7 @@ use Illuminate\Http\Request;
 Route::post('/register', 'UserController@store');
 Route::post('login', 'AuthController@login');
 
-Route::group(['namespace'=>'Modules\Api'],function(){
+Route::group(['namespace'=>'Api\Modules'],function(){
 
 	// Category Routes....
 	Route::post('store-category', 'Category\CategoryController@storeCategory')->name('store_category');
@@ -60,7 +60,7 @@ Route::group(['namespace'=>'Modules\Api'],function(){
    	Route::get('list', 'UserController@index');	
 });
 
- Route::group(['prefix' => 'admin','middleware' => ['assign.guard:admins','jwt.auth']],function ()
+Route::group(['prefix' => 'admin','middleware' => ['assign.guard:admins','jwt.auth']],function ()
 {
 	Route::get('/demo','AdminController@demo');	
 });
