@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Auth;
 use Validator;
 use Response;
 use App\User;
+use Mail;
+use App\Mail\Register;
+
  
 class UserController extends Controller
 {
@@ -44,6 +47,14 @@ class UserController extends Controller
             $userData = $request->all();
             $user = User::create($userData);
 
+            // send-mail
+            $data = [
+                'email'=>$request->email,
+                'first_name'=>$request->first_name,
+                'last_name'=>$request->last_name,
+             ];
+
+            Mail::send(new Register($data));
 
             $response['success']['message']="User Created";
             return Response::json($response);
