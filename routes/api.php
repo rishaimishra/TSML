@@ -13,8 +13,11 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::post('register', 'UserController@store');
+Route::post('/register', 'UserController@store');
 Route::post('login', 'AuthController@login');
+
+Route::post('password-email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('user.password.email');
+Route::post('password-update', 'Auth\ResetPasswordController@reset')->name('user.password.update');
 
 Route::group(['namespace'=>'Api\Modules'],function(){
 
@@ -57,8 +60,7 @@ Route::group(['namespace'=>'Api\Modules'],function(){
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
     Route::post('me', 'AuthController@me');
-   	Route::resource('customer', 'UserController');	
-   	Route::post('customers/{id}', 'UserController@update');	
+   	Route::get('list', 'UserController@index');	
 });
 
 Route::group(['prefix' => 'admin','middleware' => ['assign.guard:admins','jwt.auth']],function ()
