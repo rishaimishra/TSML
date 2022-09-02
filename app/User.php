@@ -28,6 +28,7 @@ class User extends Authenticatable implements JWTSubject
         'company_pan',
         'company_name',
         'business_nature',
+        'is_tcs_tds_applicable',
         'first_name',
         'last_name',
         'addressone',
@@ -36,6 +37,15 @@ class User extends Authenticatable implements JWTSubject
         'state',
         'pincode',
         'address_type',
+        'address_proof_file',
+        'cancel_cheque_file',
+        'pan_card_file',
+        'gst_certificate',
+        'turnover_declare',
+        'itr_last_yr',
+        'form_d',
+        'registration_certificate',
+        'tcs'
           
     ];
 

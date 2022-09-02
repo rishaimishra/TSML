@@ -32,6 +32,7 @@ class CreateUsersTable extends Migration
             $table->string('company_pan')->unique();
             $table->string('company_name')->nullable();
             $table->string('business_nature')->nullable();
+            $table->string('is_tcs_tds_applicable')->nullable();
             $table->string('first_name');
             $table->string('last_name')->nullable();
             $table->string('addressone')->nullable();
