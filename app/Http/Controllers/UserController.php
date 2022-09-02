@@ -11,7 +11,7 @@ use Response;
 use App\User;
 use Mail;
 use App\Mail\Register;
-use Tymon\JWTAuth\Exceptions\JWTException;
+ 
 
 
  
@@ -49,15 +49,24 @@ class UserController extends Controller
                 $user = JWTAuth::setToken($token)->toUser();
  
 
+                // $validator = Validator::make($request->all(), [ 
+                //     'current_password' =>'required|string|min:6',
+                //     'password' =>'required|string|min:6|required_with:password-confirm', 
+                //     'password_confirm' =>'required|required_with:password|same:password',   
+                // ],
+                // [   
+                //     'current_password.required'=>'The current password field is required',
+                //     'password_confirm.same'=>'The confirm password and password must match.',
+                //     'password_confirm.required'=>'The confirm password field is required'
+                // ]
+                // );
                 $validator = Validator::make($request->all(), [ 
                     'current_password' =>'required|string|min:6',
-                    'password' =>'required|string|min:6|required_with:password-confirm', 
-                    'password_confirm' =>'required|required_with:password|same:password',   
+                    'password' =>'required|string|min:6',  
                 ],
                 [   
                     'current_password.required'=>'The current password field is required',
-                    'password_confirm.same'=>'The confirm password and password must match.',
-                    'password_confirm.required'=>'The confirm password field is required'
+                    'password.required'=>'The password field is required.', 
                 ]
                 );
 
