@@ -9,6 +9,8 @@ use Response;
 use App\User;
 use Mail;
 use App\Mail\Register;
+use Tymon\JWTAuth\Exceptions\JWTException;
+
 
  
 class UserController extends Controller
@@ -36,7 +38,8 @@ class UserController extends Controller
             $validator = Validator::make($request->all(), [
                 'name'        => 'required', 
                 'email'        => 'required',   
-                'password'        => 'required',   
+                'password'        => 'required',  
+                'address_proof_file' => 'required|mimes:jpg,jpeg,png,bmp' 
             ]);
 
             if ($validator->fails()) {
@@ -44,7 +47,117 @@ class UserController extends Controller
                 return Response::json($response);
             }
 
-            $userData = $request->all();
+            // $userData = $request->all();
+            $userData = [];
+            $userData['name'] = $request->name;
+            $userData['email'] = $request->email;
+            $userData['phone'] = $request->phone;
+            $userData['password'] = $request->password;
+            $userData['gstin'] = $request->gstin;
+            $userData['org_pan'] = $request->org_pan;
+            $userData['org_name'] = $request->org_name;
+            $userData['org_address'] = $request->org_address;
+            $userData['pref_product'] = $request->pref_product;
+            $userData['pref_product_size'] = $request->pref_product_size;
+            $userData['user_type'] = $request->user_type;
+            $userData['company_gst'] = $request->company_gst;
+            $userData['company_linked_address'] = $request->company_linked_address;
+            $userData['company_pan'] = $request->company_pan; 
+            $userData['company_name'] = $request->company_name;
+            $userData['business_nature'] = $request->business_nature; 
+            $userData['is_tcs_tds_applicable'] = $request->is_tcs_tds_applicable; 
+            $userData['first_name'] = $request->first_name; 
+            $userData['last_name'] = $request->last_name; 
+            $userData['addressone'] = $request->addressone; 
+            $userData['addresstwo'] = $request->addresstwo; 
+            $userData['city'] = $request->city; 
+            $userData['state'] = $request->state; 
+            $userData['pincode'] = $request->pincode; 
+            $userData['address_type'] = $request->address_type;
+
+            if ($request->hasFile('address_proof_file'))
+            {
+             $image = $request->address_proof_file;
+             $filename = time() . '-' . rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
+             $image->move("storage/app/public/user",$filename);
+             $userData['address_proof_file'] = $filename;
+            }
+
+
+            if ($request->hasFile('cancel_cheque_file'))
+            {
+             $image = $request->cancel_cheque_file;
+             $filename = time() . '-' . rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
+             $image->move("storage/app/public/user",$filename);
+             $userData['cancel_cheque_file'] = $filename;
+            }
+
+
+            if ($request->hasFile('pan_card_file'))
+            {
+             $image = $request->pan_card_file;
+             $filename = time() . '-' . rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
+             $image->move("storage/app/public/user",$filename);
+             $userData['pan_card_file'] = $filename;
+            }
+
+
+            if ($request->hasFile('gst_certificate'))
+            {
+             $image = $request->gst_certificate;
+             $filename = time() . '-' . rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
+             $image->move("storage/app/public/user",$filename);
+             $userData['gst_certificate'] = $filename;
+            }
+
+
+            if ($request->hasFile('turnover_declare'))
+            {
+             $image = $request->turnover_declare;
+             $filename = time() . '-' . rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
+             $image->move("storage/app/public/user",$filename);
+             $userData['turnover_declare'] = $filename;
+            }
+
+
+            if ($request->hasFile('itr_last_yr'))
+            {
+             $image = $request->itr_last_yr;
+             $filename = time() . '-' . rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
+             $image->move("storage/app/public/user",$filename);
+             $userData['itr_last_yr'] = $filename;
+            }
+            
+            
+            if ($request->hasFile('form_d'))
+            {
+             $image = $request->form_d;
+             $filename = time() . '-' . rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
+             $image->move("storage/app/public/user",$filename);
+             $userData['form_d'] = $filename;
+            }
+            
+            
+            if ($request->hasFile('registration_certificate'))
+            {
+             $image = $request->registration_certificate;
+             $filename = time() . '-' . rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
+             $image->move("storage/app/public/user",$filename);
+             $userData['registration_certificate'] = $filename;
+            }
+            
+            
+            if ($request->hasFile('tcs'))
+            {
+             $image = $request->tcs;
+             $filename = time() . '-' . rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
+             $image->move("storage/app/public/user",$filename);
+             $userData['tcs'] = $filename;
+            }
+             
+
+            // dd($userData);
+
             $user = User::create($userData);
 
             // send-mail
@@ -54,12 +167,12 @@ class UserController extends Controller
                 'last_name'=>$request->last_name,
              ];
 
-            Mail::send(new Register($data));
+            // Mail::send(new Register($data));
 
             $response['success']['message']="User Created";
             return Response::json($response);
 
-        } catch (\Throwable $th) {
+        } catch (\Exception $th) {
             $response['error']['message'] = $th->getMessage();
             return Response::json($response);
         }
