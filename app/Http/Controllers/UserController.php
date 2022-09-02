@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
  
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use JWTAuth;
+use Tymon\JWTAuth\Exceptions\JWTException;
 use Validator;
 use Response;
 use App\User;
@@ -24,6 +26,86 @@ class UserController extends Controller
  
        return $users;
    }
+
+   /**
+     /**
+     * This is for change user password .
+     *
+     * @return \Illuminate\Http\Response
+    */
+    public function resetPassword(Request $request)
+    {
+
+        
+        $token = request()->bearerToken();
+
+        if(isset($token))
+        {
+            $user = JWTAuth::setToken($token)->toUser();
+
+            if (!empty($user)) {
+                $user = JWTAuth::setToken($token)->toUser();
+ 
+
+                $validator = Validator::make($request->all(), [ 
+                    'current_password' =>'required|string|min:6',
+                    'password' =>'required|string|min:6|required_with:password-confirm', 
+                    'password_confirm' =>'required|required_with:password|same:password',   
+                ],
+                [   
+                    'current_password.required'=>'The current password field is required',
+                    'password_confirm.same'=>'The confirm password and password must match.',
+                    'password_confirm.required'=>'The confirm password field is required'
+                ]
+                );
+
+                if ($validator->fails()) {
+                    $response['error']['validation'] = $validator->errors();
+                    return Response::json($response);
+                }
+
+                 
+
+                if (!empty($request->current_password) && !empty($user)) 
+                {
+                    
+                    if (\Hash::check($request->current_password, $user->password)) 
+                    {
+
+                        $input['password'] = \Hash::make($request->password);
+                        $saveuser = User::where('id',$user->id)->update($input);
+                        return response()->json(array("status"=>1,"message"=>"Password change successfully ."));
+                         
+                    }
+                    else 
+                    {
+                        return response()->json(['status'=>0,'message' => 'Current  password does not match please try again!']); 
+                        
+                    }
+                }
+                else 
+                {
+                    return response()->json(['status'=>0,'message' => 'User not found!']); 
+                    
+                } 
+
+                
+            }
+            else{
+                $response['error']['message'] = "No data found.";
+                return Response::json($response);
+            }
+            
+        }
+        else{
+            $response['error']['message'] = "Bearer token not found.";
+            return Response::json($response);
+        }
+        
+         
+
+
+    }
  
    /**
     * Store a newly created resource in storage.

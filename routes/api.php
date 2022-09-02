@@ -60,7 +60,8 @@ Route::group(['namespace'=>'Api\Modules'],function(){
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
     Route::post('me', 'AuthController@me');
-   	Route::get('list', 'UserController@index');	
+   	Route::get('list', 'UserController@index');
+   	Route::post('reset-password', 'UserController@resetPassword')->name('reset_password');		
 });
 
 Route::group(['prefix' => 'admin','middleware' => ['assign.guard:admins','jwt.auth']],function ()
