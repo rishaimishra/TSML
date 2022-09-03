@@ -55,7 +55,7 @@ Route::group(['namespace'=>'Api\Modules'],function(){
 
 //  });
 
- Route::group(['prefix' => 'user','middleware' => ['assign.guard:users','jwt.auth']],function ()
+ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmiddleware']],function ()
 {
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
