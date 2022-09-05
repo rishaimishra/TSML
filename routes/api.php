@@ -37,6 +37,10 @@ Route::group(['namespace'=>'Api\Modules'],function(){
 	Route::get('active-sub-category/{subCatId}', 'SubCategory\SubCategoryController@activeSubCategory')->name('active_sub_category');	
 	Route::get('sub-category-list-my', 'SubCategory\SubCategoryController@subCategoryListMy')->name('sub_category_list_my');
 
+	// Product Routes ....
+	Route::post('store-product', 'Product\ProductController@storeProduct')->name('store_product');
+	Route::put('edit-product/{proId}', 'Product\ProductController@editProduct')->name('edit_product');
+	Route::get('delete-product/{proId}', 'Product\ProductController@deleteProduct')->name('delete_product');
 });
 
 
