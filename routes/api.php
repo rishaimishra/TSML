@@ -52,6 +52,10 @@ Route::group(['namespace'=>'Modules\Api'],function(){
 
 //  });
 
+
+Route::post('admin-login', 'AdminAuthController@Adminlogin');
+Route::post('admin-register', 'AdminAuthController@Adminregister');
+
  Route::group(['prefix' => 'user','middleware' => ['assign.guard:users','jwt.auth']],function ()
 {
     Route::post('logout', 'AuthController@logout');
@@ -60,7 +64,8 @@ Route::group(['namespace'=>'Modules\Api'],function(){
    Route::get('list', 'UserController@index');	
 });
 
- Route::group(['prefix' => 'admin','middleware' => ['assign.guard:admins','jwt.auth']],function ()
+ Route::group(['prefix' => 'admin','middleware' => ['assign.guard:admins','jwt.auth','jwt.verify']],function ()
 {
 	Route::get('/demo','AdminController@demo');	
+	Route::post('logout', 'AdminController@logout');
 });

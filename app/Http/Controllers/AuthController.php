@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Illuminate\Http\Request;
 use App\User;
+use App\Admin;
 use JWTAuth;
 use Validator;
  
@@ -130,4 +131,62 @@ class AuthController extends Controller
            'expires_in' => auth()->factory()->getTTL() * 60
        ]);
    }
+
+
+   public function Adminregister(Request $request)
+  {
+     
+    // return $request->all();
+    
+      $validator = Validator::make($request->all(), [
+          'email' => 'required|string|email|max:255|unique:admins',
+          'name' => 'required',
+          'phone' => 'required',
+          'password'=> 'required'
+      ]);
+      if ($validator->fails()) {
+          return response()->json($validator->errors());
+      }
+      $user = Admin::create(array_merge(
+            $validator->validated(),
+            ['password' => bcrypt($request->password)]
+        ));
+
+      // dd($token);
+
+      return response()->json([
+          'success' => true,
+          'user' => $user,
+      ]);
+  }
+
+   /**
+    * Get a JWT via given credentials.
+    *
+    * @return \Illuminate\Http\JsonResponse
+    */
+   public function Adminlogin(Request $request)
+   {
+      
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|email|max:255',
+            'password'=> 'required'
+        ]);
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
+        }
+ 
+        $credentials = request(['email', 'password']);
+        if (!$token = auth()->guard('admins')->attempt($credentials)) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        $jwt_token =  $this->respondWithToken($token);
+ 
+        return response()->json([
+            'success' => true,
+            'token' => $jwt_token,
+        ]);
+   }
+ 
 }
