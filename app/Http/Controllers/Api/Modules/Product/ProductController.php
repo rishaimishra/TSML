@@ -30,6 +30,7 @@ class ProductController extends Controller
    	 // dd($request->all());
    		if (@$request->pro_id) 
         {
+        	// For update product.....
         	$chkpro = Product::find($request->pro_id);
 
         	if (!empty($chkpro)) {
@@ -66,7 +67,7 @@ class ProductController extends Controller
 			    	@unlink(storage_path('app/public/images/product/'.$chkpro->primary_image)); 
 
 			    	$image = $request->primary_image;
-	                $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+	                $filename = $request->pro_name.'-'.time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
 	                Storage::putFileAs('public/images/product/', $image, $filename);
 	                $input['primary_image'] = $filename;
 			    	 
@@ -123,10 +124,10 @@ class ProductController extends Controller
         		return response()->json(['status'=>0,'message'=>'No data found'],200);
         	}
         	
-        }
+        } // End for update product.....
         else
         {
-
+        	// For insert new product.....
 	   		$validation = \Validator::make($request->all(),[ 
 	            "cat_id" => "required|numeric",
 	            "sub_cat_id" => "required|numeric",
@@ -158,7 +159,7 @@ class ProductController extends Controller
 
 		    	$image = $request->primary_image; 
 
-                $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+                $filename = $request->pro_name.'-'.time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
                 Storage::putFileAs('public/images/product/', $image, $filename);
 
                 $input['primary_image'] = $filename;
@@ -212,7 +213,7 @@ class ProductController extends Controller
 		    //         return Response::json($response);
 
 			return response()->json(['status'=>1,'message' =>'New product added successfully.','result' => $productData],200);
-		}
+		} // End for insert new product.....
    }
 
    /**
@@ -302,6 +303,105 @@ class ProductController extends Controller
             $updateuser = Product::where('id',$product->id)->update($input);
             return response()->json(['status'=>1,'message' =>'Product delete successfully.'],200);
       
+        }
+        else
+        {
+            return response()->json(['status'=>0,'message'=>'No data found'],200);
+        }
+        
+    }
+
+    /**
+     * This is for show product list. 
+     * @param  \App\Product  $product
+     * @return \Illuminate\Http\Response
+    */
+    public function productList(Request $request)
+    {    
+
+    	try{         
+            $data = Product::where('is_delete','!=',1)->orderBy('id','desc')->get();
+
+            $prolist = [];
+            foreach ($data as $key => $value) 
+            {  
+	            
+	            $prodata['category_id'] = $value->getCateDetails->id;
+              	$prodata['category_name'] = $value->getCateDetails->cat_name;
+              	$prodata['sub_category_id'] = $value->sub_cat_id;
+              	$prodata['sub_category_name'] = $value->getSubCateDetails->sub_cat_name;
+              	$prodata['product_id'] = $value->id;
+	            $prodata['product_title'] = $value->pro_name;
+	            $prodata['product_status'] = $value->status;
+
+	            if ($value->primary_image) 
+		   		{
+
+		   			$prodata['primary_image_url'] = asset('storage/app/public/images/product/'.$value->primary_image);
+		   		}
+		   		else
+		   		{
+		   			$prodata['primary_image_url'] =  null;
+		   		}
+
+	              
+	            $prolist[] = $prodata;
+            } 
+              
+             return response()->json(['status'=>1,'message' =>'success.','result' => $prolist],200); 
+            
+            }catch(\Exception $e){
+                $response['error'] = $e->getMessage();
+                return response()->json([$response]);
+            }
+    }
+
+    /**
+     * This is for active product.
+     *
+     * @param  \App\Product  $product
+     * @return \Illuminate\Http\Response
+     */
+    public function activeProduct($id)
+    {  
+        $getProduct = Product::where('id',$id)->first();  
+
+        if(!empty($getProduct))
+        { 
+    		$input['status'] = 1; //2=> Inactive/1=>Active. 
+
+        	$updateuser = Product::where('id',$getProduct->id)->update($input);
+
+ 
+        	return response()->json(['status'=>1,'message' =>'Product status active successfully.']);
+        	 
+        }
+        else
+        {
+            return response()->json(['status'=>0,'message'=>'No data found'],200);
+        }
+        
+    }
+
+    /**
+     * This is for inactive product.
+     *
+     * @param  \App\Product  $product
+     * @return \Illuminate\Http\Response
+     */
+    public function inactiveProduct($id)
+    {  
+        $getProduct = Product::where('id',$id)->first();  
+
+        if(!empty($getProduct))
+        { 
+    		$input['status'] = 2; //2=> Inactive/1=>Active. 
+
+        	$updateuser = Product::where('id',$getProduct->id)->update($input);
+
+ 
+        	return response()->json(['status'=>1,'message' =>'Product status inactive successfully.']);
+        	 
         }
         else
         {
