@@ -19,7 +19,9 @@ Route::post('login', 'AuthController@login');
 Route::post('password-email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('user.password.email');
 Route::post('password-update', 'Auth\ResetPasswordController@reset')->name('user.password.update');
 
-Route::group(['namespace'=>'Api\Modules'],function(){
+
+
+	Route::group(['namespace'=>'Api\Modules'],function(){
 
 	// Category Routes....
 	Route::post('store-category', 'Category\CategoryController@storeCategory')->name('store_category');
@@ -37,13 +39,8 @@ Route::group(['namespace'=>'Api\Modules'],function(){
 	Route::get('active-sub-category/{subCatId}', 'SubCategory\SubCategoryController@activeSubCategory')->name('active_sub_category');	
 	Route::get('sub-category-list-my', 'SubCategory\SubCategoryController@subCategoryListMy')->name('sub_category_list_my');
 
-	// Product Routes ....
-	Route::post('store-product', 'Product\ProductController@storeProduct')->name('store_product');
-	Route::put('edit-product/{proId}', 'Product\ProductController@editProduct')->name('edit_product');
-	Route::get('delete-product/{proId}', 'Product\ProductController@deleteProduct')->name('delete_product');
+
 });
-
-
 // Route::middleware('auth:api')->get('/user', function (Request $request) {
 //     return $request->user();
 //  });
@@ -71,8 +68,9 @@ Route::group(['namespace'=>'Api\Modules'],function(){
 
 Route::post('admin-login', 'AdminAuthController@Adminlogin');
 Route::post('admin-register', 'AdminAuthController@Adminregister');
-Route::group(['prefix' => 'admin','middleware' => ['assign.guard:admins','jwt.auth','jwtmiddleware']],function ()
+Route::group(['prefix' => 'admin','middleware' => ['assign.guard:admins','jwtmiddleware']],function ()
 {
 	Route::get('/demo','AdminController@demo');	
 	Route::post('logout', 'AdminController@logout');
+
 });
