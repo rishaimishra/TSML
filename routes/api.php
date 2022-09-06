@@ -44,6 +44,7 @@ Route::group(['namespace'=>'Api\Modules'],function(){
 	Route::get('product-list', 'Product\ProductController@productList')->name('product_list');
 	Route::get('inactive-product/{proId}', 'Product\ProductController@inactiveProduct')->name('inactive_product');
 	Route::get('active-product/{proId}', 'Product\ProductController@activeProduct')->name('active_product');
+	Route::get('product-list-my', 'Product\ProductController@productListMy')->name('product_list_my');
 });
 
 
@@ -74,7 +75,7 @@ Route::group(['namespace'=>'Api\Modules'],function(){
 
 Route::post('admin-login', 'AdminAuthController@Adminlogin');
 Route::post('admin-register', 'AdminAuthController@Adminregister');
-Route::group(['prefix' => 'admin','middleware' => ['assign.guard:admins','jwt.auth','jwtmiddleware']],function ()
+Route::group(['prefix' => 'admin','middleware' => ['assign.guard:admins','jwtmiddleware']],function ()
 {
 	Route::get('/demo','AdminController@demo');	
 	Route::post('logout', 'AdminController@logout');
