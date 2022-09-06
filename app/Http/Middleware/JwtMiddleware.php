@@ -20,10 +20,6 @@ class JWTMiddleware extends BaseMiddleware
     {
         try {
             $user = JWTAuth::parseToken()->authenticate();
-
-            if (!$user) {
-                return response()->json(['message' => 'user not found'], 500);
-            }
         } catch (Exception $e) {
             if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException){
                 return response()->json(['status' => 'Token is Invalid']);
