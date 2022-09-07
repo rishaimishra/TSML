@@ -52,13 +52,13 @@ class AdminAuthController extends Controller
             'email' => 'required|string|email|max:255',
             'password'=> 'required'
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails()) { 
             return response()->json($validator->errors());
         }
  
         $credentials = request(['email', 'password']);
         if (!$token = auth()->guard('admins')->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['message' => array('Unauthorized .')]); 
         }
 
         $jwt_token =  $this->respondWithToken($token);

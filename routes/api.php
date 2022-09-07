@@ -73,10 +73,11 @@ Route::group(['namespace'=>'Api\Modules'],function(){
    	Route::post('reset-password', 'UserController@resetPassword')->name('reset_password');
 });
 
-Route::post('admin-login', 'AdminAuthController@Adminlogin');
-Route::post('admin-register', 'AdminAuthController@Adminregister');
+// Admin Routes....
+Route::post('admin-login', 'AdminAuthController@Adminlogin')->name('admin_login');
+Route::post('admin-register', 'AdminAuthController@Adminregister')->name('admin_register');
 Route::group(['prefix' => 'admin','middleware' => ['assign.guard:admins','jwtmiddleware']],function ()
 {
 	Route::get('/demo','AdminController@demo');	
-	Route::post('logout', 'AdminController@logout');
+	Route::post('admin-logout', 'AdminController@logout')->name('admin_logout');
 });
