@@ -80,4 +80,5 @@ Route::group(['prefix' => 'admin','middleware' => ['assign.guard:admins','jwtmid
 {
 	Route::get('/demo','AdminController@demo');	
 	Route::post('admin-logout', 'AdminController@logout')->name('admin_logout');
+	Route::post('user_status_update', 'AdminController@userStatusUpdate');
 });
