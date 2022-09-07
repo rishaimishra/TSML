@@ -58,7 +58,8 @@ class AdminAuthController extends Controller
  
         $credentials = request(['email', 'password']);
         if (!$token = auth()->guard('admins')->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['success' => false,
+                'message' => 'Invalid Email or Password',], 401);
         }
 
         $jwt_token =  $this->respondWithToken($token);
