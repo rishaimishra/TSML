@@ -452,12 +452,10 @@ class ProductController extends Controller
 
 			            	$getsubcategory = Product::whereHas('getCateDetails', function ($query) use ($search) {
                                     $query->where('cat_name','LIKE',"%{$search}%");
-                                })
-			            		->orWhereHas('getSubCateDetails', function ($query) use ($search
+                                })->orWhereHas('getSubCateDetails', function ($query) use ($search)
 			            			{
                                     	$query->where('sub_cat_name','LIKE',"%{$search}%");
-                                	}) 
-                                ->orWhere('pro_name','LIKE',"%{$search}%");
+                                	})->orWhere('pro_name','LIKE',"%{$search}%");
 
                                 if(!empty($offsatval || $limit) ){
                                 	$getsubcategory
