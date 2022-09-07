@@ -23,6 +23,7 @@
 	     */
 	   public function storeCategory(Request $request)
 	   {
+	   	// dd($request->all());
 	   		if (@$request->cat_id) 
 	        {
 
