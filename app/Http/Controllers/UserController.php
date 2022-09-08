@@ -60,7 +60,8 @@ class UserController extends Controller
         }
         else
         {
-            if($chkmob->otp == null && $chkmob->is_verified == 2)
+
+            if(isset($chkmob->otp) && $chkmob->is_verified == 2)
             {
                 return response()->json(['status'=>0,'message' => array('Your mobile number already verified.')]);
             }
@@ -147,44 +148,6 @@ class UserController extends Controller
             return response()->json(['status'=>0,'message' => array('Somthing wrong please check.')]);
         }
 
-        
-        // if (!empty($chkmob)) 
-        // {
-            
-        //     if(!empty($chkmob->otp) && $chkmob->is_verified != 2)
-        //     {
-        //         if($chkmob->otp == null && $chkmob->is_verified == 2)
-        //         {
-        //             return response()->json(['status'=>0,'message' => array('Your mobile number already verified.')]); 
-        //         }
-        //         else
-        //         {
-        //             if ($chkmob->otp == $request->otp) 
-        //             {
-        //                 $input['is_verified'] = 2;
-        //                 $input['otp'] = '';
-
-        //                 $categoryData = OtpVerification::where('mob_number',$request->mobile_no)->where('otp',$chkmob->otp)->update($input); 
-                 
-        //                 return response()->json(['status'=>1,'message' =>'Mobile number verified successfully.'],200);
-        //             }
-        //             else
-        //             {
-        //                 return response()->json(['status'=>0,'message' => array('Invalid OTP please check')]);
-        //             }
-        //         }                  
-        //     }
-        //     else
-        //     {
-        //         return response()->json(['status'=>0,'message' => array('OTP already send to this mobile number '.$request->mobile_no)]);
-        //     } 
-            
-                
-        // }
-        // else
-        // {
-        //     return response()->json(['status'=>0,'message' => array('Somthing wrong please check.')]);
-        // }
         
          
 
