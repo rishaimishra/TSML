@@ -4,15 +4,14 @@ namespace App\Http\Controllers;
  
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
-use Validator;
-use Response;
-use App\User;
-use Mail;
+use App\Models\OtpVerification;
 use App\Mail\Register;
- 
-
+use App\User;
+use JWTAuth;
+use Validator;
+use Response; 
+use Mail;
 
  
 class UserController extends Controller
@@ -28,6 +27,168 @@ class UserController extends Controller
  
        return $users;
    }
+
+    
+    /**
+     * This is for validate user mobile number via OTP.
+     *
+     * @return \Illuminate\Http\Response
+    */
+    public function sendOtpToMobile(Request $request)
+    {
+        
+        $validator = Validator::make($request->all(), [ 
+            'mobile_no' =>'required|digits:10',
+              
+        ],
+        [   
+            'mobile_no.required'=>'Mobile is required',               
+        ]
+        );
+
+        if ($validator->fails()) {
+            $response['error']['validation'] = $validator->errors();
+            return Response::json($response);
+        }
+
+        $chkmob = OtpVerification::where('mob_number',$request->mobile_no)->first(); 
+
+        
+        if(!empty($chkmob->otp) && $chkmob->is_verified != 2)
+        {
+            return response()->json(['status'=>0,'message' => array('OTP already send to this mobile number '.$request->mobile_no)]); 
+        }
+        else
+        {
+            if($chkmob->otp == null && $chkmob->is_verified == 2)
+            {
+                return response()->json(['status'=>0,'message' => array('Your mobile number already verified.')]);
+            }
+            else
+            {
+                $otp = random_int(100000, 999999); 
+
+                $input['mob_number'] = $request->mobile_no;
+                $input['otp'] = $otp;
+
+                $categoryData = OtpVerification::create($input); 
+
+       
+                $msg = "OTP has been send to this mobile number ".$request->mobile_no." successfully.";
+                return response()->json(['status'=>1,'message' =>$msg,'result' => $categoryData],200);
+            }
+            
+           
+            
+        }
+
+        
+    }
+
+    /**
+     * This is for validate user mobile OTP.
+     *
+     * @return \Illuminate\Http\Response
+    */
+    public function verifyMobileOtp(Request $request)
+    {
+        $validator = Validator::make($request->all(), [ 
+            'mobile_no' =>'required|digits:10',
+            'otp' =>'required|digits:6',              
+        ],
+        [   
+            'mobile_no.required'=>'Mobile is required',
+            'otp.required'=>'OTP is required',               
+        ]
+        );
+
+        if ($validator->fails()) {
+            $response['error']['validation'] = $validator->errors();
+            return Response::json($response);
+        }
+
+        $chkmob = OtpVerification::where('mob_number',$request->mobile_no)->first();
+        
+        if (!empty($chkmob)) 
+        {
+            if($chkmob->otp == null && $chkmob->is_verified == 2)
+            {
+                return response()->json(['status'=>0,'message' => array('Your mobile number already verified.')]); 
+            }
+            else
+            {
+                if(!empty($chkmob->otp) && $chkmob->is_verified != 2)
+                {
+                    if ($chkmob->otp == $request->otp) 
+                    {
+                        $input['is_verified'] = 2;
+                        $input['otp'] = '';
+
+                        $categoryData = OtpVerification::where('mob_number',$request->mobile_no)->where('otp',$chkmob->otp)->update($input); 
+                 
+                        return response()->json(['status'=>1,'message' =>'Mobile number verified successfully.'],200);
+                    }
+                    else
+                    {
+                        return response()->json(['status'=>0,'message' => array('Invalid OTP please check')]);
+                    }
+
+                }
+                else
+                {
+                    return response()->json(['status'=>0,'message' => array('OTP already send to this mobile number '.$request->mobile_no)]);
+                }
+
+            }
+
+        }
+        else
+        {
+            return response()->json(['status'=>0,'message' => array('Somthing wrong please check.')]);
+        }
+
+        
+        // if (!empty($chkmob)) 
+        // {
+            
+        //     if(!empty($chkmob->otp) && $chkmob->is_verified != 2)
+        //     {
+        //         if($chkmob->otp == null && $chkmob->is_verified == 2)
+        //         {
+        //             return response()->json(['status'=>0,'message' => array('Your mobile number already verified.')]); 
+        //         }
+        //         else
+        //         {
+        //             if ($chkmob->otp == $request->otp) 
+        //             {
+        //                 $input['is_verified'] = 2;
+        //                 $input['otp'] = '';
+
+        //                 $categoryData = OtpVerification::where('mob_number',$request->mobile_no)->where('otp',$chkmob->otp)->update($input); 
+                 
+        //                 return response()->json(['status'=>1,'message' =>'Mobile number verified successfully.'],200);
+        //             }
+        //             else
+        //             {
+        //                 return response()->json(['status'=>0,'message' => array('Invalid OTP please check')]);
+        //             }
+        //         }                  
+        //     }
+        //     else
+        //     {
+        //         return response()->json(['status'=>0,'message' => array('OTP already send to this mobile number '.$request->mobile_no)]);
+        //     } 
+            
+                
+        // }
+        // else
+        // {
+        //     return response()->json(['status'=>0,'message' => array('Somthing wrong please check.')]);
+        // }
+        
+         
+
+    }
 
    /**
      /**
