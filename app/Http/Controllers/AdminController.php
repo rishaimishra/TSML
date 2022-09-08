@@ -41,7 +41,7 @@ class AdminController extends Controller
                 if(!empty($status))
                  {
                     $userArr = array();
-                    $update=User::where('id',$user_id)->update(['status' => $status]);
+                    $update=User::where('id',$user_id)->update(['user_status' => $status]);
                     $fetch_user=User::where('id',$user_id)->get();
                     // return  $fetch_user;die;
                     
