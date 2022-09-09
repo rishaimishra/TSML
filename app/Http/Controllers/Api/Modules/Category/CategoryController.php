@@ -11,6 +11,8 @@
 	use App\Models\ProductSubCategory;
 	use JWTAuth;
 	use Validator;
+	use File; 
+	use Storage;
 
 
 	class CategoryController extends Controller
@@ -23,15 +25,17 @@
 	     */
 	   public function storeCategory(Request $request)
 	   {
-	   	// dd($request->all());
+	   	// dd($request->cat_id);
 	   		if (@$request->cat_id) 
 	        {
 
 	        	$validation = \Validator::make($request->all(),[ 
-	                "cat_name" => "required|max:200|unique:categorys,cat_name,".$request->cat_id,
+	        		"product_id" => "required|numeric",
+	                "cat_name" => 'required|max:200|unique:categorys,cat_name,'.$request->cat_id,
 	                "cat_id" => "required|numeric",
 	                "cat_dese" => "required|max:200", 
-	            ],[ 'cat_name.required'=>'Category name is required.',
+	            ],[ 'product_id.required'=>'Product id is required.',
+	            	'cat_name.required'=>'Category name is required.',
 	            	'cat_name.unique'=>'Category already exists.',
 	                'cat_dese.required'=>'Category description required.',
 	                'cat_id.required'=>'Category id required.', 
@@ -41,8 +45,55 @@
 		            return response()->json(['status'=>0,'errors'=>$validation->errors()],200);
 		        }
 
+		        $updatecat['product_id'] = $request->product_id;
 		        $updatecat['cat_name'] = $request->cat_name;
 		        $updatecat['cat_dese'] = $request->cat_dese;
+		        $updatecat['slug'] = str_slug($request->cat_name);
+
+		         
+
+		        if ($request->hasFile('primary_image'))
+			    {
+			    	 
+			    	@unlink(storage_path('app/public/images/product/'.$chkpro->primary_image)); 
+
+			    	$image = $request->primary_image;
+	                $filename = $request->pro_name.'-'.time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+	                Storage::putFileAs('public/images/product/', $image, $filename);
+	                $input['primary_image'] = $filename;
+			    	 
+			    }
+			    if ($request->hasFile('image_2'))
+			    {
+			    	@unlink(storage_path('app/public/images/product/'.$chkpro->image_2)); 
+
+			    	$image = $request->image_2;
+	                $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+	                Storage::putFileAs('public/images/product/', $image, $filename);
+	                $input['image_2'] = $filename;
+
+			    	 
+			    }
+			    if ($request->hasFile('image_3'))
+			    {	
+			    	@unlink(storage_path('app/public/images/product/'.$chkpro->image_3)); 
+
+			    	$image = $request->image_3;
+	                $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+	                Storage::putFileAs('public/images/product/', $image, $filename);
+	                $input['image_3'] = $filename; 
+			    	 
+			    }
+			    if ($request->hasFile('image_4'))
+			    {
+			    	@unlink(storage_path('app/public/images/product/'.$chkpro->image_4)); 
+
+			    	$image = $request->image_4;
+	                $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+	                Storage::putFileAs('public/images/product/', $image, $filename);
+	                $input['image_4'] = $filename; 
+ 
+			    }
 
 		        $categoryData = Category::where('id',$request->cat_id)->update($updatecat); 
 
@@ -57,9 +108,11 @@
 	        else
 	        {
 	        	$validation = \Validator::make($request->all(),[ 
+	        		"product_id" => "required|numeric",
 	                "cat_name" => "required|unique:categorys|max:200",
 	                "cat_dese" => "required|max:200", 
-	            ],[ 'cat_name.required'=>'Category name is required.',
+	            ],[ 'product_id.required'=>'Product id is required.',
+	            	'cat_name.required'=>'Category name is required.',
 	            	'cat_name.unique'=>'Category already exists.',
 	                'cat_dese.required'=>'Category description required.', 
 	            ]);
@@ -68,8 +121,54 @@
 		            return response()->json(['status'=>0,'errors'=>$validation->errors()],200);
 		        }
 
+		        $input['product_id'] = $request->product_id;
 		        $input['cat_name'] = $request->cat_name;
 		        $input['cat_dese'] = $request->cat_dese;
+		        $input['slug'] = str_slug($request->cat_name);
+
+		        if ($request->hasFile('primary_image'))
+			    {  
+
+			    	$image = $request->primary_image; 
+
+	                $filename = $input['slug'].'-'.time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+	                Storage::putFileAs('public/images/product/', $image, $filename);
+
+	                $input['primary_image'] = $filename;
+
+			    }
+			    if ($request->hasFile('image_2'))
+			    {
+			    	$image = $request->image_2; 
+
+	                $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+	                Storage::putFileAs('public/images/product/', $image, $filename);
+
+	                $input['image_2'] = $filename;
+
+			    	 
+			    }
+			    if ($request->hasFile('image_3'))
+			    {
+			    	$image = $request->image_3; 
+
+	                $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+	                Storage::putFileAs('public/images/product/', $image, $filename);
+
+	                $input['image_3'] = $filename;
+
+			    	 
+			    }
+			    if ($request->hasFile('image_4'))
+			    {
+			    	$image = $request->image_4; 
+
+	                $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+	                Storage::putFileAs('public/images/product/', $image, $filename);
+
+	                $input['image_4'] = $filename; 
+			    	 
+			    }
 
 		        $categoryData = Category::create($input); 
 
@@ -89,11 +188,33 @@
 	    	 
 	        $response = [];
 	        try{         
-	         $data = Category::where('status','!=',2)->orderBy('id','desc')->get();
-	         $response['success'] = true;
-	         $response['data'] = $data;  
-	         return response()->json(['status'=>1,'message' =>'success.','result' => $data],200);
-	         // return response()->json(['status'=>1,$response],200);
+	        $data = Category::where('status','!=',2)->orderBy('id','desc')->get();
+
+	        $catelist = [];
+	            foreach ($data as $key => $value) 
+	            {  
+		            
+		            $catdata['category_id'] = $value->id;
+	              	$catdata['category_name'] = $value->cat_name; 
+	              	$catdata['product_id'] = $value->product_id;
+		            $catdata['product_title'] = $value->getProductDetails->pro_name;
+		            $catdata['product_slug'] = $value->getProductDetails->slug;
+		            
+
+		            if ($value->primary_image) 
+			   		{
+
+			   			$catdata['primary_image_url'] = asset('storage/app/public/images/product/'.$value->primary_image);
+			   		}
+			   		else
+			   		{
+			   			$catdata['primary_image_url'] =  null;
+			   		}
+
+		              
+		            $catelist[] = $catdata;
+	            } 
+             return response()->json(['status'=>1,'message' =>'success.','result' => $catelist],200);
 	          
 	        
 	        }catch(\Exception $e){
@@ -116,7 +237,53 @@
 
 	   		if (!empty($catData)) 
 	   		{
-	   			return response()->json(['status'=>1,'message' =>'success','result' => $catData],200);
+	   			  
+		            
+	           	$catdetails['category_id'] = $catData->id;
+              	$catdetails['category_name'] = $catData->cat_name; 
+              	$catdetails['product_id'] = $catData->product_id;
+	            $catdetails['product_title'] = $catData->getProductDetails->pro_name;
+	            $catdetails['product_slug'] = $catData->getProductDetails->slug;
+
+		   		if ($catData->primary_image) 
+		   		{
+
+		   			$catdetails['primary_image_url'] = asset('storage/app/public/images/product/'.$catData->primary_image);
+		   		}
+		   		else
+		   		{
+		   			$catdetails['primary_image_url'] =  null;
+		   		}
+		   		
+		   		if($catData->image_2)
+		   		{
+		   			$catdetails['image_2_url'] =  asset('storage/app/public/images/product/'.$catData->image_2);
+		   		}
+		   		else
+		   		{
+		   			$catdetails['image_2_url'] =  null;	
+		   		}
+
+		   		if($catData->image_3)
+		   		{
+		   			$catdetails['image_3_url'] =  asset('storage/app/public/images/product/'.$catData->image_3);
+		   		}
+		   		else
+		   		{
+		   			$catdetails['image_3_url'] =  null;	
+		   		}
+
+		   		if($catData->image_4)
+		   		{
+		   			$catdetails['image_4_url'] =  asset('storage/app/public/images/product/'.$catData->image_4);
+		   		}
+		   		else
+		   		{
+		   			$catdetails['image_4_url'] =  null;	
+		   		} 
+
+	   			return response()->json(['status'=>1,'message' =>'success','result' => $catdetails],200); 
+ 
 	   		}
 	   		else{
 	   			return response()->json(['status'=>0,'message'=>'No data found'],200);

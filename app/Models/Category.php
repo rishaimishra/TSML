@@ -8,4 +8,8 @@ class Category extends Model
 {
     protected $table = 'categorys';
     protected $guarded = [];
+
+    public function getProductDetails(){
+        return $this->belongsTo('App\Models\Product','product_id','id');
+    }
 }

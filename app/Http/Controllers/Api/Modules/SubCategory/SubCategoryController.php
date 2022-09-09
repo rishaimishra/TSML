@@ -29,16 +29,20 @@
     	    {  	
 
     	   		$validation = \Validator::make($request->all(),[ 
-    	   			"cat_id" => "required|numeric",
+                    "cat_id" => "required|numeric",
+                    "pro_id" => "required|numeric",    	   			 
     	   			"sub_cat_id" => "required|numeric",
     	            "sub_cat_name" => "required|max:200|unique:sub_categorys,sub_cat_name,".$request->sub_cat_id,
     	            "sub_cat_dese" => "required|max:200", 
+                    "pro_size" => "required|max:200",
     	        ],[ 
     	        	'cat_id.required'=>'Category id is required.',
+                    'pro_id.required'=>'Product id is required.',
     	        	'sub_cat_id.required'=>'Sub category id is required.',
     	        	'sub_cat_name.required'=>'Sub category name is required.',
     	        	'sub_cat_name.unique'=>'Sub category already exists.',
     	            'sub_cat_dese.required'=>'Sub category description required.', 
+                    'pro_size.required'=>'Product size required.',
     	        ]);
 
     	        if ($validation->fails()) {
@@ -48,9 +52,18 @@
     	   		
     	   		 
     	   		if (!empty($chkcata)) {
-    	   			$updateSubCat['cat_id'] = $request->cat_id;
-    	   			$updateSubCat['sub_cat_name'] = $request->sub_cat_name;
-    		        $updateSubCat['sub_cat_dese'] = $request->sub_cat_dese;
+    	   			 
+                    $updateSubCat['cat_id'] = $request->cat_id;
+                    $updateSubCat['pro_id'] = $request->pro_id;
+                    $updateSubCat['sub_cat_name'] = $request->sub_cat_name;
+                    $updateSubCat['slug'] = str_slug($request->sub_cat_name);
+                    $updateSubCat['sub_cat_dese'] = $request->sub_cat_dese;
+                    $updateSubCat['pro_size'] = implode(",",$request->pro_size);
+                    $updateSubCat['Cr'] = $request->Cr;
+                    $updateSubCat['C'] = $request->C;
+                    $updateSubCat['Phos'] = $request->Phos;
+                    $updateSubCat['S'] = $request->S;
+                    $updateSubCat['Si'] = $request->Si;
 
     		        $subCategoryData = ProductSubCategory::where('id',$request->sub_cat_id)->update($updateSubCat); 
     		        $subCatData = ProductSubCategory::where('id',$request->sub_cat_id)->first();	         
@@ -66,14 +79,18 @@
        		else
        		{
        			$validation = \Validator::make($request->all(),[ 
-       			"cat_id" => "required|numeric",
+                "cat_id" => "required|numeric",
+       			"pro_id" => "required|numeric",
                 "sub_cat_name" => "required|unique:sub_categorys|max:200",
                 "sub_cat_dese" => "required|max:200", 
+                "pro_size" => "required|max:200",
     	        ],[ 
     	        	'cat_id.required'=>'Category id is required.',
+                    'pro_id.required'=>'Product id is required.',
     	        	'sub_cat_name.required'=>'Sub category name is required.',
     	        	'sub_cat_name.unique'=>'Sub category already exists.',
-    	            'sub_cat_dese.required'=>'Sub category description required.', 
+    	            'sub_cat_dese.required'=>'Sub category description required.',
+                    'pro_size.required'=>'Product size required.',  
     	        ]);
 
     	        if ($validation->fails()) {
@@ -81,9 +98,17 @@
     	        }   	 
     	   		 
     	   		if (!empty($chkcata)) {
-    	   			$input['cat_id'] = $request->cat_id;
+                    $input['cat_id'] = $request->cat_id;
+    	   			$input['pro_id'] = $request->pro_id;
     	   			$input['sub_cat_name'] = $request->sub_cat_name;
+                    $input['slug'] = str_slug($request->sub_cat_name);
     		        $input['sub_cat_dese'] = $request->sub_cat_dese;
+                    $input['pro_size'] = implode(",",$request->pro_size);
+                    $input['Cr'] = $request->Cr;
+                    $input['C'] = $request->C;
+                    $input['Phos'] = $request->Phos;
+                    $input['S'] = $request->S;
+                    $input['Si'] = $request->Si;
 
     		        $subCategoryData = ProductSubCategory::create($input); 	         
 
@@ -115,10 +140,13 @@
 
               $catadata['sub_category_id'] = $value->id;
               $catadata['sub_category_name'] = $value->sub_cat_name;
+              $catadata['sub_category_slug'] = $value->slug;
               $catadata['sub_category_desc'] = $value->sub_cat_dese;
               $catadata['sub_category_status'] = $value->status;
               $catadata['category_id'] = $value->getCategoryDetails->id;
               $catadata['category_name'] = $value->getCategoryDetails->cat_name;
+              $catadata['product_id'] = $value->pro_id;
+              $catadata['product_name'] = $value->getCategoryDetails->getProductDetails->pro_name;
               
               $subcatdata[] = $catadata;
              } 
@@ -146,7 +174,17 @@
 
        		if (!empty($catData)) 
        		{
-       			return response()->json(['status'=>1,'message' =>'success','result' => $catData],200);
+                $catadetails['sub_category_id'] = $catData->id;
+                $catadetails['sub_category_name'] = $catData->sub_cat_name;
+                $catadetails['sub_category_slug'] = $catData->slug;
+                $catadetails['sub_category_desc'] = $catData->sub_cat_dese;
+                $catadetails['sub_category_status'] = $catData->status;
+                $catadetails['category_id'] = $catData->getCategoryDetails->id;
+                $catadetails['category_name'] = $catData->getCategoryDetails->cat_name;
+                $catadetails['product_id'] = $catData->pro_id;
+                $catadetails['product_name'] = $catData->getCategoryDetails->getProductDetails->pro_name;
+
+       			return response()->json(['status'=>1,'message' =>'success','result' => $catadetails],200);
        		}
        		else{
        			return response()->json(['status'=>0,'message'=>'No data found'],200);
