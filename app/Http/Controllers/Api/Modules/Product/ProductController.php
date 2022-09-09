@@ -19,6 +19,17 @@ use Storage;
 
 class ProductController extends Controller
 {
+	/**
+     * This is for display product in index page.
+     *
+     * @param  \App\Product  $product
+     * @return \Illuminate\Http\Response
+     */
+   	public function indexPage(Request $request)
+   	{
+   		dd('index page');
+   	}
+
     /**
      * This is for store new product.
      *

@@ -20,6 +20,11 @@ Route::post('verify-mobile-otp', 'UserController@verifyMobileOtp')->name('verify
 Route::post('password-email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('user.password.email');
 Route::post('password-update', 'Auth\ResetPasswordController@reset')->name('user.password.update');
 
+
+Route::group(['namespace'=>'Api\Modules'],function(){
+	// Index Page Routes ....
+	Route::get('index-page', 'Product\ProductController@indexPage')->name('index_page');
+});
  
 
 // Route::middleware('auth:api')->get('/user', function (Request $request) {
