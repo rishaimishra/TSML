@@ -24,6 +24,7 @@ class CreateCategoryTable extends Migration
             $table->string('image_3')->nullable();
             $table->string('image_4')->nullable();
             $table->unsignedTinyInteger('status')->default(1)->comment('1=Active|2=Inactive');
+            $table->unsignedTinyInteger('is_populer')->default(1)->comment('1=No|2=Yes');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
             $table->timestamps();
         });

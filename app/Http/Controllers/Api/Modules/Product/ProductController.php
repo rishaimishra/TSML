@@ -19,15 +19,82 @@ use Storage;
 
 class ProductController extends Controller
 {
+    /**
+     * This is for display product in index page.
+     *
+     * @param  \App\Product  $product
+     * @return \Illuminate\Http\Response
+     */
+    public function productManu(Request $request)
+    {
+        $getproduct = Product::where('status','=',1)->get(); //1=>Active product
+
+        if (!empty($getproduct)) 
+        {
+           return response()->json(['status'=>1,'message' =>'Success.','result' => $getproduct],200);
+        }
+        else
+        {
+            return response()->json(['status'=>1,'message' =>'No produ found.','result' => $getproduct],200);
+        }
+    }
 	/**
      * This is for display product in index page.
      *
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
      */
-   	public function indexPage(Request $request)
+   	public function indexPage($proId)
    	{
-   		dd('index page');
+   		// dd('index page');
+        $chkpro = Product::where('id',$proId)->first();
+        if (!empty($chkpro)) 
+        {
+             
+            $data = Category::where('product_id',$proId)->where('status','!=',2)->orderBy('id','desc')->get();
+            
+            if (count($data) > 0) 
+            {
+                $catelist = [];
+                foreach ($data as $key => $value) 
+                {  
+                    
+                    $catdata['category_id'] = $value->id;
+                    $catdata['category_name'] = $value->cat_name;
+                    $catdata['is_populer'] = $value->is_populer;  
+                    $catdata['product_id'] = $value->product_id;
+                    $catdata['product_title'] = $value->getProductDetails->pro_name;
+                    $catdata['product_slug'] = $value->getProductDetails->slug;
+                    
+
+                    if ($value->primary_image) 
+                    {
+
+                        $catdata['primary_image_url'] = asset('storage/app/public/images/product/'.$value->primary_image);
+                    }
+                    else
+                    {
+                        $catdata['primary_image_url'] =  null;
+                    }
+
+                      
+                    $catelist[] = $catdata;
+                } 
+                return response()->json(['status'=>1,'message' =>'success.','result' => $catelist],200);
+            }
+            else
+            {
+                return response()->json(['status'=>0,'message'=>'No product found'],200);
+            }  
+
+
+            
+        }
+        else
+        {
+            return response()->json(['status'=>0,'message'=>'No product found'],200);
+        }
+        
    	}
 
     /**

@@ -23,7 +23,8 @@ Route::post('password-update', 'Auth\ResetPasswordController@reset')->name('user
 
 Route::group(['namespace'=>'Api\Modules'],function(){
 	// Index Page Routes ....
-	Route::get('index-page', 'Product\ProductController@indexPage')->name('index_page');
+	Route::get('index-page/{proId}', 'Product\ProductController@indexPage')->name('index_page');
+	Route::get('product-manu', 'Product\ProductController@productManu')->name('product_manu');
 });
  
 
