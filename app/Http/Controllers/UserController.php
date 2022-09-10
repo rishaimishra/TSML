@@ -24,8 +24,33 @@ class UserController extends Controller
    public function index()
    {
        $users = User::all();
- 
-       return $users;
+
+       $userslist = [];
+
+       foreach ($users as $key => $value) {
+
+        $userdata['name'] = $value->name;
+	    $userdata['email'] = $value->email; 
+	    $userdata['phone'] = $value->phone;
+		$userdata['gstin'] = $value->gstin;
+		$userdata['org_address'] = $value->org_address;
+		            
+        if($value->address_proof_file) 
+        {
+
+            $userdata['address_proof_file_url'] = asset('storage/app/public/user/'.$value->address_proof_file);
+        }
+        else
+           {
+               $userdata['address_proof_file_url'] =  null;
+           }
+
+           $userslist[] = $userdata;
+
+       }
+
+       
+       return $userslist;
    }
 
     
@@ -503,34 +528,89 @@ class UserController extends Controller
                 if($request->address_type){
                     $up['address_type']=$request->address_type;
                 }
-                if($request->address_proof_file){
-                    $up['address_proof_file']=$request->address_proof_file;
-                }
-                if($request->cancel_cheque_file){
-                    $up['cancel_cheque_file']=$request->cancel_cheque_file;
-                }
-                if($request->pan_card_file){
-                    $up['pan_card_file']=$request->pan_card_file;
-                }
-                if($request->gst_certificate){
-                    $up['gst_certificate']=$request->gst_certificate;
-                }
-                if($request->turnover_declare){
-                    $up['turnover_declare']=$request->turnover_declare;
-                }
-                if($request->itr_last_yr){
-                    $up['itr_last_yr']=$request->itr_last_yr;
-                }
-                if($request->form_d){
-                    $up['form_d']=$request->form_d;
-                }
-                if($request->registration_certificate){
-                    $up['registration_certificate']=$request->registration_certificate;
-                }
-                if($request->tcs){
-                    $up['tcs']=$request->tcs;
-                }
-               
+                
+            
+            if ($request->hasFile('address_proof_file'))
+            {
+             $image = $request->address_proof_file;
+             $filename = time() . '-' . rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
+             $image->move("storage/app/public/user",$filename);
+             $up['address_proof_file'] = $filename;
+            }
+
+
+            if ($request->hasFile('cancel_cheque_file'))
+            {
+             $image = $request->cancel_cheque_file;
+             $filename = time() . '-' . rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
+             $image->move("storage/app/public/user",$filename);
+             $up['cancel_cheque_file'] = $filename;
+            }
+
+
+            if ($request->hasFile('pan_card_file'))
+            {
+             $image = $request->pan_card_file;
+             $filename = time() . '-' . rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
+             $image->move("storage/app/public/user",$filename);
+             $up['pan_card_file'] = $filename;
+            }
+
+
+            if ($request->hasFile('gst_certificate'))
+            {
+             $image = $request->gst_certificate;
+             $filename = time() . '-' . rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
+             $image->move("storage/app/public/user",$filename);
+             $up['gst_certificate'] = $filename;
+            }
+
+
+            if ($request->hasFile('turnover_declare'))
+            {
+             $image = $request->turnover_declare;
+             $filename = time() . '-' . rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
+             $image->move("storage/app/public/user",$filename);
+             $up['turnover_declare'] = $filename;
+            }
+
+
+            if ($request->hasFile('itr_last_yr'))
+            {
+             $image = $request->itr_last_yr;
+             $filename = time() . '-' . rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
+             $image->move("storage/app/public/user",$filename);
+             $up['itr_last_yr'] = $filename;
+            }
+            
+            
+            if ($request->hasFile('form_d'))
+            {
+             $image = $request->form_d;
+             $filename = time() . '-' . rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
+             $image->move("storage/app/public/user",$filename);
+             $up['form_d'] = $filename;
+            }
+            
+            
+            if ($request->hasFile('registration_certificate'))
+            {
+             $image = $request->registration_certificate;
+             $filename = time() . '-' . rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
+             $image->move("storage/app/public/user",$filename);
+             $up['registration_certificate'] = $filename;
+            }
+            
+            
+            if ($request->hasFile('tcs'))
+            {
+             $image = $request->tcs;
+             $filename = time() . '-' . rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
+             $image->move("storage/app/public/user",$filename);
+             $up['tcs'] = $filename;
+            }
+             
+
                     
                     $update=User::where('id',$id)->update($up);
                     $fetch_user=User::where('id',$id)->first();

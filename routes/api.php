@@ -67,7 +67,7 @@ Route::group(['prefix' => 'admin','middleware' => ['assign.guard:admins','jwtmid
 		// Category Routes....
 		Route::post('store-category', 'Category\CategoryController@storeCategory')->name('store_category');
 		Route::get('category-list', 'Category\CategoryController@categoryList')->name('category_list');
-		Route::put('edit-category/{catId}', 'Category\CategoryController@editCategory')->name('edit_category');
+		Route::post('edit-category/{catId}', 'Category\CategoryController@updateCategory')->name('edit_category');
 		Route::get('inactive-category/{catId}', 'Category\CategoryController@inactiveCategory')->name('inactive_category');
 		Route::get('active-category/{catId}', 'Category\CategoryController@activeCategory')->name('active_category');
 		Route::get('category-list-my', 'Category\CategoryController@categoryListMy')->name('category_list_my');

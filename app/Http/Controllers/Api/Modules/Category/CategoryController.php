@@ -13,6 +13,8 @@
 	use Validator;
 	use File; 
 	use Storage;
+	use Response; 
+
 
 
 	class CategoryController extends Controller
@@ -289,6 +291,83 @@
 	   			return response()->json(['status'=>0,'message'=>'No data found'],200);
 	   		}
 	   	}
+
+		   public function updateCategory(Request $request, $id)
+		   {
+			
+			   try{
+				   $srch_reg=Category::where('id',$id)->first();
+				   $up=array();
+				   if($srch_reg){
+					   if($request->category_id){
+						   $up['category_id']=$request->category_id;
+					   }
+					   if($request->category_name){
+						   $up['category_name']=$request->category_name;
+					   }
+					   if($request->product_id){
+						   $up['product_id']=$request->product_id;
+					   }
+					   if($request->product_title){
+						   $up['product_title']=$request->product_title;
+					   }
+					   if($request->product_slug){
+						   $up['product_slug']=$request->product_slug;
+					   }
+					   
+				   
+				   if ($request->hasFile('primary_image'))
+				   {
+					$image = $request->primary_image;
+					$filename = time() . '-' . rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
+					$image->move("storage/app/public/images/product",$filename);
+					$up['primary_image'] = $filename;
+				   }
+	   
+	   
+				   if ($request->hasFile('image_2'))
+				   {
+					$image = $request->image_2;
+					$filename = time() . '-' . rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
+					$image->move("storage/app/public/images/product",$filename);
+					$up['image_2'] = $filename;
+				   }
+	   
+	   
+				   if ($request->hasFile('image_3'))
+				   {
+					$image = $request->image_3;
+					$filename = time() . '-' . rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
+					$image->move("storage/app/public/images/product",$filename);
+					$up['image_3'] = $filename;
+				   }
+	   
+	   
+				   if ($request->hasFile('image_4'))
+				   {
+					$image = $request->image_4;
+					$filename = time() . '-' . rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
+					$image->move("storage/app/public/images/product",$filename);
+					$up['image_4'] = $filename;
+				   }
+	   
+						   
+						   $update=Category::where('id',$id)->update($up);
+						   $fetch_category=Category::where('id',$id)->first();
+						   $response['success']['message'] = "Category updated";
+						   $response['success']['category'] = $fetch_category;
+						   return Response::json($response);
+				   }else{
+					   $response['error']['message'] = "This id does not exists for update";
+					   return Response::json($response);
+				   }
+				  
+				   
+				  } catch (\Throwable $th) {
+				   $response['error']['message'] = $th->getMessage();
+				   return Response::json($response);
+				  } 
+		   }
 
 	   	/**
 	     * This is for inactive category.
