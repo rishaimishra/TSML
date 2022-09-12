@@ -15,6 +15,7 @@ use Validator;
 use Response;
 use File; 
 use Storage; 
+use DB;
 
 
 class ProductController extends Controller
@@ -37,6 +38,83 @@ class ProductController extends Controller
         {
             return response()->json(['status'=>1,'message' =>'No produ found.','result' => $getproduct],200);
         }
+    }
+    /**
+     * This is for display product details.
+     *
+     * @param  \App\Product  $product
+     * @return \Illuminate\Http\Response
+    */
+    public function productDetails(Request $request,$proId,$catId)
+    {
+        $chkpro = Product::where('id',$proId)->first();
+        if (!empty($chkpro)) 
+        {
+            
+            // $data = Category::where('id',$catId)->where('product_id',$proId)->first();
+            $data = DB::table('categorys')->leftjoin('products','categorys.product_id','products.id')->leftjoin('sub_categorys','categorys.id','sub_categorys.cat_id')
+            ->where('categorys.status','!=',2)->where('categorys.id',$catId)->where('products.id',$proId)->select('categorys.*','products.pro_name','products.id as pid','sub_categorys.pro_size','sub_categorys.Cr','sub_categorys.C','sub_categorys.Phos','sub_categorys.S','sub_categorys.Si')->first();
+            // return $data;exit();
+
+            $prodetails['cat_id'] = $data->id;
+            $prodetails['product_id'] = $data->pid;
+            $prodetails['cat_name'] = $data->cat_name;
+            $prodetails['slug'] = $data->slug;
+            $prodetails['cat_dese'] = $data->cat_dese;
+            $prodetails['is_populer'] = $data->is_populer;
+            $prodetails['Cr'] = $data->Cr;
+            $prodetails['C'] = $data->C;
+            $prodetails['Phos'] = $data->Phos;
+            $prodetails['S'] = $data->S;
+            $prodetails['Si'] = $data->Si;
+
+              $str = $data->pro_size;
+            $prodetails['size'] = (explode(",",$str));
+            // return $prodetails;exit();
+            if ($data->primary_image) 
+                {
+
+                    $prodetails['primary_image_url'] = asset('storage/app/public/images/product/'.$data->primary_image);
+                }
+                else
+                {
+                    $prodetails['primary_image_url'] =  null;
+                }
+                
+                if($data->image_2)
+                {
+                    $prodetails['image_2_url'] =  asset('storage/app/public/images/product/'.$data->image_2);
+                }
+                else
+                {
+                    $prodetails['image_2_url'] =  null; 
+                }
+
+                if($data->image_3)
+                {
+                    $prodetails['image_3_url'] =  asset('storage/app/public/images/product/'.$data->image_3);
+                }
+                else
+                {
+                    $prodetails['image_3_url'] =  null; 
+                }
+
+                if($data->image_4)
+                {
+                    $prodetails['image_4_url'] =  asset('storage/app/public/images/product/'.$data->image_4);
+                }
+                else
+                {
+                    $prodetails['image_4_url'] =  null; 
+                }
+            
+            return response()->json(['status'=>1,'message' =>'success.','result' => $prodetails],200);
+        }
+        else
+        {
+            return response()->json(['status'=>0,'message'=>'No product found'],200);
+        }
+
     }
 	/**
      * This is for display product in index page.
