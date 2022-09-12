@@ -105,80 +105,84 @@ class ProductController extends Controller
      */
    public function storeProduct(Request $request)
    {
-   	 // dd($request->all());
-   		if (@$request->pro_id) 
-        {
-        	// For update product.....
-        	$chkpro = Product::find($request->pro_id);
+   	  
+   		$validation = \Validator::make($request->all(),[  
+            "pro_name" => "required|unique:products|max:200", 
+            "pro_desc" => "required|max:200",
+               
+        ],[  
+        	'pro_name.required'=>'Product name is required.',
+            'pro_name.unique'=>'Product name has already been taken.',
+            'pro_desc.required'=>'Product description is required.', 
+        ]);
 
-        	if (!empty($chkpro)) {
+        if ($validation->fails()) {
+            return response()->json(['status'=>0,'errors'=>$validation->errors()],200);
+        }
 
-        		// For insert new product.....
-		   		$validation = \Validator::make($request->all(),[  
-		   			"pro_id" => "required|numeric",
-		            "pro_name" => "required|max:200", 
-		            "pro_desc" => "required|max:200",
-		               
-		        ],[ 
-		        	'pro_id.required'=>'Product id is required.', 
-		        	'pro_name.required'=>'Product name is required.',
-		            'pro_desc.required'=>'Product description is required.', 
-		        ]);
+	   	 
+		$input['pro_name'] = $request->pro_name;
+		$input['pro_desc'] = $request->pro_desc; 
+		$input['slug'] = str_slug($request->pro_name);
+		
+		// dd($input);
 
-		        if ($validation->fails()) {
-		            return response()->json(['status'=>0,'errors'=>$validation->errors()],200);
-		        }
+		$productData = Product::create($input); 
 
-			   	 
-				$input['pro_name'] = $request->pro_name;
-				$input['pro_desc'] = $request->pro_desc; 
-				$input['slug'] = str_slug($request->pro_name);
-				 
-				 
+	    // $response['success']['message']="New product added successfully.";
+	    //         return Response::json($response);
 
-				$productData = Product::where('id',$chkpro->id)->update($input); 
-				$getProData = Product::where('id',$chkpro->id)->first();
-			     
-
-				return response()->json(['status'=>1,'message' =>'Product updated successfully.','result' => $getProData],200);
-        		 
-        	}
-        	else{
-        		return response()->json(['status'=>0,'message'=>'No data found'],200);
-        	}
-        	
-        } // End for update product.....
-        else
-        {
-        	// For insert new product.....
-	   		$validation = \Validator::make($request->all(),[  
-	            "pro_name" => "required|max:200", 
-	            "pro_desc" => "required|max:200",
-	               
-	        ],[  
-	        	'pro_name.required'=>'Product name is required.',
-	            'pro_desc.required'=>'Product description is required.', 
-	        ]);
-
-	        if ($validation->fails()) {
-	            return response()->json(['status'=>0,'errors'=>$validation->errors()],200);
-	        }
-
-		   	 
-			$input['pro_name'] = $request->pro_name;
-			$input['pro_desc'] = $request->pro_desc; 
-			$input['slug'] = str_slug($request->pro_name);
-			
-			// dd($input);
-
-			$productData = Product::create($input); 
-
-		    // $response['success']['message']="New product added successfully.";
-		    //         return Response::json($response);
-
-			return response()->json(['status'=>1,'message' =>'New product added successfully.','result' => $productData],200);
-		} // End for insert new product.....
+		return response()->json(['status'=>1,'message' =>'New product added successfully.','result' => $productData],200);
+	  
    }
+
+   /**
+     * This is for update product.
+     *
+     * @param  \App\Product  $product
+     * @return \Illuminate\Http\Response
+    */
+    public function updateProduct(Request $request,$proId)
+    {
+        $chkpro = Product::find($proId);
+
+            if (!empty($chkpro)) {
+
+                // For insert new product.....
+                $validation = \Validator::make($request->all(),[  
+                    "pro_name" => "required|max:200|unique:products,pro_name,".$proId, 
+                    "pro_desc" => "required|max:200",
+                       
+                ],[    
+                    'pro_name.required'=>'Product name is required.',
+                    'pro_name.unique'=>'Product name has already been taken.',
+                    'pro_desc.required'=>'Product description is required.', 
+                ]);
+
+                if ($validation->fails()) {
+                    return response()->json(['status'=>0,'errors'=>$validation->errors()],200);
+                }
+
+                 
+                $input['pro_name'] = $request->pro_name;
+                $input['pro_desc'] = $request->pro_desc; 
+                $input['slug'] = str_slug($request->pro_name);
+                 
+                 
+
+                $productData = Product::where('id',$chkpro->id)->update($input); 
+                $getProData = Product::where('id',$chkpro->id)->first();
+                 
+
+                return response()->json(['status'=>1,'message' =>'Product updated successfully.','result' => $getProData],200);
+                 
+            }
+            else
+            {
+                return response()->json(['status'=>0,'message'=>'No data found'],200);
+            }
+
+    }
 
    /**
      * This is for show product details before edit.
@@ -312,100 +316,5 @@ class ProductController extends Controller
         
     }
 
-    /**
-     * This is for show product list with search. 
-     * @param  \App\Product  $product
-     * @return \Illuminate\Http\Response
-    */
-    public function productListMy(Request $request)
-    { 
-        $limit = $request->perPage_count;
-        $page = $request->current_page;
-         
-
-        $offsatval = ($page-1)*$limit;
-
-        $chkproduct = Product::get();
-
-        
-        if(count($chkproduct)>0)
-        {
-        	if(!empty($offsatval || $limit) )
-	        {
-	        	$getsubcategory = Product::orderBy('id','DESC')
-                            ->with('getCateDetails')
-                            ->with('getSubCateDetails')
-                            ->offset($offsatval)
-	                        ->limit($limit)
-                            ->get();
-	        }
-	        else
-	        {
-	        	$getsubcategory = Product::orderBy('id','DESC')
-                                            ->with('getCateDetails')
-                                            ->with('getSubCateDetails')
-                                            ->get();
-	        }
-
-	        if(!empty($request->search_keyword) )
-	    		{
-	    			if (isset($request->search_keyword)) 
-			            {
-			            	$search = $request->search_keyword;
-			             
-
-			            	$getsubcategory = Product::whereHas('getCateDetails', function ($query) use ($search) {
-                                    $query->where('cat_name','LIKE',"%{$search}%");
-                                })->orWhereHas('getSubCateDetails', function ($query) use ($search)
-			            			{
-                                    	$query->where('sub_cat_name','LIKE',"%{$search}%");
-                                	})->orWhere('pro_name','LIKE',"%{$search}%");
-
-                                if(!empty($offsatval || $limit) ){
-                                	$getsubcategory
-                                    ->orWhere('pro_name','LIKE',"%{$search}%")
-                                    ->offset($offsatval)
-                                    ->limit($limit);
-                                }
-                                
-                               $getsubcategory = $getsubcategory->get();
-
-
-			            }
-	    		}
-
-	    	 
-	    	$totalData = Product::count();
-
-	    	$getsubcategorylist = [];
-
-	    	if($getsubcategory!=null)
-	    	{	
-
-	    		foreach ($getsubcategory as $key => $value) { 
-	    		 	$getsubcategorylist[]= array(
-	    		 		'category_id' => $value->getCateDetails->id,
-		              	'category_name' => $value->getCateDetails->cat_name,
-		              	'sub_category_id' => $value->sub_cat_id,
-		              	'sub_category_name' => $value->getSubCateDetails->sub_cat_name, 
-	    		 		'product_id' => $value->id,
-	           			'product_title' => $value->pro_name,
-	             		'product_status' => $value->status
-	    		 	);
-	    		}
- 
-
-	    		return response()->json(['status'=>1,'message'=>'success','data' =>array('total_data' => $totalData,'perPage_count'=>$limit,'current_page'=>$page,'sub_category_list'=>$getsubcategorylist )], 200);
-	    	}
-	    	else
-	    	{
-	    		 
-	    		return response()->json(['status'=>0,'message' => 'Something went wrong try again latter']);
-	    	} 
-        }
-        else
-        {
-        	return response()->json(['status'=>0,'message' => 'No data found']); 
-        } 
-    }
+     
 }

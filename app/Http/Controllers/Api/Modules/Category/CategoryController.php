@@ -25,159 +25,82 @@
 	     * @param  \App\Product  $product
 	     * @return \Illuminate\Http\Response
 	     */
-	   public function storeCategory(Request $request)
-	   {
-	   	// dd($request->cat_id);
-	   		if (@$request->cat_id) 
-	        {
+	   	public function storeCategory(Request $request)
+	   	{ 
+	         
+        	$validation = \Validator::make($request->all(),[ 
+        		"product_id" => "required|numeric",
+                "cat_name" => "required|unique:categorys|max:200",
+                "cat_dese" => "required|max:200",
+                "primary_image" => "mimes:jpg,jpeg,png",
+                "image_2" => "mimes:jpg,jpeg,png",
+                "image_3" => "mimes:jpg,jpeg,png",
+                "image_4" => "mimes:jpg,jpeg,png",
+            ],[ 'product_id.required'=>'Product id is required.',
+            	'cat_name.required'=>'Category name is required.',
+            	'cat_name.unique'=>'Category already exists.',
+                'cat_dese.required'=>'Category description required.', 
+            ]);
 
-	        	$validation = \Validator::make($request->all(),[ 
-	        		"product_id" => "required|numeric",
-	                "cat_name" => 'required|max:200|unique:categorys,cat_name,'.$request->cat_id,
-	                "cat_id" => "required|numeric",
-	                "cat_dese" => "required|max:200", 
-	            ],[ 'product_id.required'=>'Product id is required.',
-	            	'cat_name.required'=>'Category name is required.',
-	            	'cat_name.unique'=>'Category already exists.',
-	                'cat_dese.required'=>'Category description required.',
-	                'cat_id.required'=>'Category id required.', 
-	            ]);
-
-		        if ($validation->fails()) {
-		            return response()->json(['status'=>0,'errors'=>$validation->errors()],200);
-		        }
-
-		        $updatecat['product_id'] = $request->product_id;
-		        $updatecat['cat_name'] = $request->cat_name;
-		        $updatecat['cat_dese'] = $request->cat_dese;
-		        $updatecat['slug'] = str_slug($request->cat_name);
-
-		         
-
-		        if ($request->hasFile('primary_image'))
-			    {
-			    	 
-			    	@unlink(storage_path('app/public/images/product/'.$chkpro->primary_image)); 
-
-			    	$image = $request->primary_image;
-	                $filename = $request->pro_name.'-'.time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
-	                Storage::putFileAs('public/images/product/', $image, $filename);
-	                $input['primary_image'] = $filename;
-			    	 
-			    }
-			    if ($request->hasFile('image_2'))
-			    {
-			    	@unlink(storage_path('app/public/images/product/'.$chkpro->image_2)); 
-
-			    	$image = $request->image_2;
-	                $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
-	                Storage::putFileAs('public/images/product/', $image, $filename);
-	                $input['image_2'] = $filename;
-
-			    	 
-			    }
-			    if ($request->hasFile('image_3'))
-			    {	
-			    	@unlink(storage_path('app/public/images/product/'.$chkpro->image_3)); 
-
-			    	$image = $request->image_3;
-	                $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
-	                Storage::putFileAs('public/images/product/', $image, $filename);
-	                $input['image_3'] = $filename; 
-			    	 
-			    }
-			    if ($request->hasFile('image_4'))
-			    {
-			    	@unlink(storage_path('app/public/images/product/'.$chkpro->image_4)); 
-
-			    	$image = $request->image_4;
-	                $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
-	                Storage::putFileAs('public/images/product/', $image, $filename);
-	                $input['image_4'] = $filename; 
- 
-			    }
-
-		        $categoryData = Category::where('id',$request->cat_id)->update($updatecat); 
-
-		        $catData = Category::where('id',$request->cat_id)->first();
-
-		        // return response()->json(['sucs'=>'New category added successfully.'],200);
-
-		   	  	return response()->json(['status'=>1,'message' =>'Category updated successfully.','result' => $catData],200);
-
-
+	        if ($validation->fails()) {
+	            return response()->json(['status'=>0,'errors'=>$validation->errors()],200);
 	        }
-	        else
-	        {
-	        	$validation = \Validator::make($request->all(),[ 
-	        		"product_id" => "required|numeric",
-	                "cat_name" => "required|unique:categorys|max:200",
-	                "cat_dese" => "required|max:200", 
-	            ],[ 'product_id.required'=>'Product id is required.',
-	            	'cat_name.required'=>'Category name is required.',
-	            	'cat_name.unique'=>'Category already exists.',
-	                'cat_dese.required'=>'Category description required.', 
-	            ]);
 
-		        if ($validation->fails()) {
-		            return response()->json(['status'=>0,'errors'=>$validation->errors()],200);
-		        }
+	        $input['product_id'] = $request->product_id;
+	        $input['cat_name'] = $request->cat_name;
+	        $input['cat_dese'] = $request->cat_dese;
+	        $input['slug'] = str_slug($request->cat_name);
 
-		        $input['product_id'] = $request->product_id;
-		        $input['cat_name'] = $request->cat_name;
-		        $input['cat_dese'] = $request->cat_dese;
-		        $input['slug'] = str_slug($request->cat_name);
+	        if ($request->hasFile('primary_image'))
+		    {  
 
-		        if ($request->hasFile('primary_image'))
-			    {  
+		    	$image = $request->primary_image; 
 
-			    	$image = $request->primary_image; 
+                $filename = $input['slug'].'-'.time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+                Storage::putFileAs('public/images/product/', $image, $filename);
 
-	                $filename = $input['slug'].'-'.time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
-	                Storage::putFileAs('public/images/product/', $image, $filename);
+                $input['primary_image'] = $filename;
 
-	                $input['primary_image'] = $filename;
+		    }
+		    if ($request->hasFile('image_2'))
+		    {
+		    	$image = $request->image_2; 
 
-			    }
-			    if ($request->hasFile('image_2'))
-			    {
-			    	$image = $request->image_2; 
+                $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+                Storage::putFileAs('public/images/product/', $image, $filename);
 
-	                $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
-	                Storage::putFileAs('public/images/product/', $image, $filename);
+                $input['image_2'] = $filename;
 
-	                $input['image_2'] = $filename;
+		    	 
+		    }
+		    if ($request->hasFile('image_3'))
+		    {
+		    	$image = $request->image_3; 
 
-			    	 
-			    }
-			    if ($request->hasFile('image_3'))
-			    {
-			    	$image = $request->image_3; 
+                $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+                Storage::putFileAs('public/images/product/', $image, $filename);
 
-	                $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
-	                Storage::putFileAs('public/images/product/', $image, $filename);
+                $input['image_3'] = $filename;
 
-	                $input['image_3'] = $filename;
+		    	 
+		    }
+		    if ($request->hasFile('image_4'))
+		    {
+		    	$image = $request->image_4; 
 
-			    	 
-			    }
-			    if ($request->hasFile('image_4'))
-			    {
-			    	$image = $request->image_4; 
+                $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+                Storage::putFileAs('public/images/product/', $image, $filename);
 
-	                $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
-	                Storage::putFileAs('public/images/product/', $image, $filename);
+                $input['image_4'] = $filename; 
+		    	 
+		    }
 
-	                $input['image_4'] = $filename; 
-			    	 
-			    }
+	        $categoryData = Category::create($input); 
 
-		        $categoryData = Category::create($input); 
+	        // return response()->json(['sucs'=>'New category added successfully.'],200);
 
-		        // return response()->json(['sucs'=>'New category added successfully.'],200);
-
-		   	  	return response()->json(['status'=>1,'message' =>'New category added successfully.','result' => $categoryData],200);
-			}
+	   	  	return response()->json(['status'=>1,'message' =>'New category added successfully.','result' => $categoryData],200);
+			 
 	    }
 
 	    /**
@@ -292,81 +215,108 @@
 	   		}
 	   	}
 
-		   public function updateCategory(Request $request, $id)
-		   {
-			
-			   try{
+	   	/**
+	     * This is for update category.
+	     *
+	     * @param  \App\Product  $product
+	     * @return \Illuminate\Http\Response
+	    */
+
+		   	public function updateCategory(Request $request, $id)
+		   	{
+				// dd($request->all());
+			   	try{
 				   $srch_reg=Category::where('id',$id)->first();
-				   $up=array();
-				   if($srch_reg){
-					   if($request->category_id){
-						   $up['category_id']=$request->category_id;
-					   }
-					   if($request->category_name){
-						   $up['category_name']=$request->category_name;
-					   }
-					   if($request->product_id){
-						   $up['product_id']=$request->product_id;
-					   }
-					   if($request->product_title){
-						   $up['product_title']=$request->product_title;
-					   }
-					   if($request->product_slug){
-						   $up['product_slug']=$request->product_slug;
-					   }
-					   
 				   
-				   if ($request->hasFile('primary_image'))
-				   {
-					$image = $request->primary_image;
-					$filename = time() . '-' . rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
-					$image->move("storage/app/public/images/product",$filename);
-					$up['primary_image'] = $filename;
+				   if($srch_reg)
+				   { 
+				   
+				   	$validation = \Validator::make($request->all(),[ 
+	        		"product_id" => "required|numeric",
+	                "cat_name" => 'required|max:200|unique:categorys,cat_name,'.$srch_reg->id, 
+	                "cat_dese" => "required|max:200", 
+		            ],[ 'product_id.required'=>'Product id is required.',
+		            	'cat_name.required'=>'Category name is required.',
+		            	'cat_name.unique'=>'Category already exists.',
+		                'cat_dese.required'=>'Category description required.', 
+		            ]);
+
+			        if ($validation->fails()) {
+			            return response()->json(['status'=>0,'errors'=>$validation->errors()],200);
+			        }
+
+			        $updatecat['product_id'] = $request->product_id;
+			        $updatecat['cat_name'] = $request->cat_name;
+			        $updatecat['cat_dese'] = $request->cat_dese;
+			        $updatecat['slug'] = str_slug($request->cat_name);
+
+			         
+
+			        if ($request->hasFile('primary_image'))
+				    {
+				    	 
+				    	@unlink(storage_path('app/public/images/product/'.$srch_reg->primary_image)); 
+
+				    	$image = $request->primary_image;
+		                $filename = $request->cat_name.'-'.time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+		                Storage::putFileAs('public/images/product/', $image, $filename);
+		                $updatecat['primary_image'] = $filename;
+				    	 
+				    }
+				    if ($request->hasFile('image_2'))
+				    {
+				    	@unlink(storage_path('app/public/images/product/'.$srch_reg->image_2)); 
+
+				    	$image = $request->image_2;
+		                $filename =  $request->cat_name.time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+		                Storage::putFileAs('public/images/product/', $image, $filename);
+		                $updatecat['image_2'] = $filename;
+
+				    	 
+				    }
+				    if ($request->hasFile('image_3'))
+				    {	
+				    	@unlink(storage_path('app/public/images/product/'.$srch_reg->image_3)); 
+
+				    	$image = $request->image_3;
+		                $filename =  $request->cat_name.time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+		                Storage::putFileAs('public/images/product/', $image, $filename);
+		                $updatecat['image_3'] = $filename; 
+				    	 
+				    }
+				    if ($request->hasFile('image_4'))
+				    {
+				    	@unlink(storage_path('app/public/images/product/'.$srch_reg->image_4)); 
+
+				    	$image = $request->image_4;
+		                $filename =  $request->cat_name.time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+		                Storage::putFileAs('public/images/product/', $image, $filename);
+		                $updatecat['image_4'] = $filename; 
+	 
+				    }
+
+
+			        $categoryData = Category::where('id',$srch_reg->id)->update($updatecat); 
+
+			        $catData = Category::where('id',$srch_reg->id)->first();
+
+			        // return response()->json(['sucs'=>'New category added successfully.'],200);
+
+			   	  	return response()->json(['status'=>1,'message' =>'Category updated successfully.','result' => $catData],200);
+
+				    
 				   }
-	   
-	   
-				   if ($request->hasFile('image_2'))
+				   else
 				   {
-					$image = $request->image_2;
-					$filename = time() . '-' . rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
-					$image->move("storage/app/public/images/product",$filename);
-					$up['image_2'] = $filename;
-				   }
-	   
-	   
-				   if ($request->hasFile('image_3'))
-				   {
-					$image = $request->image_3;
-					$filename = time() . '-' . rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
-					$image->move("storage/app/public/images/product",$filename);
-					$up['image_3'] = $filename;
-				   }
-	   
-	   
-				   if ($request->hasFile('image_4'))
-				   {
-					$image = $request->image_4;
-					$filename = time() . '-' . rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
-					$image->move("storage/app/public/images/product",$filename);
-					$up['image_4'] = $filename;
-				   }
-	   
-						   
-						   $update=Category::where('id',$id)->update($up);
-						   $fetch_category=Category::where('id',$id)->first();
-						   $response['success']['message'] = "Category updated";
-						   $response['success']['category'] = $fetch_category;
-						   return Response::json($response);
-				   }else{
 					   $response['error']['message'] = "This id does not exists for update";
 					   return Response::json($response);
 				   }
 				  
 				   
-				  } catch (\Throwable $th) {
+				} catch (\Throwable $th) {
 				   $response['error']['message'] = $th->getMessage();
 				   return Response::json($response);
-				  } 
+				} 
 		   }
 
 	   	/**
@@ -428,81 +378,6 @@
 	        
 	    }
 
-	    /**
-	     * This is for show category list. 
-	     * @param  \App\Product  $product
-	     * @return \Illuminate\Http\Response
-	    */
-	    public function categoryListMy(Request $request)
-	    {
-
-
-	        $limit = $request->perPage_count;
-	        $page = $request->current_page;
-	         
-
-	        $offsatval = ($page-1)*$limit;
-
-	        $chkproduct = Category::get();
-
-	        
-	        if(count($chkproduct)>0)
-	        {
-	        	 if(!empty($offsatval || $limit) )
-		        {
-		        	$getpayment = Category::orderBy('id','DESC')->offset($offsatval)
-		                            ->limit($limit)->get();
-		        }
-		        else
-		        {
-		        	$getpayment = Category::orderBy('id','DESC')->get();
-		        }
-
-		        if(!empty($request->search_keyword) )
-		    		{
-		    			if (isset($request->search_keyword)) 
-				            {
-
-				            	$getpayment = Category::where(function($q) use($request){
-					                   $q->where('cat_name',$request->search_keyword);
-					                });
-				            		 
-				            		if(!empty($offsatval || $limit) ){
-				            			$getpayment->offset($offsatval)
-				            						->limit($limit);
-				            		}
-				            		
-				            		$getpayment = $getpayment->get();
-
-				            }
-		    		}
-
-		    	 
-		    	$totalData = Category::count();
-
-		    	$getpaymentlist = [];
-
-		    	if($getpayment!=null)
-		    	{	
-
-		    		foreach ($getpayment as $key => $value) { 
-		    		 	$getpaymentlist[]= array('cat_name'=>$value->cat_name,'cat_dese'=>$value->cat_dese,'status'=>$value->status);
-		    		}
-
-
-		    		return response()->json(['status'=>1,'message'=>'success','data' =>array('total_data' => $totalData,'perPage_count'=>$limit,'current_page'=>$page,'category_list'=>$getpaymentlist )], 200);
-		    	}
-		    	else
-		    	{
-		    		 
-		    		return response()->json(['status'=>0,'message' => 'Something went wrong try again latter']);
-		    	} 
-	        }
-	        else
-	        {
-	        	return response()->json(['status'=>0,'message' => 'No data found']); 
-	        } 
-	    }
-
+	    
 
 	}

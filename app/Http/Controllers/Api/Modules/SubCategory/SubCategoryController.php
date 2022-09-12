@@ -123,6 +123,64 @@
        		
        }
 
+        /**
+         * This is for update category. 
+         * @param  \App\Product  $product
+         * @return \Illuminate\Http\Response
+        */
+        public function updateSubCategory(Request $request,$subCatId)
+        {
+
+            $chkcata = Category::where('id',$subCatId)->first();
+               
+
+            $validation = \Validator::make($request->all(),[ 
+                "cat_id" => "required|numeric",
+                "pro_id" => "required|numeric", 
+                "sub_cat_name" => "required|max:200|unique:sub_categorys,sub_cat_name,".$subCatId,
+                "sub_cat_dese" => "required|max:200", 
+                "pro_size" => "required|max:200",
+            ],[ 
+                'cat_id.required'=>'Category id is required.',
+                'pro_id.required'=>'Product id is required.', 
+                'sub_cat_name.required'=>'Sub category name is required.',
+                'sub_cat_name.unique'=>'Sub category already exists.',
+                'sub_cat_dese.required'=>'Sub category description required.', 
+                'pro_size.required'=>'Product size required.',
+            ]);
+
+            if ($validation->fails()) {
+                return response()->json(['status'=>0,'errors'=>$validation->errors()],200);
+            }
+
+            
+             
+            if (!empty($chkcata)) {
+                 
+                $updateSubCat['cat_id'] = $request->cat_id;
+                $updateSubCat['pro_id'] = $request->pro_id;
+                $updateSubCat['sub_cat_name'] = $request->sub_cat_name;
+                $updateSubCat['slug'] = str_slug($request->sub_cat_name);
+                $updateSubCat['sub_cat_dese'] = $request->sub_cat_dese;
+                $updateSubCat['pro_size'] = implode(",",$request->pro_size);
+                $updateSubCat['Cr'] = $request->Cr;
+                $updateSubCat['C'] = $request->C;
+                $updateSubCat['Phos'] = $request->Phos;
+                $updateSubCat['S'] = $request->S;
+                $updateSubCat['Si'] = $request->Si;
+
+                $subCategoryData = ProductSubCategory::where('id',$subCatId)->update($updateSubCat); 
+                $subCatData = ProductSubCategory::where('id',$subCatId)->first();             
+
+                return response()->json(['status'=>1,'message' =>'Sub category update successfully.','result' => $subCatData],200);
+                 
+            }
+            else{
+                return response()->json(['status'=>0,'message'=>'No category found'],200);
+            }
+           
+        }
+
        /**
          * This is for show sub category list. 
          * @param  \App\Product  $product
@@ -247,90 +305,5 @@
 
         
 
-        /**
-    	     * This is for show sub category list with search. 
-    	     * @param  \App\Product  $product
-    	     * @return \Illuminate\Http\Response
-    	    */
-    	    public function subCategoryListMy(Request $request)
-    	    {
-
-
-    	        $limit = $request->perPage_count;
-    	        $page = $request->current_page;
-    	         
-
-    	        $offsatval = ($page-1)*$limit;
-
-    	        $chkproduct = ProductSubCategory::get();
-
-    	        
-    	        if(count($chkproduct)>0)
-    	        {
-    	        	 if(!empty($offsatval || $limit) )
-    		        {
-    		        	$getsubcategory = ProductSubCategory::orderBy('id','DESC')
-                                    ->with('getCategoryDetails')
-                                    ->offset($offsatval)
-    		                            ->limit($limit)
-                                    ->get();
-    		        }
-    		        else
-    		        {
-    		        	$getsubcategory = ProductSubCategory::orderBy('id','DESC')
-                                                        ->with('getCategoryDetails')
-                                                        ->get();
-    		        }
-
-    		        if(!empty($request->search_keyword) )
-    		    		{
-    		    			if (isset($request->search_keyword)) 
-    				            {
-    				            	$search = $request->search_keyword;
-    				             
-
-    				            	$getsubcategory = ProductSubCategory::whereHas('getCategoryDetails', function ($query) use ($search) {
-                                            $query->where('cat_name','LIKE',"%{$search}%");
-                                        }) 
-                                        ->orWhere('sub_cat_name','LIKE',"%{$search}%");
-
-                                        if(!empty($offsatval || $limit) ){
-                                          $getsubcategory
-                                            ->orWhere('sub_cat_name','LIKE',"%{$search}%")
-                                            ->offset($offsatval)
-                                            ->limit($limit);
-                                        }
-                                        
-                                       $getsubcategory = $getsubcategory->get();
-     
-
-    				            }
-    		    		}
-
-    		    	 
-    		    	$totalData = ProductSubCategory::count();
-
-    		    	$getsubcategorylist = [];
-
-    		    	if($getsubcategory!=null)
-    		    	{	
-
-    		    		foreach ($getsubcategory as $key => $value) { 
-    		    		 	$getsubcategorylist[]= array('sub_category_id'=>$value->id,'sub_category_name'=>$value->sub_cat_name,'sub_category_desc'=>$value->sub_cat_dese,'sub_category_status'=>$value->status,'category_id'=>$value->getCategoryDetails->id,'category_name'=>$value->getCategoryDetails->cat_name);
-    		    		}
-
-
-    		    		return response()->json(['status'=>1,'message'=>'success','data' =>array('total_data' => $totalData,'perPage_count'=>$limit,'current_page'=>$page,'sub_category_list'=>$getsubcategorylist )], 200);
-    		    	}
-    		    	else
-    		    	{
-    		    		 
-    		    		return response()->json(['status'=>0,'message' => 'Something went wrong try again latter']);
-    		    	} 
-    	        }
-    	        else
-    	        {
-    	        	return response()->json(['status'=>0,'message' => 'No data found']); 
-    	        } 
-    	    }
+         
     }
