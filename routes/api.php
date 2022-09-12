@@ -25,11 +25,8 @@ Route::group(['namespace'=>'Api\Modules'],function(){
 	// Index Page Routes ....
 	Route::get('index-page/{proId}', 'Product\ProductController@indexPage')->name('index_page');
 	Route::get('product-manu', 'Product\ProductController@productManu')->name('product_manu');
-<<<<<<< HEAD
 	Route::any('filter-product-menu', 'Product\ProductController@productFilter')->name('product_filter');
-=======
 	Route::get('product-details/{catId}/{proId}', 'Product\ProductController@productDetails')->name('product_details');
->>>>>>> e5846d8bb497bc23ad02f6d51def44104a025659
 });
  
 
