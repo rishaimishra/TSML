@@ -25,6 +25,7 @@ Route::group(['namespace'=>'Api\Modules'],function(){
 	// Index Page Routes ....
 	Route::get('index-page/{proId}', 'Product\ProductController@indexPage')->name('index_page');
 	Route::get('product-manu', 'Product\ProductController@productManu')->name('product_manu');
+	Route::get('product-details/{catId}/{proId}', 'Product\ProductController@productDetails')->name('product_details');
 });
  
 
@@ -79,7 +80,7 @@ Route::group(['prefix' => 'admin','middleware' => ['assign.guard:admins','jwtmid
 		Route::get('edit-sub-category/{subCatId}', 'SubCategory\SubCategoryController@editSubCategory')->name('edit_sub_category');
 
 		Route::post('update-sub-category/{subCatId}', 'SubCategory\SubCategoryController@updateSubCategory')->name('update_sub_category');
-		
+
 		Route::get('inactive-sub-category/{subCatId}', 'SubCategory\SubCategoryController@inactiveSubCategory')->name('inactive_sub_category');
 		Route::get('active-sub-category/{subCatId}', 'SubCategory\SubCategoryController@activeSubCategory')->name('active_sub_category');	
 		Route::get('sub-category-list-my', 'SubCategory\SubCategoryController@subCategoryListMy')->name('sub_category_list_my');

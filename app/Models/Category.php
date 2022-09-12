@@ -12,4 +12,8 @@ class Category extends Model
     public function getProductDetails(){
         return $this->belongsTo('App\Models\Product','product_id','id');
     }
+
+    public function getSubCategoryDetails(){
+        return $this->hasMany('App\Models\ProductSubCategory', 'id', 'cat_id');
+    }
 }
