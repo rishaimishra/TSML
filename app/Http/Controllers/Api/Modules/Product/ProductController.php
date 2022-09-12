@@ -69,8 +69,16 @@ class ProductController extends Controller
             $prodetails['Si'] = $data->Si;
 
               $str = $data->pro_size;
-            $prodetails['size'] = (explode(",",$str));
-            // return $prodetails;exit();
+
+            $prodetail['size'] = (explode(",",$str));
+                $i = 0;
+            foreach ($prodetail['size'] as $key => $value) {
+                $key = 'size'.$i;
+                $prodetails['sizes'][$key]='10-' .$value;
+                $i++;
+            }
+           
+            //  return $prodetails;exit();
             if ($data->primary_image) 
                 {
 
