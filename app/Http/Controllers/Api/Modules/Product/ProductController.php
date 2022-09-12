@@ -316,5 +316,48 @@ class ProductController extends Controller
         
     }
 
+    public function productFilter(Request $request){
+        $data = [];
+        $data['data'] = Category::with('getProductDetails')->where('status',1)->orderBy('id','desc');
+
+
+        if($request->product_id)
+        {
+            $product_id = $request->product_id;
+            $data['data'] = $data['data']->where('product_id', $product_id);
+        }
+
+
+        if($request->cat_id){
+            $catId = $request->cat_id;
+            $data['data'] = $data['data']->where('id', $catId);
+            // $response['subcategory'] = ProductSubCategory::where('cat_id',$request->catId)->get();
+        }
+
+
+        if($request->subcat_id)
+        {
+            $subcat_id = $request->subcat_id;
+
+            $data['data'] = $data['data']->whereHas('subCategory',function($query){
+                $query->where('id', @$subcat_id);
+            });
+        }
+        
+        if($request->prosize)
+        {
+            $prosize = $request->prosize;
+
+            $data['data'] = $data['data']->whereHas('subCategory',function($query){
+                $query->where('pro_size',$prosize);
+            });
+        }
+
+        $data['data'] = $data['data']->get();
+
+        return response()->json(['status'=>1,'message' =>'Success.','result' => $data],200);
+
+    }
+
      
 }
