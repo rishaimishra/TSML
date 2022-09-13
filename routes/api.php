@@ -53,6 +53,14 @@ Route::group(['namespace'=>'Api\Modules'],function(){
    	Route::resource('customer', 'UserController');	
    	Route::post('customers/{id}', 'UserController@update');	
    	Route::post('reset-password', 'UserController@resetPassword')->name('reset_password');
+
+   	Route::group(['namespace'=>'Api\Modules'],function(){
+
+   		 Route::post('store_quotes','Quote\QuoteController@storeQuotes');
+   		 Route::post('update_quotes','Quote\QuoteController@updateQuotes');
+   		 Route::post('quotes_status_update','Quote\QuoteController@quotesStatusUpdate');
+     });
+   	
 });
 
 // Admin Routes....
