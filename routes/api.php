@@ -26,6 +26,9 @@ Route::group(['namespace'=>'Api\Modules'],function(){
 	Route::get('index-page/{proId}', 'Product\ProductController@indexPage')->name('index_page');
 	Route::get('product-manu', 'Product\ProductController@productManu')->name('product_manu');
 	Route::any('filter-product-menu', 'Product\ProductController@productFilter')->name('product_filter');
+	Route::get('category-dropdown', 'Product\ProductController@CategoryDropdown')->name('category_list');
+	Route::get('product-dropdown', 'Product\ProductController@ProductDropdown')->name('product_list_my');
+
 	Route::get('product-details/{catId}/{proId}', 'Product\ProductController@productDetails')->name('product_details');
 });
  

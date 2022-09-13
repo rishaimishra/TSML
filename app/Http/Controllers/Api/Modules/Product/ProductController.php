@@ -447,5 +447,18 @@ class ProductController extends Controller
 
     }
 
+    public function ProductDropdown(){
+
+        $getProductList = Product::where('status',1)->select('id','pro_name')->get();  
+        return Response::json($getProductList);
+
+    }
+
+    public function CategoryDropdown(){
+        $data = Category::where('status','!=',2)->select('id','cat_name')->orderBy('id','desc')->get();
+        return Response::json($data);
+
+    }
+
      
 }
