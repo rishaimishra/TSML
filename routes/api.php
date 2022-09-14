@@ -105,6 +105,12 @@ Route::group(['prefix' => 'admin','middleware' => ['assign.guard:admins','jwtmid
 		Route::get('active-product/{proId}', 'Product\ProductController@activeProduct')->name('active_product');
 		Route::get('product-list-my', 'Product\ProductController@productListMy')->name('product_list_my');
 
+
+		// news Routes -------
+
+		Route::post('store_news','News\NewsController@storeNews');
+		Route::get('get_all_news','News\NewsController@getAllNews');
+
 	});
 
 });
