@@ -457,46 +457,79 @@ class ProductController extends Controller
         
     }
 
-    public function productFilter(Request $request){
+    public function productFilter(Request $request)
+    {
+
+        $response = [];
         $data = [];
-        $data['data'] = Category::with('getProductDetails')->where('status',1)->orderBy('id','desc');
+        $data['data'] = ProductSubCategory::with('getProductDetails','getCategoryDetails')->where('status',1)->orderBy('id','desc');
 
 
-        if($request->product_id)
+        if(@$request->product_id)
         {
             $product_id = $request->product_id;
-            $data['data'] = $data['data']->where('product_id', $product_id);
+            $data['data'] = $data['data']->where('pro_id', $product_id);
         }
 
 
-        if($request->cat_id){
+        if(@$request->cat_id){
             $catId = $request->cat_id;
-            $data['data'] = $data['data']->where('id', $catId);
-            // $response['subcategory'] = ProductSubCategory::where('cat_id',$request->catId)->get();
+            $data['data'] = $data['data']->where('cat_id', $catId);
+            $response['subCategories'] = ProductSubCategory::where('cat_id',$request->cat_id)->get();
+         }
+
+
+        if (@$request->subcat_id) {
+            $data['data'] = $data['data']->where('id',request('subcat_id'));
         }
 
-
-        if($request->subcat_id)
+        if (@$request->prosize) 
         {
-            $subcat_id = $request->subcat_id;
+            // $val = [100,250];
+            if (@$request->subcat_id) {
+                $filtered_data =ProductSubCategory::where('cat_id',request('cat_id'))->where('id',request('subcat_id'))->get();
+            }else{
+                $category = $data['data']->pluck('id');
+                $filtered_data =ProductSubCategory::whereIn('cat_id',$category)->get();
+            }
+            
+            $max_value = max(@$request->prosize);
+            // $min_value = min(@$val);
+            $numbers = range(10,$max_value);
+            // return $numbers;
+            
+                $array = [];
+                foreach($filtered_data as $size)
+                {
+                    $explode = explode(',',$size->pro_size);
+                    $max_size = max($explode);
+                    // return $max_size;
+                    if (in_array($max_size, $numbers)) {
+                        array_push($array, $size->cat_id);  
+                    }
+                }
+            
 
-            $data['data'] = $data['data']->whereHas('subCategory',function($query){
-                $query->where('id', @$subcat_id);
-            });
+           $now_category = ProductSubCategory::with('getProductDetails')->where('status',1)->orderBy('id','desc')->whereIn('id',$array);
+           $data['data'] = $now_category;
+
         }
-        
-        if($request->prosize)
-        {
-            $prosize = $request->prosize;
 
-            $data['data'] = $data['data']->whereHas('subCategory',function($query){
-                $query->where('pro_size',$prosize);
-            });
+        if (@$request->sort) {
+            if (@$request->sort=="N") {
+                $data['data'] = $data['data']->orderBy('id','desc');
+            }else{
+                $data['data'] = $data['data']->orderBy('id','asc');
+            }
         }
 
         $data['data'] = $data['data']->get();
 
-        return response()->json(['status'=>1,'message' =>'Success.','result' => $data],200);
+        $response['success'] = true;
+        $response['data'] = $data['data'];
+        return $response;
+
+        // return response()->json(['status'=>1,'message' =>'Success.','result' => $data,'subCategories'=>$subCategories],200);
 
     }
 
