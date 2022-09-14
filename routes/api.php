@@ -24,6 +24,7 @@ Route::post('password-update', 'Auth\ResetPasswordController@reset')->name('user
 Route::group(['namespace'=>'Api\Modules'],function(){
 	// Index Page Routes ....
 	Route::get('index-page/{proId}', 'Product\ProductController@indexPage')->name('index_page');
+	Route::get('popular-product', 'Product\ProductController@popularProduct')->name('popular');
 	Route::get('product-manu', 'Product\ProductController@productManu')->name('product_manu');
 	Route::any('filter-product-menu', 'Product\ProductController@productFilter')->name('product_filter');
 	Route::get('category-dropdown', 'Product\ProductController@CategoryDropdown')->name('category_list');
