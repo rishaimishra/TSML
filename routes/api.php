@@ -115,6 +115,7 @@ Route::group(['prefix' => 'admin','middleware' => ['assign.guard:admins','jwtmid
 		Route::get('get_all_news','News\NewsController@getAllNews');
 		Route::get('get_news_by_id/{id}','News\NewsController@getNewsById');
 		Route::post('update_news','News\NewsController@updateNews');
+		Route::delete('delete_news/{id}','News\NewsController@deleteNews');
 
 	});
 

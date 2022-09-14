@@ -199,7 +199,7 @@ class NewsController extends Controller
 
       public function updateNews(Request $request)
       {  
-      	 echo "<pre>";print_r($request->all());exit();
+      	 // echo "<pre>";print_r($request->all());exit();
 
       	  \DB::beginTransaction();
 
@@ -221,6 +221,8 @@ class NewsController extends Controller
 
       	  	     $newsData = array();
                  
+                 $imagePrev = News::where('id',$request->news_id)->select('image')->first();
+                 unlink(public_path('storage/app/public/news/'.$imagePrev->image));
 
 		         $newsData['user_id'] = $request->user_id;
 		         $newsData['title'] = $request->title;
@@ -231,9 +233,9 @@ class NewsController extends Controller
 		         $image->move("storage/app/public/news",$filename);
 		         $newsData['image'] = $filename;
                  
-                 // echo "<pre>";print_r($newsData);exit();
+                 // echo "<pre>";print_r($imagePrev->image);exit();
 
-                 $response = News::create($newsData);
+                 $response = News::where('id',$request->news_id)->update($newsData);
 
                  \DB::commit();
 
@@ -251,6 +253,56 @@ class NewsController extends Controller
 		        		'result' => []],
 		        		config('global.success_status'));
 		         }
+
+
+            }catch(\Exception $e){
+
+            	   \DB::rollback();
+
+                   return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $e->getMessage()],config('global.failed_status'));
+          }
+
+         
+      }
+
+
+
+      public function deleteNews($id)
+      {  
+
+      	  \DB::beginTransaction();
+
+      	  try{ 
+
+
+      	  	     $newsData = array();
+
+
+                 $task = News::findOrFail($id);
+                 unlink(public_path('storage/app/public/news/'.$task->image));
+                 $result = $task->delete();
+                  
+                  if($result)
+                  {
+                  	   $newsData = "News deleted";
+		           }
+                  
+		         else{
+
+		         	  $newsData = "News can not deleted";
+                 }
+                 // echo "<pre>";print_r($task->image);exit();
+
+
+                 \DB::commit();
+
+                 
+		             return response()->json(['status'=>1,
+		        		'message' =>config('global.sucess_msg'),
+		        		'result' => $newsData],
+		        		config('global.success_status'));
+		         
+		         
 
 
             }catch(\Exception $e){
