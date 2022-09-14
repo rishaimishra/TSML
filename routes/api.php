@@ -31,6 +31,8 @@ Route::group(['namespace'=>'Api\Modules'],function(){
 	Route::get('product-dropdown', 'Product\ProductController@ProductDropdown')->name('product_list_my');
 
 	Route::get('product-details/{catId}/{proId}', 'Product\ProductController@productDetails')->name('product_details');
+
+	Route::get('get_all_news_all','News\NewsController@getAllNews');//news list for all
 });
  
 

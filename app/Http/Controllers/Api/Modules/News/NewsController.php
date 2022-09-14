@@ -101,6 +101,12 @@ class NewsController extends Controller
 		               $image = $value->image;
 		               $newsData[$key]['image'] = asset('storage/app/public/news/'.$image);
 		               $newsData[$key]['name'] = $value->name;
+
+		               if(Auth::guard('admins')->check())
+		               {
+		               	   $newsData[$key]['updated_at'] = $value->updated_at;
+		                   $newsData[$key]['created_at'] = $value->created_at;
+		               }
                   }
 		         
                  
