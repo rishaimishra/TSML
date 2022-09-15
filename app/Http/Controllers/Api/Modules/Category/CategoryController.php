@@ -56,7 +56,7 @@
 
 		    	$image = $request->primary_image; 
 
-                $filename = $input['slug'].'-'.time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+                $filename = str_replace(' ', '_',$request->cat_name).'-'.time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
                 Storage::putFileAs('public/images/product/', $image, $filename);
 
                 $input['primary_image'] = $filename;
@@ -66,7 +66,7 @@
 		    {
 		    	$image = $request->image_2; 
 
-                $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+                $filename = str_replace(' ', '_',$request->cat_name).time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
                 Storage::putFileAs('public/images/product/', $image, $filename);
 
                 $input['image_2'] = $filename;
@@ -77,7 +77,7 @@
 		    {
 		    	$image = $request->image_3; 
 
-                $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+                $filename = str_replace(' ', '_',$request->cat_name).time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
                 Storage::putFileAs('public/images/product/', $image, $filename);
 
                 $input['image_3'] = $filename;
@@ -88,7 +88,7 @@
 		    {
 		    	$image = $request->image_4; 
 
-                $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+                $filename = str_replace(' ', '_',$request->cat_name).time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
                 Storage::putFileAs('public/images/product/', $image, $filename);
 
                 $input['image_4'] = $filename; 
@@ -251,14 +251,14 @@
 			        $updatecat['slug'] = str_slug($request->cat_name);
 
 			         
-
+			         
 			        if ($request->hasFile('primary_image'))
 				    {
 				    	 
-				    	@unlink(storage_path('app/public/images/product/'.$srch_reg->primary_image)); 
+				    	// @unlink(storage_path('app/public/images/product/'.$srch_reg->primary_image)); 
 
 				    	$image = $request->primary_image;
-		                $filename = $request->cat_name.'-'.time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+		                $filename = str_replace(' ', '_',$request->cat_name).'-'.time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension(); 
 		                Storage::putFileAs('public/images/product/', $image, $filename);
 		                $updatecat['primary_image'] = $filename;
 				    	 
@@ -268,7 +268,7 @@
 				    	@unlink(storage_path('app/public/images/product/'.$srch_reg->image_2)); 
 
 				    	$image = $request->image_2;
-		                $filename =  $request->cat_name.time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+		                $filename =  str_replace(' ', '_',$request->cat_name).time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
 		                Storage::putFileAs('public/images/product/', $image, $filename);
 		                $updatecat['image_2'] = $filename;
 
@@ -279,7 +279,7 @@
 				    	@unlink(storage_path('app/public/images/product/'.$srch_reg->image_3)); 
 
 				    	$image = $request->image_3;
-		                $filename =  $request->cat_name.time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+		                $filename =  str_replace(' ', '_',$request->cat_name).time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
 		                Storage::putFileAs('public/images/product/', $image, $filename);
 		                $updatecat['image_3'] = $filename; 
 				    	 
@@ -289,11 +289,12 @@
 				    	@unlink(storage_path('app/public/images/product/'.$srch_reg->image_4)); 
 
 				    	$image = $request->image_4;
-		                $filename =  $request->cat_name.time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+		                $filename =  str_replace(' ', '_',$request->cat_name).time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
 		                Storage::putFileAs('public/images/product/', $image, $filename);
 		                $updatecat['image_4'] = $filename; 
 	 
 				    }
+
 
 
 			        $categoryData = Category::where('id',$srch_reg->id)->update($updatecat); 
