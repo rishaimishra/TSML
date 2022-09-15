@@ -310,7 +310,7 @@ class QuoteController extends Controller
                  // $res = $this->getQuoteHistory($user_id,$rfq_no);
                   
 
-		         $quotes = Quote::where('user_id',$user_id)->with('schedules')->get()->toArray();
+		         $quotes = Quote::where('user_id',$user_id)->with('schedules')->orderBy('updated_at','desc')->get()->toArray();
                 
                  // echo "<pre>";print_r($quotes);exit();
 
