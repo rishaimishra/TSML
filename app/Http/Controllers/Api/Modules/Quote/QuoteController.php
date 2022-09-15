@@ -178,4 +178,168 @@ class QuoteController extends Controller
 	         }
       	  
       }
+
+
+     /*
+      ---------------- quote history customer  -------------------
+
+	*/
+     public function quotesHistoryCustomer($rfq_no)
+      {  
+
+      	  \DB::beginTransaction();
+
+      	  try{ 
+
+
+      	  	    $user_id = Auth::user()->id;
+
+
+                 $res = $this->getQuoteHistory($user_id,$rfq_no);
+                  
+
+		         
+                 
+                 // echo "<pre>";print_r($res);exit();
+
+
+                 \DB::commit();
+
+                 if(!empty($res))
+                 {
+		             return response()->json(['status'=>1,
+		        		'message' =>config('global.sucess_msg'),
+		        		'result' => $res],
+		        		config('global.success_status'));
+		         }
+		         else{
+
+		         	 return response()->json(['status'=>1,
+		        		'message' =>'not found',
+		        		'result' => []],
+		        		config('global.success_status'));
+		         }
+
+
+            }catch(\Exception $e){
+
+            	   \DB::rollback();
+
+                   return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $e->getMessage()],config('global.failed_status'));
+          }
+
+         
+      }
+
+
+
+      public function getQuoteHistory($user_id=NULL,$rfq_no=NULL)
+      {
+
+      	   $quoteArr=array();
+
+           $res = DB::table('quotes')
+              ->leftjoin('users','quotes.user_id','users.id')
+              ->leftjoin('products','quotes.product_id','products.id')
+              ->select('quotes.*','users.name','products.pro_name','products.pro_desc')
+              ->whereNotNull('quotes.deleted_at');
+              
+
+           if(!empty($user_id))
+           {
+           	   $res = $res->where('quotes.user_id',$user_id);
+           }
+           if(!empty($rfq_no))
+           {
+           	   $res = $res->where('quotes.rfq_no',$rfq_no);
+           }
+
+           $res = $res->get();
+
+           foreach ($res as $key => $value) {
+           	   
+           	    $quoteArr[$key]['name'] = $value->name;
+           	    $quoteArr[$key]['pro_name'] = $value->pro_name;
+           	    $quoteArr[$key]['pro_desc'] = $value->pro_desc;
+           	    $quoteArr[$key]['rfq_no'] = $value->rfq_no;
+           	    $quoteArr[$key]['quantity'] = $value->quantity;
+           	    $quoteArr[$key]['kam_price'] = $value->kam_price;
+           	    $quoteArr[$key]['expected_price'] = $value->expected_price;
+           	    $quoteArr[$key]['plant'] = $value->plant;
+           	    $quoteArr[$key]['location'] = $value->location;
+           	    $quoteArr[$key]['schedules'] = $this->quoteSchedule($value->id);
+           	  
+
+           }
+
+           return $quoteArr;
+      }
+
+
+      public function quoteSchedule($quote_id)
+      {
+             $schedules = DB::table('quote_schedules')->where('quote_id',$quote_id)
+           	       ->select('quantity','to_date','from_date')->whereNotNull('deleted_at')->get();
+
+           	     foreach ($schedules as $key => $value) {
+           	     	 
+           	     	  $schArr[$key]['quantity'] = $value->quantity;
+           	     	  $schArr[$key]['to_date'] = $value->to_date;
+           	     	  $schArr[$key]['from_date'] = $value->from_date;
+           	     }
+
+           	  return $schArr;
+      }
+
+
+      /*
+      ---------------- quote list  -------------------
+
+	*/
+     public function getQuotesList()
+      {  
+
+      	  \DB::beginTransaction();
+
+      	  try{ 
+
+
+      	  	    $user_id = Auth::user()->id;
+
+
+                 // $res = $this->getQuoteHistory($user_id,$rfq_no);
+                  
+
+		         $quotes = Quote::where('user_id',$user_id)->with('schedules')->get()->toArray();
+                
+                 // echo "<pre>";print_r($quotes);exit();
+
+
+                 \DB::commit();
+
+                 if(!empty($quotes))
+                 {
+		             return response()->json(['status'=>1,
+		        		'message' =>config('global.sucess_msg'),
+		        		'result' => $quotes],
+		        		config('global.success_status'));
+		         }
+		         else{
+
+		         	 return response()->json(['status'=>1,
+		        		'message' =>'not found',
+		        		'result' => []],
+		        		config('global.success_status'));
+		         }
+
+
+            }catch(\Exception $e){
+
+            	   \DB::rollback();
+
+                   return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $e->getMessage()],config('global.failed_status'));
+          }
+
+         
+      }
 }

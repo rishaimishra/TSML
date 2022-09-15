@@ -65,6 +65,8 @@ Route::group(['namespace'=>'Api\Modules'],function(){
    		 Route::post('store_quotes','Quote\QuoteController@storeQuotes');
    		 Route::post('update_quotes','Quote\QuoteController@updateQuotes');
    		 Route::post('quotes_status_update','Quote\QuoteController@quotesStatusUpdate');
+   		 Route::get('quotes_history/{rfq_no}','Quote\QuoteController@quotesHistoryCustomer');
+   		 Route::get('quotes_list','Quote\QuoteController@getQuotesList');
      });
    	
 });
