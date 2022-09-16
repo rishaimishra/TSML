@@ -21,4 +21,14 @@ class Quote extends Model
     {
         return $this->hasMany('App\Models\QuoteSchedule','quote_id','id');
     }
+
+    public function product()
+    {
+    	return $this->belongsTo('App\Models\Product','product_id','id');
+    }
+
+    public function subCategory()
+    {
+        return $this->hasOne('App\Models\ProductSubCategory','pro_id','id');
+    }
 }

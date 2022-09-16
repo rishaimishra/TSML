@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Quote;
 use App\Models\QuoteSchedule;
+use App\Models\ProductSubCategory;
 use Auth;
 use DB;
 
@@ -308,20 +309,44 @@ class QuoteController extends Controller
 
 
                  // $res = $this->getQuoteHistory($user_id,$rfq_no);
-                  
+              $quoteArr = array();    
 
-		         $quotes = Quote::where('user_id',$user_id)->with('schedules')->orderBy('updated_at','desc')->get()->toArray();
-                
-                 // echo "<pre>";print_r($quotes);exit();
+		         $quotes = Quote::where('user_id',$user_id)->with('schedules')
+             ->with('product')->orderBy('updated_at','desc')
+             ->where('kam_status','!=',2)
+             ->where('cus_status','!=',2)
+             // ->toSql();
+             ->get()->toArray();
+             // exit();
+            
+
+             foreach ($quotes as $key => $value) {
+                 
+                    $quoteArr[$key]['quote_id'] = $value['id'];
+                    $quoteArr[$key]['user_id'] = $value['user_id'];
+                    $quoteArr[$key]['rfq_no'] = $value['rfq_no'];
+                    $quoteArr[$key]['quantity'] = $value['quantity'];
+                    $quoteArr[$key]['kam_price'] = $value['kam_price'];
+                    $quoteArr[$key]['expected_price'] = $value['expected_price'];
+                    $quoteArr[$key]['plant'] = $value['plant'];
+                    $quoteArr[$key]['location'] = $value['location'];
+                    $quoteArr[$key]['kam_status'] = $value['kam_status'];
+                    $quoteArr[$key]['schedules'] = $value['schedules'];
+                    $quoteArr[$key]['product'] = $value['product'];
+                    $size = DB::table('sub_categorys')->where('pro_id',$value['product_id'])->select('pro_size')->first();
+                    $quoteArr[$key]['size'] = $size;
+                  
+             }
+                 // echo "<pre>";print_r($quoteArr);exit();
 
 
                  \DB::commit();
 
-                 if(!empty($quotes))
+                 if(!empty($quoteArr))
                  {
 		             return response()->json(['status'=>1,
 		        		'message' =>config('global.sucess_msg'),
-		        		'result' => $quotes],
+		        		'result' => $quoteArr],
 		        		config('global.success_status'));
 		         }
 		         else{
@@ -342,4 +367,53 @@ class QuoteController extends Controller
 
          
       }
+
+
+          /*
+      ----------------  quote update -------------------
+
+  */
+
+    public function getQuoteById($id)
+    {
+         \DB::beginTransaction();
+
+       try{ 
+
+           $chk_quote = Quote::where('rfq_no',$id)->count();
+           // echo "<pre>";print_r($chk_quote);exit();
+           if($chk_quote > 0)
+           {
+              $quoteArr = array();
+
+              
+              $rfq_number = (!empty($id)) ? $id : '';
+
+              $quote = Quote::where('rfq_no',$id)->with('schedules')->with('product')->with('subCategory')->orderBy('updated_at','desc')->first()->toArray();
+              // echo "<pre>";print_r($quote_id->user_id);exit();
+             \DB::commit();
+              if(!empty($quote))
+              {
+                return response()->json(['status'=>1,'message' =>'success','result' => $quote],config('global.success_status'));
+              }
+              else{
+
+                 return response()->json(['status'=>1,'message' =>'success','result' => 'Quote not updated'],config('global.success_status'));
+
+              }
+      }
+      else{
+
+             return response()->json(['status'=>1,'message' =>'Quote do no exists','result' => []],config('global.success_status'));
+
+          }
+
+
+      }catch(\Exception $e){
+
+           \DB::rollback();
+
+           return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
+      }
+    }
 }
