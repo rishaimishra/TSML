@@ -20,13 +20,16 @@ class QuoteController extends Controller
     public function storeQuotes(Request $request)
     {
 
+
        try{ 
 
 	    	$quoteArr = array();
 
 	    	$user_id = Auth::user()->id;
 	        
-	        $rfq_number = (!empty($request->input('rfq_number'))) ? $request->input('rfq_number') : '';
+	      $rfq_number = (!empty($request->input('rfq_number'))) ? $request->input('rfq_number') : '';
+
+
 
 	    	$quotes = $this->configureQuotes($request,$rfq_number,$user_id);
 	        // echo "<pre>";print_r($quotes);exit();
@@ -60,7 +63,7 @@ class QuoteController extends Controller
 
     public function updateQuotes(Request $request)
     {
-
+         // echo "<pre>";print_r($request->all());exit();
        try{ 
 
            $chk_quote = Quote::where('rfq_no',$request->input('rfq_number'))->count();
@@ -72,9 +75,9 @@ class QuoteController extends Controller
 	        
 	        $rfq_number = (!empty($request->input('rfq_number'))) ? $request->input('rfq_number') : '';
 
-	        $quote_id = DB::table('quotes')->where('rfq_no',$rfq_number)->whereNull('deleted_at')->select('id','user_id')->first();
+	        $quote_id = DB::table('quotes')->where('rfq_no',$rfq_number)->where('product_id',$request->input('product_id'))->whereNull('deleted_at')->select('id','user_id')->first();
 	        // echo "<pre>";print_r($quote_id->user_id);exit();
-	        Quote::where('rfq_no',$rfq_number)->delete();
+	        Quote::where('rfq_no',$rfq_number)->where('product_id',$request->input('product_id'))->delete();
 	        QuoteSchedule::where('quote_id',$quote_id->id)->delete();
 
 	    	$quotes = $this->configureQuotes($request,$rfq_number,$quote_id->user_id);
@@ -109,19 +112,17 @@ class QuoteController extends Controller
 	*/
     public function configureQuotes($request,$rfq_number=NULL,$user_id)
     {
-    	$rfq_num = (!empty($rfq_number)) ? $rfq_number : rand(100,9999);
-
+    	// $rfq_num = (!empty($rfq_number)) ? $rfq_number : rand(100,9999);
+       if(!empty($request->input('product_id')) && !empty($request->input('quantity')) && !empty($request->input('quote_schedules')))
+       {
         $quoteArr['user_id']    = $user_id;
         $quoteArr['product_id'] = $request->input('product_id');
         $quoteArr['quantity'] = $request->input('quantity');
-        $quoteArr['kam_price'] = $request->input('kam_price');
-        $quoteArr['expected_price'] = $request->input('expected_price');
-        $quoteArr['plant'] = $request->input('plant');
-        $quoteArr['location'] = $request->input('location');
-        $quoteArr['rfq_no'] = $rfq_num;
+        $quoteArr['rfq_no'] = $rfq_number;
+        $quoteArr['quote_no']  = rand(100,9999);
 
         $schedules = $request->input('quote_schedules');
-
+         // echo "<pre>";print_r($schedules);exit();
         $quote = Quote::create($quoteArr);
 
         foreach ($schedules as $key => $value) {
@@ -130,6 +131,17 @@ class QuoteController extends Controller
         	$sche['quantity'] = $value['quantity'];
         	$sche['to_date'] = $value['to_date'];
         	$sche['from_date'] = $value['from_date'];
+          $sche['pro_size'] = $value['pro_size'];
+          $sche['kam_price'] = $value['kam_price'];
+          $sche['expected_price'] = $value['expected_price'];
+          $sche['plant'] = $value['plant'];
+          $sche['location'] = $value['location'];
+          $sche['bill_to'] = $value['bill_to'];
+          $sche['ship_to'] = $value['ship_to'];
+          $sche['delivery'] = $value['delivery'];
+          $sche['remarks'] = $value['remarks'];
+          $sche['valid_till'] = $value['valid_till'];
+          
         	// echo "<pre>";print_r($sche);exit();
 
             QuoteSchedule::create($sche);
@@ -143,6 +155,11 @@ class QuoteController extends Controller
         else{
 
         	return [];
+        }
+      }
+      else{
+
+          return [];
         }
     	// echo "<pre>";print_r($schedules);exit();
     }
@@ -311,30 +328,32 @@ class QuoteController extends Controller
                  // $res = $this->getQuoteHistory($user_id,$rfq_no);
               $quoteArr = array();    
 
-		         $quotes = Quote::where('user_id',$user_id)->with('schedules')
-             ->with('product')->orderBy('updated_at','desc')
-             ->where('kam_status','!=',2)
-             ->where('cus_status','!=',2)
-             // ->toSql();
-             ->get()->toArray();
+		         // $quotes = Quote::where('user_id',$user_id)->with('schedules')
+           //   ->with('product')->orderBy('updated_at','desc')
+
+             $quotes = DB::table('quotes')->leftjoin('users','quotes.user_id','users.id')
+                         ->select('quotes.*','users.name',DB::raw("(sum(quotes.quantity)) as tot_qt"),)
+                         ->groupBy('quotes.rfq_no')
+                         ->whereNull('quotes.deleted_at')
+                         // ->toSql();
+                         ->get();
+             // echo "<pre>";print_r($quotes);
              // exit();
             
 
              foreach ($quotes as $key => $value) {
                  
-                    $quoteArr[$key]['quote_id'] = $value['id'];
-                    $quoteArr[$key]['user_id'] = $value['user_id'];
-                    $quoteArr[$key]['rfq_no'] = $value['rfq_no'];
-                    $quoteArr[$key]['quantity'] = $value['quantity'];
-                    $quoteArr[$key]['kam_price'] = $value['kam_price'];
-                    $quoteArr[$key]['expected_price'] = $value['expected_price'];
-                    $quoteArr[$key]['plant'] = $value['plant'];
-                    $quoteArr[$key]['location'] = $value['location'];
-                    $quoteArr[$key]['kam_status'] = $value['kam_status'];
-                    $quoteArr[$key]['schedules'] = $value['schedules'];
-                    $quoteArr[$key]['product'] = $value['product'];
-                    $size = DB::table('sub_categorys')->where('pro_id',$value['product_id'])->select('pro_size')->first();
-                    $quoteArr[$key]['size'] = $size;
+                    $quoteArr[$key]['quote_id'] = $value->id;
+                    $quoteArr[$key]['user_id'] = $value->user_id;
+                    $quoteArr[$key]['rfq_no'] = $value->rfq_no;
+                    $quoteArr[$key]['quantity'] = $value->tot_qt;
+                    $quoteArr[$key]['kam_status'] = $value->kam_status;
+                    $quoteArr[$key]['name'] = $value->name;
+                    $quoteArr[$key]['created_at'] = date('m-d-Y',strtotime($value->created_at));
+                    // $quoteArr[$key]['schedules'] = $value->schedules;
+                    // $quoteArr[$key]['product'] = $value->product;
+                    // $size = DB::table('sub_categorys')->where('pro_id',$value['product_id'])->select('pro_size')->first();
+                    // $quoteArr[$key]['size'] = $size;
                   
              }
                  // echo "<pre>";print_r($quoteArr);exit();

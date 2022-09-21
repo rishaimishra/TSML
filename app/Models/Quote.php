@@ -12,7 +12,7 @@ class Quote extends Model
     
      protected $table = "quotes";
 
-     protected $fillable = ['user_id','product_id','rfq_no','quantity','kam_price','expected_price','plant','location','kam_status','cus_status','created_at','updated_at'];
+     protected $fillable = ['user_id','product_id','rfq_no','quantity','quote_no','kam_status','cus_status','reject_reason','valid_till','created_at','updated_at'];
 
      protected $dates = ['deleted_at'];
 

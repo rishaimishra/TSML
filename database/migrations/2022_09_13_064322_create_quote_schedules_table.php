@@ -17,8 +17,17 @@ class CreateQuoteSchedulesTable extends Migration
             $table->bigIncrements('id');
             $table->integer('quote_id');
             $table->string('quantity');
+            $table->string('pro_size');
             $table->date('to_date');
             $table->date('from_date');
+            $table->bigInteger('kam_price')->nullable();
+            $table->bigInteger('expected_price')->nullable();
+            $table->string('plant');
+            $table->string('location');
+            $table->string('bill_to');
+            $table->string('ship_to');
+            $table->string('remarks');
+            $table->string('delivery');
             $table->softDeletes();
             $table->timestamps();
         });
