@@ -435,4 +435,38 @@ class QuoteController extends Controller
            return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
       }
     }
+
+
+    /*
+      ---------------- quote schedule status update  -------------------
+
+  */
+      public function updateQuoteSche(Request $request)
+      {
+
+          try{ 
+                
+                 $quote_id = $request->input('id');
+                 $status = $request->input('status');
+
+              $updated = Quote::where('id',$id)->update(['quote_status' => $status]);
+              if($updated)
+              {
+                   return response()->json(['status'=>1,
+                    'message' =>'status updated',
+                    'result' => $updated],
+                    config('global.success_status'));
+              }
+              // echo "<pre>";print_r($quotes);exit();
+
+            }catch(\Exception $e){
+
+                 return response()->json(['status'=>0,
+                    'message' =>'error',
+                    'result' => $e->getMessage()],
+                    config('global.failed_status'));
+           }
+          
+      }
+
 }
