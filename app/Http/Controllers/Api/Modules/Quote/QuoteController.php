@@ -141,6 +141,7 @@ class QuoteController extends Controller
           $sche['delivery'] = $value['delivery'];
           $sche['remarks'] = $value['remarks'];
           $sche['valid_till'] = $value['valid_till'];
+          $sche['schedule_no'] = $value['schedule_no'];
           
         	// echo "<pre>";print_r($sche);exit();
 
@@ -468,5 +469,47 @@ class QuoteController extends Controller
            }
           
       }
+
+
+       /*
+      ---------------- re quote id submit  -------------------
+
+  */
+      public function submitRequoteId(Request $request)
+      {
+
+          try{ 
+                
+              $sche_id = $request->input('sche_id');
+                
+              $ckh = DB::table('requotes')->where('schedule_id',$sche_id)->first();
+
+              if(empty($ckh))
+              {
+                  $updated = DB::table('requotes')->insert(['schedule_id' => $sche_id]);
+              }
+              else{
+                 
+                 $updated = ['msg'=>'not inserted'];
+              }
+              if($updated)
+              {
+                   return response()->json(['status'=>1,
+                    'message' =>'status updated',
+                    'result' => $updated],
+                    config('global.success_status'));
+              }
+              // echo "<pre>";print_r($quotes);exit();
+
+            }catch(\Exception $e){
+
+                 return response()->json(['status'=>0,
+                    'message' =>'error',
+                    'result' => $e->getMessage()],
+                    config('global.failed_status'));
+           }
+          
+      }
+
 
 }

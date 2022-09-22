@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddVallidToQuoteSchedulesTable extends Migration
+class CreateRequotesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,11 @@ class AddVallidToQuoteSchedulesTable extends Migration
      */
     public function up()
     {
-        Schema::table('quote_schedules', function (Blueprint $table) {
-            $table->date('valid_till')->nullable()->after('delivery');
-            $table->string('schedule_no')->after('quote_id');
+        Schema::create('requotes', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('schedule_id');
+            $table->integer('status');
+            $table->timestamps();
         });
     }
 
@@ -26,8 +28,6 @@ class AddVallidToQuoteSchedulesTable extends Migration
      */
     public function down()
     {
-        Schema::table('quote_schedules', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('requotes');
     }
 }
