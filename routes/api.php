@@ -68,6 +68,8 @@ Route::group(['namespace'=>'Api\Modules'],function(){
    		 Route::get('quotes_history/{rfq_no}','Quote\QuoteController@quotesHistoryCustomer');
    		 Route::get('quotes_list','Quote\QuoteController@getQuotesList');
    		 Route::get('get_quote_by_id/{id}','Quote\QuoteController@getQuoteById');
+   		 Route::post('update_quotes_sche','Quote\QuoteController@updateQuoteSche');
+   		 Route::post('submit_requote_id','Quote\QuoteController@submitRequoteId');
      });
    	
 });
