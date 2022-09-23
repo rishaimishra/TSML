@@ -112,6 +112,17 @@ Route::group(['prefix' => 'admin','middleware' => ['assign.guard:admins','jwtmid
 		Route::get('active-product/{proId}', 'Product\ProductController@activeProduct')->name('active_product');
 		Route::get('product-list-my', 'Product\ProductController@productListMy')->name('product_list_my');
 
+		// Freights Routes....
+		Route::post('store-freight', 'Freight\FreightController@storeFreights')->name('store_freights');
+		Route::get('get-freights', 'Freight\FreightController@getFreights')->name('get_freights');
+
+		Route::put('edit-freight/{id}', 'Freight\FreightController@editFreights')->name('edit_freights');
+		Route::post('update-freight', 'Freight\FreightController@updateFreights')->name('update_freights');
+		Route::get('active-freight/{id}', 'Freight\FreightController@activeFreights')->name('active_freights');
+		Route::get('inactive-freight/{id}', 'Freight\FreightController@inactiveFreights')->name('inactive_freights');
+		Route::get('delete-freight/{id}', 'Freight\FreightController@deleteFreights')->name('delete_freights');
+
+		Route::get('get-freights-my', 'Freight\FreightController@getFreightsMy')->name('get_freights_my');
 
 		// news Routes -------
 
