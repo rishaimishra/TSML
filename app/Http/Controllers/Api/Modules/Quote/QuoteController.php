@@ -323,7 +323,7 @@ class QuoteController extends Controller
       	  try{ 
 
 
-      	  	    $user_id = Auth::user()->id;
+      	  	    // $user_id = Auth::user()->id;
 
 
                  // $res = $this->getQuoteHistory($user_id,$rfq_no);
@@ -447,10 +447,10 @@ class QuoteController extends Controller
 
           try{ 
                 
-                 $quote_id = $request->input('id');
+                 $id = $request->input('id');
                  $status = $request->input('status');
 
-              $updated = Quote::where('id',$id)->update(['quote_status' => $status]);
+              $updated = QuoteSchedule::where('id',$id)->update(['quote_status' => $status]);
               if($updated)
               {
                    return response()->json(['status'=>1,
