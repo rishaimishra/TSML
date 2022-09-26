@@ -105,8 +105,22 @@ class FreightController extends Controller
 	{
 		\DB::beginTransaction();
 
-      	try{ 
-      	  	$freightsData = Freights::orderBy('id','desc')->where('status','!=',3)->get();
+      	try{
+      		if ($request->pickupfrom && $request->status) {
+      			 
+      			$freightsData = Freights::orderBy('id','desc')->where('status','!=',3)->where('pickup_from','LIKE',"%{$request->pickupfrom}%")->where('status',$request->status)->get();
+      		}
+      		elseif($request->pickupfrom)
+      		{ 
+      	  		$freightsData = Freights::orderBy('id','desc')->where('status','!=',3)->where('pickup_from','LIKE',"%{$request->pickupfrom}%")->get();
+      		}
+
+      		elseif ($request->status) {
+      			$freightsData = Freights::orderBy('id','desc')->where('status','!=',3)->where('status',$request->status)->get();
+      		}
+      		else{
+      			$freightsData = Freights::orderBy('id','desc')->where('status','!=',3)->get();
+      		}
 
 
             \DB::commit();
