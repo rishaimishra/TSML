@@ -61,47 +61,14 @@ class FreightController extends Controller
            	return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $e->getMessage()],config('global.failed_status'));
         }
    	}
-
-   	/**
-     * This is for freights list.
-     *
-     * @param  Http\Controllers\Api\Modules\Freight  $product
-     * @return \Illuminate\Http\Response
-    */
-	public function getFreights(Request $request)
-	{
-		\DB::beginTransaction();
-
-      	try{ 
-      	  	$freightsData = Freights::orderBy('id','desc')->where('status','!=',3)->get();
-
-
-            \DB::commit();
-
-            if(!empty($freightsData))
-            {
-	            return response()->json(['status'=>1,'message' =>config('global.sucess_msg'),
-	            	'result' => $freightsData],config('global.success_status'));
-	        }
-	        else{ 
-	         	 return response()->json(['status'=>1,'message' =>'not found','result' => []],
-	        		config('global.success_status'));
-	        }
-
-
-            }catch(\Exception $e){ 
-            	   \DB::rollback(); 
-                   return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $e->getMessage()],config('global.failed_status'));
-          }
-	}
-
+ 
 	/**
      * This is for freights list.
      *
      * @param  Http\Controllers\Api\Modules\Freight  $product
      * @return \Illuminate\Http\Response
     */
-	public function getFreightsMy(Request $request)
+	public function getFreights(Request $request)
 	{
 		\DB::beginTransaction();
 
