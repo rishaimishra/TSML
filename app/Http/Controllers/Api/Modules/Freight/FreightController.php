@@ -61,8 +61,8 @@ class FreightController extends Controller
            	return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $e->getMessage()],config('global.failed_status'));
         }
    	}
-
-   	/**
+ 
+	/**
      * This is for freights list.
      *
      * @param  Http\Controllers\Api\Modules\Freight  $product
@@ -72,41 +72,22 @@ class FreightController extends Controller
 	{
 		\DB::beginTransaction();
 
-      	try{ 
-      	  	$freightsData = Freights::orderBy('id','desc')->where('status','!=',3)->get();
+      	try{
+      		if ($request->pickupfrom && $request->status) {
+      			 
+      			$freightsData = Freights::orderBy('id','desc')->where('status','!=',3)->where('pickup_from','LIKE',"%{$request->pickupfrom}%")->where('status',$request->status)->get();
+      		}
+      		elseif($request->pickupfrom)
+      		{ 
+      	  		$freightsData = Freights::orderBy('id','desc')->where('status','!=',3)->where('pickup_from','LIKE',"%{$request->pickupfrom}%")->get();
+      		}
 
-
-            \DB::commit();
-
-            if(!empty($freightsData))
-            {
-	            return response()->json(['status'=>1,'message' =>config('global.sucess_msg'),
-	            	'result' => $freightsData],config('global.success_status'));
-	        }
-	        else{ 
-	         	 return response()->json(['status'=>1,'message' =>'not found','result' => []],
-	        		config('global.success_status'));
-	        }
-
-
-            }catch(\Exception $e){ 
-            	   \DB::rollback(); 
-                   return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $e->getMessage()],config('global.failed_status'));
-          }
-	}
-
-	/**
-     * This is for freights list.
-     *
-     * @param  Http\Controllers\Api\Modules\Freight  $product
-     * @return \Illuminate\Http\Response
-    */
-	public function getFreightsMy(Request $request)
-	{
-		\DB::beginTransaction();
-
-      	try{ 
-      	  	$freightsData = Freights::orderBy('id','desc')->where('status','!=',3)->get();
+      		elseif ($request->status) {
+      			$freightsData = Freights::orderBy('id','desc')->where('status','!=',3)->where('status',$request->status)->get();
+      		}
+      		else{
+      			$freightsData = Freights::orderBy('id','desc')->where('status','!=',3)->get();
+      		}
 
 
             \DB::commit();
