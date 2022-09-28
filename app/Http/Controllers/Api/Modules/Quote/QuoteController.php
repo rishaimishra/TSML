@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Quote;
 use App\Models\QuoteSchedule;
 use App\Models\ProductSubCategory;
+use App\Models\Quotedelivery;
+use App\Models\Requote;
 use Auth;
 use DB;
 
@@ -510,6 +512,149 @@ class QuoteController extends Controller
            }
           
       }
+
+
+
+   /*
+      ---------------- re-quote list -------------------
+
+  */
+
+    public function getRequoteById()
+    {
+         \DB::beginTransaction();
+
+       try{ 
+
+           if(Auth::check())
+              {
+                   $user_id =  Auth::user()->id;;
+          
+               }
+           // echo "<pre>";print_r($user_id);exit();
+              $quoteArr = array();
+
+              
+
+              $quote = DB::table('requotes')->leftjoin('quote_schedules','requotes.schedule_id','quote_schedules.schedule_no')
+              ->leftjoin('quotes','quote_schedules.quote_id','quotes.id')
+              ->leftjoin('products','quotes.product_id','products.id')
+              ->select('quote_schedules.*','products.pro_desc','quotes.rfq_no')
+              ->whereNull('quote_schedules.deleted_at')
+              ->get();
+              // echo "<pre>";print_r($quote);exit();
+
+
+              foreach ($quote as $key => $value) {
+                 
+                 $quoteArr[$key]['schedule_no'] = $value->schedule_no;
+                 $quoteArr[$key]['pro_desc'] = $value->pro_desc;
+                 $quoteArr[$key]['pro_size'] = $value->pro_size;
+                 $quoteArr[$key]['rfq_no'] = $value->rfq_no;
+                 $quoteArr[$key]['quantity'] = $value->quantity;
+                 $quoteArr[$key]['kam_price'] = $value->kam_price;
+                 $quoteArr[$key]['expected_price'] = $value->expected_price;
+              }
+             \DB::commit();
+              if(!empty($quoteArr))
+              {
+                return response()->json(['status'=>1,'message' =>'success','result' => $quoteArr],config('global.success_status'));
+              }
+              else{
+
+                 return response()->json(['status'=>1,'message' =>'success','result' => 'Quote not updated'],config('global.success_status'));
+
+              }
+    
+
+
+      }catch(\Exception $e){
+
+           \DB::rollback();
+
+           return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
+      }
+    }
+
+
+    /*
+
+        ----------------------------------  update requote ---------------------------
+
+    */
+
+        public function updateRequote(Request $request)
+        {
+             // echo "<pre>";print_r($request->input('quantity'));exit();
+
+             \DB::beginTransaction();
+
+       try{ 
+
+              $quoteArr = array();
+              
+              $quote_sche = DB::table('quote_schedules')
+                            ->where('schedule_no',$request->input('sche_no'))
+                            ->first();
+
+              $quoteArr['quote_id'] = $quote_sche->quote_id;
+              $quoteArr['schedule_no'] = $request->input('sche_no');
+              $quoteArr['quantity'] = $request->input('quantity');
+              $quoteArr['expected_price'] = $request->input('ex_price');
+              $quoteArr['kam_price'] = $request->input('kam_price');
+              $quoteArr['pro_size'] = $quote_sche->pro_size;
+              $quoteArr['to_date'] = $quote_sche->to_date;
+              $quoteArr['from_date'] = $quote_sche->from_date;
+              $quoteArr['plant'] = $quote_sche->plant;
+              $quoteArr['location'] = $quote_sche->location;
+              $quoteArr['bill_to'] = $quote_sche->bill_to;
+              $quoteArr['ship_to'] = $quote_sche->ship_to;
+              $quoteArr['remarks'] = $quote_sche->remarks;
+              $quoteArr['delivery'] = $quote_sche->delivery;
+              $quoteArr['valid_till'] = $quote_sche->valid_till;
+              $quoteArr['quote_status '] = $quote_sche->quote_status;
+
+              
+              $schedules = $request->input('schedules');
+               // echo "<pre>";print_r($request->input('sche_no'));exit();
+
+              QuoteSchedule::where('schedule_no',$request->input('sche_no'))->delete();
+              $quote_sch = QuoteSchedule::create($quoteArr);
+              Quotedelivery::where('quote_sche_no',$request->input('sche_no'))->delete();
+               foreach ($schedules as $key => $value) {
+                    
+                    
+                    $arr['quote_sche_no'] = $request->input('sche_no');
+                    $arr['qty'] = $value['quantity'];
+                    $arr['to_date'] = $value['to_date'];
+                    $arr['from_date'] = $value['from_date'];
+
+                    
+                    Quotedelivery::create($arr);
+               }
+              // echo "<pre>";print_r($quoteArr);exit();
+
+             \DB::commit();
+              if(!empty($quote_sch))
+              {
+                return response()->json(['status'=>1,'message' =>'success','result' => $quote_sch],config('global.success_status'));
+              }
+              else{
+
+                 return response()->json(['status'=>1,'message' =>'success','result' => []],config('global.success_status'));
+
+              }
+    
+
+
+            }catch(\Exception $e){
+
+                 \DB::rollback();
+
+                 return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
+            }
+
+        }
 
 
 }
