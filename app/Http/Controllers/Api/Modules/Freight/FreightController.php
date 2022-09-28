@@ -98,7 +98,7 @@ class FreightController extends Controller
 	            	'result' => $freightsData],config('global.success_status'));
 	        }
 	        else{ 
-	         	 return response()->json(['status'=>1,'message' =>'not found','result' => []],
+	         	 return response()->json(['status'=>1,'message' =>'No data found','result' => []],
 	        		config('global.success_status'));
 	        }
 
@@ -131,7 +131,7 @@ class FreightController extends Controller
 		            	'result' => $freightsData],config('global.success_status'));
 		        }
 		        else{ 
-		         	 return response()->json(['status'=>1,'message' =>'not found','result' => []],
+		         	 return response()->json(['status'=>1,'message' =>'Data not found','result' => []],
 		        		config('global.success_status'));
 		        }
 

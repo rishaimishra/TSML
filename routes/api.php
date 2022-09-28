@@ -122,7 +122,14 @@ Route::group(['prefix' => 'admin','middleware' => ['assign.guard:admins','jwtmid
 		Route::post('update-freight', 'Freight\FreightController@updateFreights')->name('update_freights');
 		Route::get('active-freight/{id}', 'Freight\FreightController@activeFreights')->name('active_freights');
 		Route::get('inactive-freight/{id}', 'Freight\FreightController@inactiveFreights')->name('inactive_freights');
-		Route::get('delete-freight/{id}', 'Freight\FreightController@deleteFreights')->name('delete_freights'); 
+		Route::get('delete-freight/{id}', 'Freight\FreightController@deleteFreights')->name('delete_freights');
+
+		// Price Management Routes....
+		Route::get('get-product-list', 'PriceManagement\PriceManagementController@getProductList')->name('get_product_list');
+		Route::get('get-category-list/{proId}','PriceManagement\PriceManagementController@getCategoryList')->name('get_category_list'); 
+		Route::get('get-sub-category-list/{cateId}','PriceManagement\PriceManagementController@getSubCategoryList')->name('get_sub_category_list'); 
+		Route::post('store-price','PriceManagement\PriceManagementController@storePrice')->name('store_price');
+		Route::get('get-price','PriceManagement\PriceManagementController@getPrice')->name('get_price'); 
 
 		// news Routes -------
 

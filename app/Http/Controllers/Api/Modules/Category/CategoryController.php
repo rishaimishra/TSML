@@ -27,6 +27,8 @@
 	     */
 	   	public function storeCategory(Request $request)
 	   	{ 
+
+	   		// dd($request->all());
 	         
         	$validation = \Validator::make($request->all(),[ 
         		"product_id" => "required|numeric",
@@ -94,6 +96,8 @@
                 $input['image_4'] = $filename; 
 		    	 
 		    }
+
+		    // dd($input);
 
 	        $categoryData = Category::create($input); 
 
