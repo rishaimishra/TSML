@@ -595,6 +595,7 @@ class QuoteController extends Controller
               
               $quote_sche = DB::table('quote_schedules')
                             ->where('schedule_no',$request->input('sche_no'))
+                            ->whereNull('deleted_at')
                             ->first();
 
               $quoteArr['quote_id'] = $quote_sche->quote_id;
@@ -616,7 +617,7 @@ class QuoteController extends Controller
 
               
               $schedules = $request->input('schedules');
-               // echo "<pre>";print_r($request->input('sche_no'));exit();
+               // echo "<pre>";print_r($quoteArr);exit();
 
               QuoteSchedule::where('schedule_no',$request->input('sche_no'))->delete();
               $quote_sch = QuoteSchedule::create($quoteArr);
