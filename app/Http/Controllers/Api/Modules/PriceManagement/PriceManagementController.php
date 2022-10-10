@@ -202,9 +202,7 @@ class PriceManagementController extends Controller
       			$data = DB::table('price_management')
       					->leftjoin('products','price_management.pro_id','products.id')
       					->leftjoin('categorys','price_management.cat_id','categorys.id')
-      					->leftjoin('sub_categorys','price_management.sub_cat_id','sub_categorys.id')
-      					->where('products.pro_name',$request->product_name)
-      					->where('price_management.status',$request->status)
+      					->leftjoin('sub_categorys','price_management.sub_cat_id','sub_categorys.id') 
       					->select('price_management.id as price_id',
       							'price_management.size as size',
       							'price_management.basic_price as basic_price',
@@ -215,7 +213,9 @@ class PriceManagementController extends Controller
       							'categorys.cat_name as category_name',
       							'sub_categorys.id as sub_category_id',
       							'sub_categorys.sub_cat_name as sub_category_name',
-      							) 
+      							)
+      					->where('products.pro_name',$request->product_name)
+      					->where('price_management.status',$request->status) 
       					->get(); 
       					 
       		}
@@ -224,8 +224,7 @@ class PriceManagementController extends Controller
       			$data = DB::table('price_management')
       					->leftjoin('products','price_management.pro_id','products.id')
       					->leftjoin('categorys','price_management.cat_id','categorys.id')
-      					->leftjoin('sub_categorys','price_management.sub_cat_id','sub_categorys.id')
-      					->where('products.pro_name',$request->product_name) 
+      					->leftjoin('sub_categorys','price_management.sub_cat_id','sub_categorys.id') 
       					->select('price_management.id as price_id',
       							'price_management.size as size',
       							'price_management.basic_price as basic_price',
@@ -236,7 +235,8 @@ class PriceManagementController extends Controller
       							'categorys.cat_name as category_name',
       							'sub_categorys.id as sub_category_id',
       							'sub_categorys.sub_cat_name as sub_category_name',
-      							) 
+      							)
+      					->where('products.pro_name',$request->product_name) 
       					->get(); 
 
       		}
@@ -245,8 +245,7 @@ class PriceManagementController extends Controller
       			$data = DB::table('price_management')
       					->leftjoin('products','price_management.pro_id','products.id')
       					->leftjoin('categorys','price_management.cat_id','categorys.id')
-      					->leftjoin('sub_categorys','price_management.sub_cat_id','sub_categorys.id') 
-      					->where('price_management.status',$request->status)
+      					->leftjoin('sub_categorys','price_management.sub_cat_id','sub_categorys.id')  
       					->select('price_management.id as price_id',
       							'price_management.size as size',
       							'price_management.basic_price as basic_price',
@@ -257,7 +256,8 @@ class PriceManagementController extends Controller
       							'categorys.cat_name as category_name',
       							'sub_categorys.id as sub_category_id',
       							'sub_categorys.sub_cat_name as sub_category_name',
-      							) 
+      							)
+      					->where('price_management.status',$request->status) 
       					->get(); 
 
       		}
@@ -288,10 +288,10 @@ class PriceManagementController extends Controller
 
             if(!empty($data))
             {      
-                $priceList[] = $data;
+                
                  
 	            return response()->json(['status'=>1,'message' =>config('global.sucess_msg'),
-	            	'result' => $priceList],config('global.success_status'));
+	            	'result' => $data],config('global.success_status'));
 	        }
 	        else{ 
 	         	 return response()->json(['status'=>1,'message' =>'No data found','result' => []],
