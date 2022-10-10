@@ -317,7 +317,11 @@ class UserController extends Controller
             $userData['city'] = $request->city; 
             $userData['state'] = $request->state; 
             $userData['pincode'] = $request->pincode; 
-            $userData['address_type'] = $request->address_type;
+            $userData['address_type'] = $request->address_type;            
+            $userData['pan_dt'] = $request->pan_dt; 
+            $userData['gst_dt'] = $request->gst_dt; 
+            $userData['formD_dt'] = $request->formD_dt; 
+            $userData['tcs_dt'] = $request->tcs_dt;
 
             if ($request->hasFile('address_proof_file'))
             {
@@ -401,6 +405,7 @@ class UserController extends Controller
              
 
             // dd($userData);
+            // return $userData;exit();
 
             $user = User::create($userData);
 
