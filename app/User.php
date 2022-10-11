@@ -45,7 +45,11 @@ class User extends Authenticatable implements JWTSubject
         'itr_last_yr',
         'form_d',
         'registration_certificate',
-        'tcs'
+        'tcs',
+        'pan_dt',
+        'gst_dt',
+        'formD_dt',
+        'tcs_dt'
           
     ];
 
