@@ -79,10 +79,18 @@ class QuoteController extends Controller
 
 	        $quote_id = DB::table('quotes')->where('rfq_no',$rfq_number)->where('product_id',$request->input('product_id'))->whereNull('deleted_at')->select('id','user_id')->first();
 	        // echo "<pre>";print_r($quote_id->user_id);exit();
-	        Quote::where('rfq_no',$rfq_number)->where('product_id',$request->input('product_id'))->delete();
-	        QuoteSchedule::where('quote_id',$quote_id->id)->delete();
+          if($quote_id)
+          {
+  	        Quote::where('rfq_no',$rfq_number)->where('product_id',$request->input('product_id'))->delete();
+  	        QuoteSchedule::where('quote_id',$quote_id->id)->delete();
 
-	    	$quotes = $this->configureQuotes($request,$rfq_number,$quote_id->user_id);
+	        	$quotes = $this->configureQuotes($request,$rfq_number,$quote_id->user_id);
+          }
+          else{
+             // echo "hi";
+             $quote_id = DB::table('quotes')->where('rfq_no',$rfq_number)->whereNull('deleted_at')->select('id','user_id')->first();
+             $quotes = $this->configureQuotes($request,$rfq_number,$quote_id->user_id);
+          }
 	        // echo "<pre>";print_r($quotes);exit();
 	        if(!empty($quotes))
 	        {
@@ -119,6 +127,7 @@ class QuoteController extends Controller
        {
         $quoteArr['user_id']    = $user_id;
         $quoteArr['product_id'] = $request->input('product_id');
+        $quoteArr['cat_id'] = $request->input('cat_id');
         $quoteArr['quantity'] = $request->input('quantity');
         $quoteArr['rfq_no'] = $rfq_number;
         $quoteArr['quote_no']  = rand(100,9999);
@@ -363,6 +372,8 @@ class QuoteController extends Controller
                     $quoteArr[$key]['kam_status'] = $value->kam_status;
                     $quoteArr[$key]['name'] = $value->name;
                     $quoteArr[$key]['created_at'] = date('m-d-Y',strtotime($value->created_at));
+                    $quoteArr[$key]['cat_id'] = $value->cat_id;
+                    $quoteArr[$key]['product_id'] = $value->product_id;
                     // $quoteArr[$key]['schedules'] = $value->schedules;
                     // $quoteArr[$key]['product'] = $value->product;
                     // $size = DB::table('sub_categorys')->where('pro_id',$value['product_id'])->select('pro_size')->first();
@@ -422,7 +433,7 @@ class QuoteController extends Controller
               $rfq_number = (!empty($id)) ? $id : '';
 
               $quote = Quote::where('rfq_no',$id)->with('schedules')->with('product')->with('subCategory')->orderBy('updated_at','desc')->first()->toArray();
-              // echo "<pre>";print_r($quote_id->user_id);exit();
+              // echo "<pre>";print_r($quote_id);exit();
              \DB::commit();
               if(!empty($quote))
               {

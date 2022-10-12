@@ -12,7 +12,7 @@ class Quote extends Model
     
      protected $table = "quotes";
 
-     protected $fillable = ['user_id','product_id','rfq_no','quantity','quote_no','kam_status','cus_status','reject_reason','valid_till','created_at','updated_at'];
+     protected $fillable = ['user_id','product_id','cat_id','rfq_no','quantity','quote_no','kam_status','cus_status','reject_reason','valid_till','created_at','updated_at'];
 
      protected $dates = ['deleted_at'];
 
@@ -30,5 +30,10 @@ class Quote extends Model
     public function subCategory()
     {
         return $this->hasOne('App\Models\ProductSubCategory','pro_id','id');
+    }
+
+    public function category()
+    {
+        return $this->belongsTo('App\Models\Category','cat_id','id');
     }
 }
