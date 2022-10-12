@@ -327,6 +327,12 @@ class QuoteController extends Controller
 
       	  	    // $user_id = Auth::user()->id;
 
+             if(Auth::check())
+              {
+                   $user_id =  Auth::user()->id;;
+          
+              }
+
 
                  // $res = $this->getQuoteHistory($user_id,$rfq_no);
               $quoteArr = array();    
@@ -337,9 +343,13 @@ class QuoteController extends Controller
              $quotes = DB::table('quotes')->leftjoin('users','quotes.user_id','users.id')
                          ->select('quotes.*','users.name',DB::raw("(sum(quotes.quantity)) as tot_qt"),)
                          ->groupBy('quotes.rfq_no')
-                         ->whereNull('quotes.deleted_at')
+                         ->whereNull('quotes.deleted_at');
+                         if(!empty($user_id))
+                         {
+                             $quotes = $quotes->where('quotes.user_id',$user_id);
+                         }
                          // ->toSql();
-                         ->get();
+                         $quotes = $quotes->get();
              // echo "<pre>";print_r($quotes);
              // exit();
             
