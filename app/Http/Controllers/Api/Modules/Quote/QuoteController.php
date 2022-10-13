@@ -451,7 +451,7 @@ class QuoteController extends Controller
               
               $rfq_number = (!empty($id)) ? $id : '';
 
-              $quote = Quote::where('rfq_no',$id)->with('schedules')->with('product')->with('subCategory')->orderBy('updated_at','desc')->first()->toArray();
+              $quote = Quote::where('rfq_no',$id)->with('schedules')->with('product')->with('subCategory')->orderBy('updated_at','desc')->get()->toArray();
               // echo "<pre>";print_r($quote_id);exit();
              \DB::commit();
               if(!empty($quote))
@@ -697,6 +697,30 @@ class QuoteController extends Controller
 
         }
 
+
+        /*
+      ---------------- delete  quote -------------------
+
+  */
+    public function deleteQuoteById($id)
+    {   
+      $arr = array();
+        $sche_no = DB::table('quote_schedules')->where('quote_id',$id)->select('schedule_no')->get();
+        foreach ($sche_no as $key => $value) {
+            
+            array_push($arr,$value->schedule_no);
+        }
+
+        DB::table('quote_deliveries')->whereIn('quote_sche_no',$arr)->delete();
+        DB::table('quote_schedules')->where('quote_id',$id)->delete();
+        DB::table('quotes')->where('id',$id)->delete();
+        // return $arr;
+
+        return response()->json(['status'=>1,
+                                  'message' =>'success',
+                                  'result' => 'Quote deleted'],
+                         config('global.success_status'));
+    }
 
 
 
