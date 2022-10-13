@@ -39,9 +39,11 @@ class QuoteController extends Controller
               $array['quote_schedules'] = $value['quote_schedules'];
               $rfq_number = $value['rfq_number'];
               
+              if(!empty($value['quantity']) ){
               $request = new Request($array);
               // echo "<pre>";print_r($request);exit();
               $quotes = $this->configureQuotes($request,$rfq_number,$user_id);
+            }
 
         }
 
@@ -137,7 +139,7 @@ class QuoteController extends Controller
     public function configureQuotes($request,$rfq_number=NULL,$user_id)
     {
     	// $rfq_num = (!empty($rfq_number)) ? $rfq_number : rand(100,9999);
-       if(!empty($request->input('product_id')) && !empty($request->input('quantity')) && !empty($request->input('quote_schedules')))
+       if(!empty($request->input('quantity')) || !empty($request->input('quote_schedules')))
        {
         $quoteArr['user_id']    = $user_id;
         $quoteArr['product_id'] = $request->input('product_id');
@@ -152,6 +154,8 @@ class QuoteController extends Controller
 
         foreach ($schedules as $key => $value) {
         	
+          if(!empty($value['quantity']) &&  !empty($value['expected_price']))
+          {
         	$sche['quote_id'] = $quote['id'];
         	$sche['quantity'] = $value['quantity'];
         	$sche['to_date'] = $value['to_date'];
@@ -171,6 +175,7 @@ class QuoteController extends Controller
         	// echo "<pre>";print_r($sche);exit();
 
             QuoteSchedule::create($sche);
+          }
 
         }
 
@@ -446,7 +451,7 @@ class QuoteController extends Controller
               
               $rfq_number = (!empty($id)) ? $id : '';
 
-              $quote = Quote::where('rfq_no',$id)->with('schedules')->with('product')->with('subCategory')->orderBy('updated_at','desc')->first()->toArray();
+              $quote = Quote::where('rfq_no',$id)->with('schedules')->with('product')->with('subCategory')->orderBy('updated_at','desc')->get()->toArray();
               // echo "<pre>";print_r($quote_id);exit();
              \DB::commit();
               if(!empty($quote))
@@ -692,6 +697,30 @@ class QuoteController extends Controller
 
         }
 
+
+        /*
+      ---------------- delete  quote -------------------
+
+  */
+    public function deleteQuoteById($id)
+    {   
+      $arr = array();
+        $sche_no = DB::table('quote_schedules')->where('quote_id',$id)->select('schedule_no')->get();
+        foreach ($sche_no as $key => $value) {
+            
+            array_push($arr,$value->schedule_no);
+        }
+
+        DB::table('quote_deliveries')->whereIn('quote_sche_no',$arr)->delete();
+        DB::table('quote_schedules')->where('quote_id',$id)->delete();
+        DB::table('quotes')->where('id',$id)->delete();
+        // return $arr;
+
+        return response()->json(['status'=>1,
+                                  'message' =>'success',
+                                  'result' => 'Quote deleted'],
+                         config('global.success_status'));
+    }
 
 
 
