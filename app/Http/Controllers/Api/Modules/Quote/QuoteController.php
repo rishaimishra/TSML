@@ -479,11 +479,11 @@ class QuoteController extends Controller
                   $result[$key]['quantity'] = $value['quantity'];
                   
               }
-              echo "<pre>";print_r($result);exit();
+              // echo "<pre>";print_r($result);exit();
              \DB::commit();
-              if(!empty($quote))
+              if(!empty($result))
               {
-                return response()->json(['status'=>1,'message' =>'success','result' => $quote],config('global.success_status'));
+                return response()->json(['status'=>1,'message' =>'success','result' => $result],config('global.success_status'));
               }
               else{
 
