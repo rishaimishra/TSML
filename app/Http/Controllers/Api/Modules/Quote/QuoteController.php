@@ -21,7 +21,7 @@ class QuoteController extends Controller
 	*/
     public function storeQuotes(Request $request)
     {
-
+       // echo "<pre>";print_r($request->all());exit();
 
        try{ 
 
@@ -29,27 +29,41 @@ class QuoteController extends Controller
 
 	    	$user_id = Auth::user()->id;
 	        
-	      $rfq_number = (!empty($request->input('rfq_number'))) ? $request->input('rfq_number') : '';
+	      // $rfq_number = (!empty($request->input('rfq_number'))) ? $request->input('rfq_number') : '';
+
+        foreach ($request->all() as $key => $value) {
+            
+              $array['product_id'] = $value['product_id'];
+              $array['cat_id'] = $value['cat_id'];
+              $array['quantity'] = $value['quantity'];
+              $array['quote_schedules'] = $value['quote_schedules'];
+              $rfq_number = $value['rfq_number'];
+              
+              $request = new Request($array);
+              // echo "<pre>";print_r($request);exit();
+              $quotes = $this->configureQuotes($request,$rfq_number,$user_id);
+
+        }
 
 
 
-	    	$quotes = $this->configureQuotes($request,$rfq_number,$user_id);
+	    	
 	        // echo "<pre>";print_r($quotes);exit();
-	        if(!empty($quotes))
-	        {
+	        // if(!empty($quotes))
+	        // {
 	        	return response()->json(['status'=>1,
 		        		'message' =>'success',
-		        		'result' => $quotes],
+		        		'result' => 'Quote created'],
 		        		config('global.success_status'));
-	        }
-	        else{
+	        // }
+	        // else{
 
-	           return response()->json(['status'=>1,
-		           	'message' =>'success',
-		           	'result' => 'Quote not created'],
-		           	config('global.success_status'));
+	        //    return response()->json(['status'=>1,
+		       //     	'message' =>'success',
+		       //     	'result' => 'Quote not created'],
+		       //     	config('global.success_status'));
 
-	        }
+	        // }
 
       }catch(\Exception $e){
 
@@ -677,6 +691,8 @@ class QuoteController extends Controller
             }
 
         }
+
+
 
 
 }
