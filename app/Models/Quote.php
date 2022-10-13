@@ -29,7 +29,7 @@ class Quote extends Model
 
     public function subCategory()
     {
-        return $this->hasOne('App\Models\ProductSubCategory','pro_id','id');
+        return $this->hasOne('App\Models\ProductSubCategory','pro_id','product_id');
     }
 
     public function category()

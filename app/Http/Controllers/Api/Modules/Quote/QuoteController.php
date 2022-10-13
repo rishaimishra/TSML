@@ -451,8 +451,35 @@ class QuoteController extends Controller
               
               $rfq_number = (!empty($id)) ? $id : '';
 
-              $quote = Quote::where('rfq_no',$id)->with('schedules')->with('product')->with('subCategory')->orderBy('updated_at','desc')->get()->toArray();
-              // echo "<pre>";print_r($quote_id);exit();
+              $quote = Quote::where('rfq_no',$id)->with('schedules')->with('product')->with('category')->with('subCategory')->orderBy('updated_at','desc')->get()->toArray();
+
+              foreach ($quote as $key => $value) {
+                  
+                  $result[$key]['C'] = $value['sub_category']['C'];
+                  $result[$key]['Cr'] = $value['sub_category']['Cr'];
+                  $result[$key]['Phos'] = $value['sub_category']['Phos'];
+                  $result[$key]['S'] = $value['sub_category']['S'];
+                  $result[$key]['Si'] = $value['sub_category']['Si'];
+                  $result[$key]['cat_dese'] = $value['category']['cat_dese'];
+                  $result[$key]['cat_id'] = $value['category']['id'];
+                  $result[$key]['cat_name'] = $value['category']['cat_name'];
+                  $result[$key]['image_2_url'] = $value['category']['image_2'];
+                  $result[$key]['image_3_url'] = $value['category']['image_3'];
+                  $result[$key]['image_4_url'] = $value['category']['image_4'];
+                  $result[$key]['is_populer'] = $value['category']['is_populer'];
+                  $result[$key]['product_id'] = $value['product']['id'];
+                  $result[$key]['sizes'] = "";
+                  $result[$key]['slug'] = $value['product']['slug'];
+                  $result[$key]['status'] = $value['product']['status'];
+                  $result[$key]['primary_image_url'] = 'https://beas.in/mje-shop/storage/app/public/images/product/'.$value['category']['primary_image'];
+                  $result[$key]['schedule'] = $value['schedules'];
+                  $result[$key]['quote_id'] = $value['id'];
+                  $result[$key]['user_id'] = $value['user_id'];
+                  $result[$key]['rfq_no'] = $value['rfq_no'];
+                  $result[$key]['quantity'] = $value['quantity'];
+                  
+              }
+              echo "<pre>";print_r($result);exit();
              \DB::commit();
               if(!empty($quote))
               {
