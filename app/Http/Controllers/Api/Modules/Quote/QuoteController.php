@@ -81,42 +81,58 @@ class QuoteController extends Controller
 
     public function updateQuotes(Request $request)
     {
-         // echo "<pre>";print_r($request->all());exit();
+         // echo "<pre>";print_r($request->all()[0]['rfq_number']);exit();
        try{ 
-
-           $chk_quote = Quote::where('rfq_no',$request->input('rfq_number'))->count();
+           $rq_no = $request->all()[0]['rfq_number'];
+           $chk_quote = Quote::where('rfq_no',$rq_no)->count();
            // echo "<pre>";print_r($chk_quote);exit();
            if($chk_quote > 0)
            {
-	    	$quoteArr = array();
+	    	  $quoteArr = array();
 
 	        
-	        $rfq_number = (!empty($request->input('rfq_number'))) ? $request->input('rfq_number') : '';
+	        $rfq_number = (!empty($rq_no)) ? $rq_no : '';
 
-	        $quote_id = DB::table('quotes')->where('rfq_no',$rfq_number)->where('product_id',$request->input('product_id'))->whereNull('deleted_at')->select('id','user_id')->first();
+	        
 	        // echo "<pre>";print_r($quote_id->user_id);exit();
-          if($quote_id)
-          {
-  	        Quote::where('rfq_no',$rfq_number)->where('product_id',$request->input('product_id'))->delete();
-  	        QuoteSchedule::where('quote_id',$quote_id->id)->delete();
+          foreach ($request->all() as $key => $value) {
 
-	        	$quotes = $this->configureQuotes($request,$rfq_number,$quote_id->user_id);
-          }
-          else{
-             // echo "hi";
-             $quote_id = DB::table('quotes')->where('rfq_no',$rfq_number)->whereNull('deleted_at')->select('id','user_id')->first();
-             $quotes = $this->configureQuotes($request,$rfq_number,$quote_id->user_id);
-          }
+            $quote_id = DB::table('quotes')->where('rfq_no',$rfq_number)->where('product_id',$request->all()[0]['product_id'])->where('cat_id',$value['cat_id'])->whereNull('deleted_at')->select('id','user_id')->first();
+            // echo "<pre>";print_r($quote_id->id);exit();
+
+              $array['product_id'] = $value['product_id'];
+              $array['cat_id'] = $value['cat_id'];
+              $array['quantity'] = $value['quantity'];
+              $array['quote_schedules'] = $value['quote_schedules'];
+              $rfq_number = $value['rfq_number'];
+              
+             
+              $request = new Request($array);
+
+
+              if($quote_id)
+              {
+      	        Quote::where('rfq_no',$rfq_number)->where('cat_id',$value['cat_id'])->delete();
+      	        QuoteSchedule::where('quote_id',$quote_id->id)->delete();
+
+    	        	$quotes = $this->configureQuotes($request,$rfq_number,$quote_id->user_id);
+              }
+              else{
+                 // echo "hi";
+                 $quote_id = DB::table('quotes')->where('rfq_no',$rfq_number)->whereNull('deleted_at')->select('id','user_id')->first();
+                 $quotes = $this->configureQuotes($request,$rfq_number,$quote_id->user_id);
+              }
+        }
 	        // echo "<pre>";print_r($quotes);exit();
-	        if(!empty($quotes))
-	        {
-	        	return response()->json(['status'=>1,'message' =>'success','result' => $quotes],config('global.success_status'));
-	        }
-	        else{
+	        // if(!empty($quotes))
+	        // {
+	        	return response()->json(['status'=>1,'message' =>'success','result' => 'Quote updated'],config('global.success_status'));
+	        // }
+	        // else{
 
-	           return response()->json(['status'=>1,'message' =>'success','result' => 'Quote not updated'],config('global.success_status'));
+	        //    return response()->json(['status'=>1,'message' =>'success','result' => 'Quote not updated'],config('global.success_status'));
 
-	        }
+	        // }
 	    }
 	    else{
 
@@ -151,7 +167,7 @@ class QuoteController extends Controller
         $schedules = $request->input('quote_schedules');
          // echo "<pre>";print_r($schedules);exit();
         $quote = Quote::create($quoteArr);
-
+        
         foreach ($schedules as $key => $value) {
         	
           if(!empty($value['quantity']) &&  !empty($value['expected_price']))
@@ -179,14 +195,14 @@ class QuoteController extends Controller
 
         }
 
-        if($quote)
-        {
-        	 return $quote;
-        }
-        else{
+        // if($quote)
+        // {
+        // 	 return $quote;
+        // }
+        // else{
 
-        	return [];
-        }
+        // 	return [];
+        // }
       }
       else{
 
