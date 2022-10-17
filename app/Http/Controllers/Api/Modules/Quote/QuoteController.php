@@ -773,13 +773,13 @@ class QuoteController extends Controller
 
   */
 
-    public function getQuoteScheById(Request $request)
+    public function getQuoteScheById($id)
     {
          \DB::beginTransaction();
 
        try{ 
            
-           $id = $request->input('rfq_no');
+           
            $chk_quote = Quote::where('rfq_no',$id)->count();
            // echo "<pre>";print_r($chk_quote);exit();
            if($chk_quote > 0)
