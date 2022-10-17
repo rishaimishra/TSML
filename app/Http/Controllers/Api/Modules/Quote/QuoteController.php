@@ -848,4 +848,29 @@ class QuoteController extends Controller
 
 
 
+    /*
+      ---------------- delete  quote schedules -------------------
+
+  */
+    public function deleteQuoteSche(Request $request)
+    {   
+        $arr = array();
+
+        $id = $request->input('sche_id');
+        $sche_no = DB::table('quote_schedules')->where('id',$id)->select('schedule_no')->first();
+  
+
+        DB::table('quote_deliveries')->where('quote_sche_no',$sche_no->schedule_no)->delete();
+        DB::table('quote_schedules')->where('id',$id)->delete();
+       
+        // return $sche_no->schedule_no;exit();
+
+        return response()->json(['status'=>1,
+                                  'message' =>'success',
+                                  'result' => 'Quote deleted'],
+                         config('global.success_status'));
+    }
+
+
+
 }

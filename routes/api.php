@@ -74,6 +74,7 @@ Route::group(['namespace'=>'Api\Modules'],function(){
    		 Route::post('update_requote','Quote\QuoteController@updateRequote');
    		 Route::get('delete_quote_by_id/{id}','Quote\QuoteController@deleteQuoteById');
    		 Route::get('get_quote_sche_by_id/{id}','Quote\QuoteController@getQuoteScheById');
+   		 Route::post('delete_quote_sche','Quote\QuoteController@deleteQuoteSche');
      });
    	
 });
