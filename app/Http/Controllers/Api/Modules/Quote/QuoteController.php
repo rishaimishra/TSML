@@ -798,6 +798,7 @@ class QuoteController extends Controller
                       
                         $result[$key]['id']             = $value['id'];
                         $result[$key]['quote_id']       = $value['quote_id'];
+                        $result[$key]['sizes']          = $value['pro_size'];
                         $result[$key]['schedule_no']    = $value['schedule_no'];
                         $result[$key]['created_at']     = $value['created_at'];
                         $result[$key]['quantity']       = $value['quantity'];
