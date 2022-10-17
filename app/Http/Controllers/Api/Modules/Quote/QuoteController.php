@@ -767,4 +767,85 @@ class QuoteController extends Controller
 
 
 
+
+   /*
+      ----------------  quote schedule list -------------------
+
+  */
+
+    public function getQuoteScheById(Request $request)
+    {
+         \DB::beginTransaction();
+
+       try{ 
+           
+           $id = $request->input('rfq_no');
+           $chk_quote = Quote::where('rfq_no',$id)->count();
+           // echo "<pre>";print_r($chk_quote);exit();
+           if($chk_quote > 0)
+           {
+              $quoteArr = array();
+
+              
+              $rfq_number = (!empty($id)) ? $id : '';
+
+              $quote = Quote::where('rfq_no',$id)->with('schedules')->with('product')->with('category')->with('subCategory')->orderBy('updated_at','desc')->get()->toArray();
+              // echo "<pre>";print_r($quote[0]['schedules']);exit();
+
+              foreach ($quote as $key => $value) {
+                  
+                  foreach ($value['schedules'] as $key => $value) {
+                      
+                        $result[$key]['id']             = $value['id'];
+                        $result[$key]['quote_id']       = $value['quote_id'];
+                        $result[$key]['schedule_no']    = $value['schedule_no'];
+                        $result[$key]['created_at']     = $value['created_at'];
+                        $result[$key]['quantity']       = $value['quantity'];
+                        $result[$key]['kam_price']      = $value['kam_price'];
+                        $result[$key]['expected_price'] = $value['expected_price'];
+                        $result[$key]['delivery']       = $value['delivery'];
+                        $result[$key]['plant']          = $value['plant'];
+                        $result[$key]['location']       = $value['location'];
+                        $result[$key]['bill_to']        = $value['bill_to'];
+                        $result[$key]['ship_to']        = $value['ship_to'];
+                        $result[$key]['rfq_no']         = $id;
+                        $result[$key]['valid_till']     = $value['valid_till'];
+                        $result[$key]['to_date']        = $value['to_date'];
+                        $result[$key]['from_date']      = $value['from_date'];
+                        $result[$key]['remarks']        = $value['remarks'];
+
+                  }
+                  
+               
+                  
+              }
+              // echo "<pre>";print_r($result);exit();
+             \DB::commit();
+              if(!empty($result))
+              {
+                return response()->json(['status'=>1,'message' =>'success','result' => $result],config('global.success_status'));
+              }
+              else{
+
+                 return response()->json(['status'=>1,'message' =>'success','result' => 'Quote not updated'],config('global.success_status'));
+
+              }
+      }
+      else{
+
+             return response()->json(['status'=>1,'message' =>'Quote do no exists','result' => []],config('global.success_status'));
+
+          }
+
+
+      }catch(\Exception $e){
+
+           \DB::rollback();
+
+           return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
+      }
+    }
+
+
+
 }

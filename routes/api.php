@@ -73,6 +73,7 @@ Route::group(['namespace'=>'Api\Modules'],function(){
    		 Route::get('get_requote_by_id','Quote\QuoteController@getRequoteById');
    		 Route::post('update_requote','Quote\QuoteController@updateRequote');
    		 Route::get('delete_quote_by_id/{id}','Quote\QuoteController@deleteQuoteById');
+   		 Route::post('get_quote_sche_by_id','Quote\QuoteController@getQuoteScheById');
      });
    	
 });
