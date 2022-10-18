@@ -509,21 +509,24 @@ class QuoteController extends Controller
   */
       public function updateQuoteSche(Request $request)
       {
-         echo "<pre>";print_r($request->all());exit();
+         // echo "<pre>";print_r($request->all());exit();
           try{ 
-                
-                 $id = $request->input('id');
-                 $status = $request->input('status');
 
-              $updated = QuoteSchedule::where('id',$id)->update(['quote_status' => $status]);
-              if($updated)
-              {
+              foreach ($request->all() as $key => $value) {
+                
+                 $id = $value['id'];
+                 $status = $value['status'];
+                 // echo "<pre>";print_r($id);exit();
+
+                 $updated = QuoteSchedule::where('id',$id)->update(['quote_status' => $status]);
+              }
+                
+              
                    return response()->json(['status'=>1,
                     'message' =>'status updated',
                     'result' => $updated],
                     config('global.success_status'));
-              }
-              // echo "<pre>";print_r($quotes);exit();
+              
 
             }catch(\Exception $e){
 
@@ -544,26 +547,27 @@ class QuoteController extends Controller
       {
 
           try{ 
-                
-              $sche_id = $request->input('sche_id');
-                
-              $ckh = DB::table('requotes')->where('schedule_id',$sche_id)->first();
 
-              if(empty($ckh))
-              {
-                  $updated = DB::table('requotes')->insert(['schedule_id' => $sche_id]);
+              foreach ($request->all() as $key => $value) {
+
+                  $sche_id = $value;
+                    
+                  $ckh = DB::table('requotes')->where('schedule_id',$sche_id)->first();
+
+                  if(empty($ckh))
+                  {
+                      $updated = DB::table('requotes')->insert(['schedule_id' => $sche_id]);
+                  }
+                  
+                
               }
-              else{
-                 
-                 $updated = ['msg'=>'not inserted'];
-              }
-              if($updated)
-              {
+                
+              
                    return response()->json(['status'=>1,
                     'message' =>'status updated',
-                    'result' => $updated],
+                    'result' => 'Re-quote updated'],
                     config('global.success_status'));
-              }
+              
               // echo "<pre>";print_r($quotes);exit();
 
             }catch(\Exception $e){
@@ -583,7 +587,7 @@ class QuoteController extends Controller
 
   */
 
-    public function getRequoteById()
+    public function getRequoteList()
     {
          \DB::beginTransaction();
 

@@ -70,7 +70,7 @@ Route::group(['namespace'=>'Api\Modules'],function(){
    		 Route::get('get_quote_by_id/{id}','Quote\QuoteController@getQuoteById');
    		 Route::post('update_quotes_sche','Quote\QuoteController@updateQuoteSche');
    		 Route::post('submit_requote_id','Quote\QuoteController@submitRequoteId');
-   		 Route::get('get_requote_by_id','Quote\QuoteController@getRequoteById');
+   		 Route::get('get_requote_list','Quote\QuoteController@getRequoteList');
    		 Route::post('update_requote','Quote\QuoteController@updateRequote');
    		 Route::get('delete_quote_by_id/{id}','Quote\QuoteController@deleteQuoteById');
    		 Route::get('get_quote_sche_by_id/{id}','Quote\QuoteController@getQuoteScheById');
