@@ -81,24 +81,14 @@ class QuoteController extends Controller
 
     public function updateQuotes(Request $request)
     {
-         // echo "<pre>";print_r($request->all()[0]['rfq_number']);exit();
+         // echo "<pre>";print_r($request->all());exit();
        try{ 
-           $rq_no = $request->all()[0]['rfq_number'];
-           $chk_quote = Quote::where('rfq_no',$rq_no)->count();
-           // echo "<pre>";print_r($chk_quote);exit();
-           if($chk_quote > 0)
-           {
-	    	  $quoteArr = array();
 
-	        
-	        $rfq_number = (!empty($rq_no)) ? $rq_no : '';
-
-	        
-	        // echo "<pre>";print_r($quote_id->user_id);exit();
+           
           foreach ($request->all() as $key => $value) {
 
-            $quote_id = DB::table('quotes')->where('rfq_no',$rfq_number)->where('product_id',$request->all()[0]['product_id'])->where('cat_id',$value['cat_id'])->whereNull('deleted_at')->select('id','user_id')->first();
-            // echo "<pre>";print_r($quote_id->id);exit();
+            $quote_id = DB::table('quotes')->where('rfq_no',$value['rfq_number'])->where('product_id',$value['product_id'])->where('cat_id',$value['cat_id'])->whereNull('deleted_at')->select('id','user_id')->first();
+            // echo "<pre>";print_r($quote_id);exit();
 
               $array['product_id'] = $value['product_id'];
               $array['cat_id'] = $value['cat_id'];
@@ -106,7 +96,7 @@ class QuoteController extends Controller
               $array['quote_schedules'] = $value['quote_schedules'];
               $rfq_number = $value['rfq_number'];
               
-             
+              // echo "<pre>";print_r($array);exit();
               $request = new Request($array);
 
 
@@ -118,27 +108,17 @@ class QuoteController extends Controller
     	        	$quotes = $this->configureQuotes($request,$rfq_number,$quote_id->user_id);
               }
               else{
-                 // echo "hi";
+                 // echo "hi";exit();
                  $quote_id = DB::table('quotes')->where('rfq_no',$rfq_number)->whereNull('deleted_at')->select('id','user_id')->first();
+                 // echo "<pre>";print_r($quote_id->user_id);exit();
                  $quotes = $this->configureQuotes($request,$rfq_number,$quote_id->user_id);
               }
         }
 	        // echo "<pre>";print_r($quotes);exit();
-	        // if(!empty($quotes))
-	        // {
+	        
 	        	return response()->json(['status'=>1,'message' =>'success','result' => 'Quote updated'],config('global.success_status'));
-	        // }
-	        // else{
-
-	        //    return response()->json(['status'=>1,'message' =>'success','result' => 'Quote not updated'],config('global.success_status'));
-
-	        // }
-	    }
-	    else{
-
-	           return response()->json(['status'=>1,'message' =>'Quote do no exists','result' => []],config('global.success_status'));
-
-	        }
+	        
+	
 
 
       }catch(\Exception $e){
@@ -529,7 +509,7 @@ class QuoteController extends Controller
   */
       public function updateQuoteSche(Request $request)
       {
-
+         echo "<pre>";print_r($request->all());exit();
           try{ 
                 
                  $id = $request->input('id');
