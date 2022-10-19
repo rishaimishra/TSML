@@ -282,7 +282,7 @@ class QuoteController extends Controller
       {
 
       	   $quoteArr=array();
-
+           
            $res = DB::table('quotes')
               ->leftjoin('users','quotes.user_id','users.id')
               ->leftjoin('products','quotes.product_id','products.id')
@@ -608,8 +608,12 @@ class QuoteController extends Controller
               ->leftjoin('quotes','quote_schedules.quote_id','quotes.id')
               ->leftjoin('products','quotes.product_id','products.id')
               ->select('quote_schedules.*','products.pro_desc','quotes.rfq_no')
-              ->whereNull('quote_schedules.deleted_at')
-              ->get();
+              ->whereNull('quote_schedules.deleted_at');
+              if(!empty($user_id))
+              {
+                 $quote = $quote->where('quotes.user_id',$user_id);
+              }
+              $quote = $quote->get();
               // echo "<pre>";print_r($quote);exit();
 
 
