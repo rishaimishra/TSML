@@ -557,6 +557,7 @@ class QuoteController extends Controller
                   if(empty($ckh))
                   {
                       $updated = DB::table('requotes')->insert(['schedule_id' => $sche_id]);
+                      DB::table('quote_schedules')->where('schedule_no',$sche_id)->update(['quote_status' => 3]);
                   }
                   
                 
@@ -652,24 +653,25 @@ class QuoteController extends Controller
 
         public function updateRequote(Request $request)
         {
-             // echo "<pre>";print_r($request->input('quantity'));exit();
+             // echo "<pre>";print_r($request->all());exit();
 
              \DB::beginTransaction();
 
        try{ 
+            foreach ($request->all() as $key => $value) {
 
               $quoteArr = array();
               
               $quote_sche = DB::table('quote_schedules')
-                            ->where('schedule_no',$request->input('sche_no'))
+                            ->where('schedule_no',$value['sche_no'])
                             ->whereNull('deleted_at')
                             ->first();
 
               $quoteArr['quote_id'] = $quote_sche->quote_id;
-              $quoteArr['schedule_no'] = $request->input('sche_no');
-              $quoteArr['quantity'] = $request->input('quantity');
-              $quoteArr['expected_price'] = $request->input('ex_price');
-              $quoteArr['kam_price'] = $request->input('kam_price');
+              $quoteArr['schedule_no'] = $value['sche_no'];
+              $quoteArr['quantity'] = $value['quantity'];
+              $quoteArr['expected_price'] = $value['ex_price'];
+              $quoteArr['kam_price'] = $value['kam_price'];
               $quoteArr['pro_size'] = $quote_sche->pro_size;
               $quoteArr['to_date'] = $quote_sche->to_date;
               $quoteArr['from_date'] = $quote_sche->from_date;
@@ -683,36 +685,33 @@ class QuoteController extends Controller
               $quoteArr['quote_status '] = $quote_sche->quote_status;
 
               
-              $schedules = $request->input('schedules');
+              $schedules = $value['schedules'];
                // echo "<pre>";print_r($quoteArr);exit();
 
-              QuoteSchedule::where('schedule_no',$request->input('sche_no'))->delete();
+              QuoteSchedule::where('schedule_no',$value['sche_no'])->delete();
               $quote_sch = QuoteSchedule::create($quoteArr);
-              Quotedelivery::where('quote_sche_no',$request->input('sche_no'))->delete();
-               foreach ($schedules as $key => $value) {
+              Quotedelivery::where('quote_sche_no',$value['sche_no'])->delete();
+               foreach ($schedules as $key => $val) {
                     
                     
-                    $arr['quote_sche_no'] = $request->input('sche_no');
-                    $arr['qty'] = $value['quantity'];
-                    $arr['to_date'] = $value['to_date'];
-                    $arr['from_date'] = $value['from_date'];
+                    $arr['quote_sche_no'] = $quoteArr['schedule_no'];
+                    $arr['qty'] = $val['quantity'];
+                    $arr['to_date'] = $val['to_date'];
+                    $arr['from_date'] = $val['from_date'];
 
                     
                     Quotedelivery::create($arr);
                }
               // echo "<pre>";print_r($quoteArr);exit();
+             }
 
              \DB::commit();
-              if(!empty($quote_sch))
-              {
-                return response()->json(['status'=>1,'message' =>'success','result' => $quote_sch],config('global.success_status'));
-              }
-              else{
-
-                 return response()->json(['status'=>1,'message' =>'success','result' => []],config('global.success_status'));
-
-              }
-    
+              
+              return response()->json(['status'=>1,
+                'message' =>'success',
+                'result' => 'Quotes updated'],
+                config('global.success_status'));
+              
 
 
             }catch(\Exception $e){
@@ -773,33 +772,44 @@ class QuoteController extends Controller
               
               $rfq_number = (!empty($id)) ? $id : '';
 
-              $quote = Quote::where('rfq_no',$id)->with('schedules')->with('product')->with('category')->with('subCategory')->orderBy('updated_at','desc')->get()->toArray();
-              // echo "<pre>";print_r($quote[0]['schedules']);exit();
+              // $quote = Quote::where('rfq_no',$id)->with('schedules')->with('product')->with('category')->with('subCategory')->orderBy('updated_at','desc')->get()->toArray();
+              $quoteArr =array();
+              $quote_ids = DB::table('quotes')->where('rfq_no',$rfq_number)->whereNull('deleted_at')
+              ->select('id')->get();
+              foreach ($quote_ids as $key => $value) {
+                 
+                 array_push($quoteArr,$value->id);
+              }
+              
+
+              $quote = DB::table('quote_schedules')->where('quote_status',0)
+              ->whereIn('quote_id',$quoteArr)->orderBy('id','desc')->get();
+              // echo "<pre>";print_r($quote);exit();
 
               foreach ($quote as $key => $value) {
                   
-                  foreach ($value['schedules'] as $key => $value) {
+                  
                       
-                        $result[$key]['id']             = $value['id'];
-                        $result[$key]['quote_id']       = $value['quote_id'];
-                        $result[$key]['sizes']          = $value['pro_size'];
-                        $result[$key]['schedule_no']    = $value['schedule_no'];
-                        $result[$key]['created_at']     = $value['created_at'];
-                        $result[$key]['quantity']       = $value['quantity'];
-                        $result[$key]['kam_price']      = $value['kam_price'];
-                        $result[$key]['expected_price'] = $value['expected_price'];
-                        $result[$key]['delivery']       = $value['delivery'];
-                        $result[$key]['plant']          = $value['plant'];
-                        $result[$key]['location']       = $value['location'];
-                        $result[$key]['bill_to']        = $value['bill_to'];
-                        $result[$key]['ship_to']        = $value['ship_to'];
+                        $result[$key]['id']             = $value->id;
+                        $result[$key]['quote_id']       = $value->quote_id;
+                        $result[$key]['sizes']          = $value->pro_size;
+                        $result[$key]['schedule_no']    = $value->schedule_no;
+                        $result[$key]['created_at']     = $value->created_at;
+                        $result[$key]['quantity']       = $value->quantity;
+                        $result[$key]['kam_price']      = $value->kam_price;
+                        $result[$key]['expected_price'] = $value->expected_price;
+                        $result[$key]['delivery']       = $value->delivery;
+                        $result[$key]['plant']          = $value->plant;
+                        $result[$key]['location']       = $value->location;
+                        $result[$key]['bill_to']        = $value->bill_to;
+                        $result[$key]['ship_to']        = $value->ship_to;
                         $result[$key]['rfq_no']         = $id;
-                        $result[$key]['valid_till']     = $value['valid_till'];
-                        $result[$key]['to_date']        = $value['to_date'];
-                        $result[$key]['from_date']      = $value['from_date'];
-                        $result[$key]['remarks']        = $value['remarks'];
+                        $result[$key]['valid_till']     = $value->valid_till;
+                        $result[$key]['to_date']        = $value->to_date;
+                        $result[$key]['from_date']      = $value->from_date;
+                        $result[$key]['remarks']        = $value->remarks;
 
-                  }
+                 
                   
                
                   
