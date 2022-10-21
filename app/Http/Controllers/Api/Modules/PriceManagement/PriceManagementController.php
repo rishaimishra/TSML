@@ -97,14 +97,14 @@ class PriceManagementController extends Controller
             $getdeliverycost = Freights::where('pickup_from',$request->pickup_from)->where('location',$request->location)->first(); 
 
 
-            $data['BPT_Price'] = $priceData->BPT_Price;
-            $data['Price_Premium'] = $priceData->Price_Premium;
-            $data['Misc_Expense'] = $priceData->Misc_Expense;
-            $data['Delivery_Cost'] = $getdeliverycost->freight_charges;
-            $data['Credit_Cost_For_30_days'] = $priceData->Credit_Cost_For_30_days;
-            $data['Credit_Cost_For_45_days'] = $priceData->Credit_Cost_For_40_days;
-            $data['Interest_Rate'] = $priceData->Interest_Rate;
-            $data['CAM_Discount'] = $priceData->CAM_Discount;
+            $data['bpt_price'] = $priceData->BPT_Price;
+            $data['price_premium'] = $priceData->Price_Premium;
+            $data['misc_expense'] = $priceData->Misc_Expense;
+            $data['delivery_cost'] = $getdeliverycost->freight_charges;
+            $data['credit_cost_for30_days'] = $priceData->Credit_Cost_For_30_days;
+            $data['credit_cost_for45_days'] = $priceData->Credit_Cost_For_40_days;
+            $data['interest_rate'] = $priceData->Interest_Rate;
+            $data['cam_discount'] = $priceData->CAM_Discount;
            
             if (!empty($priceData)) {
                return response()->json(['status'=>1,'message' =>'success.','result' => $data],200);
