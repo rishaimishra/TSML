@@ -607,8 +607,11 @@ class QuoteController extends Controller
               $quote = DB::table('requotes')->leftjoin('quote_schedules','requotes.schedule_id','quote_schedules.schedule_no')
               ->leftjoin('quotes','quote_schedules.quote_id','quotes.id')
               ->leftjoin('products','quotes.product_id','products.id')
-              ->select('quote_schedules.*','products.pro_desc','quotes.rfq_no')
-              ->whereNull('quote_schedules.deleted_at');
+              ->leftjoin('categorys','quotes.cat_id','categorys.id')
+              ->leftjoin('sub_categorys','categorys.id','sub_categorys.cat_id')
+              ->select('quote_schedules.*','products.pro_desc','quotes.rfq_no','categorys.cat_name','sub_categorys.sub_cat_name')
+              ->whereNull('quote_schedules.deleted_at')
+              ->where('quote_schedules.quote_status',3);
               if(!empty($user_id))
               {
                  $quote = $quote->where('quotes.user_id',$user_id);
@@ -626,6 +629,8 @@ class QuoteController extends Controller
                  $quoteArr[$key]['quantity'] = $value->quantity;
                  $quoteArr[$key]['kam_price'] = $value->kam_price;
                  $quoteArr[$key]['expected_price'] = $value->expected_price;
+                 $quoteArr[$key]['cat_name'] = $value->cat_name;
+                 $quoteArr[$key]['sub_cat_name'] = $value->sub_cat_name;
               }
              \DB::commit();
               if(!empty($quoteArr))
