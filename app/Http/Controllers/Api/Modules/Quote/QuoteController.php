@@ -615,7 +615,7 @@ class QuoteController extends Controller
               ->leftjoin('products','quotes.product_id','products.id')
               ->leftjoin('categorys','quotes.cat_id','categorys.id')
               ->leftjoin('sub_categorys','categorys.id','sub_categorys.cat_id')
-              ->select('quote_schedules.*','products.pro_desc','quotes.rfq_no','categorys.cat_name','sub_categorys.sub_cat_name')
+              ->select('quote_schedules.*','products.pro_desc','quotes.rfq_no','categorys.cat_name','sub_categorys.sub_cat_name','categorys.primary_image')
               ->whereNull('quote_schedules.deleted_at')
               ->where('quote_schedules.quote_status',3);
               if(!empty($user_id))
@@ -637,6 +637,7 @@ class QuoteController extends Controller
                  $quoteArr[$key]['expected_price'] = $value->expected_price;
                  $quoteArr[$key]['cat_name'] = $value->cat_name;
                  $quoteArr[$key]['sub_cat_name'] = $value->sub_cat_name;
+                 $quoteArr[$key]['p_image'] = asset('storage/app/public/images/product/'.$value->primary_image);
               }
              \DB::commit();
               if(!empty($quoteArr))
@@ -790,10 +791,11 @@ class QuoteController extends Controller
               // $quote = Quote::where('rfq_no',$id)->with('schedules')->with('product')->with('category')->with('subCategory')->orderBy('updated_at','desc')->get()->toArray();
               $quoteArr =array();
               $quote_ids = DB::table('quotes')->where('rfq_no',$rfq_number)->whereNull('deleted_at')
-              ->select('id')->get();
+              ->select('id','user_id')->get();
               foreach ($quote_ids as $key => $value) {
                  
                  array_push($quoteArr,$value->id);
+                 $userId = $value->user_id;
               }
               
 
@@ -806,6 +808,7 @@ class QuoteController extends Controller
                   
                       
                         $result[$key]['id']             = $value->id;
+                        $result[$key]['userId']         = $userId;
                         $result[$key]['quote_id']       = $value->quote_id;
                         $result[$key]['sizes']          = $value->pro_size;
                         $result[$key]['schedule_no']    = $value->schedule_no;
@@ -823,6 +826,7 @@ class QuoteController extends Controller
                         $result[$key]['to_date']        = $value->to_date;
                         $result[$key]['from_date']      = $value->from_date;
                         $result[$key]['remarks']        = $value->remarks;
+
 
                  
                   
