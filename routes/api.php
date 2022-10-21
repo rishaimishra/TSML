@@ -75,6 +75,8 @@ Route::group(['namespace'=>'Api\Modules'],function(){
    		 Route::get('delete_quote_by_id/{id}','Quote\QuoteController@deleteQuoteById');
    		 Route::get('get_quote_sche_by_id/{id}','Quote\QuoteController@getQuoteScheById');
    		 Route::post('delete_quote_sche','Quote\QuoteController@deleteQuoteSche');
+
+   		 Route::post('get-store-pro-price','PriceManagement\PriceManagementController@getProPrice')->name('get_store_pro_price');
      });
    	
 });
