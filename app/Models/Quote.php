@@ -19,7 +19,7 @@ class Quote extends Model
 
     public function schedules()
     {
-        return $this->hasMany('App\Models\QuoteSchedule','quote_id','id');
+        return $this->hasMany('App\Models\QuoteSchedule','quote_id','id')->where('quote_status','=', 0);
     }
 
     public function product()

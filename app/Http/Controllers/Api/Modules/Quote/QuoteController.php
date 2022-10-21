@@ -30,7 +30,7 @@ class QuoteController extends Controller
 	    	$user_id = Auth::user()->id;
 	        
 	      // $rfq_number = (!empty($request->input('rfq_number'))) ? $request->input('rfq_number') : '';
-
+        $quote_id = "";
         foreach ($request->all() as $key => $value) {
             
               $array['product_id'] = $value['product_id'];
@@ -42,7 +42,7 @@ class QuoteController extends Controller
               if(!empty($value['quantity']) ){
               $request = new Request($array);
               // echo "<pre>";print_r($request);exit();
-              $quotes = $this->configureQuotes($request,$rfq_number,$user_id);
+              $quotes = $this->configureQuotes($request,$rfq_number,$user_id,$quote_id);
             }
 
         }
@@ -103,15 +103,16 @@ class QuoteController extends Controller
               if($quote_id)
               {
       	        Quote::where('rfq_no',$rfq_number)->where('cat_id',$value['cat_id'])->delete();
-      	        QuoteSchedule::where('quote_id',$quote_id->id)->delete();
+      	        
 
-    	        	$quotes = $this->configureQuotes($request,$rfq_number,$quote_id->user_id);
+    	        	$quotes = $this->configureQuotes($request,$rfq_number,$quote_id->user_id,$quote_id->id);
               }
               else{
                  // echo "hi";exit();
                  $quote_id = DB::table('quotes')->where('rfq_no',$rfq_number)->whereNull('deleted_at')->select('id','user_id')->first();
+                 $quoteId = "";
                  // echo "<pre>";print_r($quote_id->user_id);exit();
-                 $quotes = $this->configureQuotes($request,$rfq_number,$quote_id->user_id);
+                 $quotes = $this->configureQuotes($request,$rfq_number,$quote_id->user_id,$quoteId);
               }
         }
 	        // echo "<pre>";print_r($quotes);exit();
@@ -132,10 +133,10 @@ class QuoteController extends Controller
       ---------------- quote configure -------------------
 
 	*/
-    public function configureQuotes($request,$rfq_number=NULL,$user_id)
+    public function configureQuotes($request,$rfq_number=NULL,$user_id,$preQouteId=NULL)
     {
     	// $rfq_num = (!empty($rfq_number)) ? $rfq_number : rand(100,9999);
-       if(!empty($request->input('quantity')) || !empty($request->input('quote_schedules')))
+       if(!empty($request->input('quantity')))
        {
         $quoteArr['user_id']    = $user_id;
         $quoteArr['product_id'] = $request->input('product_id');
@@ -150,8 +151,13 @@ class QuoteController extends Controller
         
         foreach ($schedules as $key => $value) {
         	
-          if(!empty($value['quantity']) &&  !empty($value['expected_price']))
+          if(!empty($value['quantity']) &&  !empty($value['expected_price']) &&  !empty($value['remarks']))
           {
+           if(!empty($preQouteId))
+           {
+
+            QuoteSchedule::where('quote_id',$preQouteId)->delete();
+           }
         	$sche['quote_id'] = $quote['id'];
         	$sche['quantity'] = $value['quantity'];
         	$sche['to_date'] = $value['to_date'];
