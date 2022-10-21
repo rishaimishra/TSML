@@ -100,7 +100,7 @@ class PriceManagementController extends Controller
             $data['BPT_Price'] = $priceData->BPT_Price;
             $data['Price_Premium'] = $priceData->Price_Premium;
             $data['Misc_Expense'] = $priceData->Misc_Expense;
-            $data['Delivery Cost'] = $getdeliverycost->freight_charges;
+            $data['Delivery_Cost'] = $getdeliverycost->freight_charges;
             $data['Credit_Cost_For_30_days'] = $priceData->Credit_Cost_For_30_days;
             $data['Credit_Cost_For_45_days'] = $priceData->Credit_Cost_For_40_days;
             $data['Interest_Rate'] = $priceData->Interest_Rate;
