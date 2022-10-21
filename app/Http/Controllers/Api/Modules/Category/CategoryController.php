@@ -125,10 +125,11 @@
 		            
 		            $catdata['category_id'] = $value->id;
 	              	$catdata['category_name'] = $value->cat_name; 
+	              	$catdata['category_desc'] = $value->cat_dese;
 	              	$catdata['product_id'] = $value->product_id;
 		            $catdata['product_title'] = $value->getProductDetails->pro_name;
 		            $catdata['product_slug'] = $value->getProductDetails->slug;
-		            
+		            $catdata['status'] = $value->getProductDetails->status;
 
 		            if ($value->primary_image) 
 			   		{

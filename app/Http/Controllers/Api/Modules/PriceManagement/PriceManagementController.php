@@ -11,6 +11,8 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\ProductSubCategory;
 use App\Models\PriceManagement;
+use App\Models\PriceCalculation;
+use App\Models\Freights;
 use JWTAuth;
 use Validator;
 use File; 
@@ -21,6 +23,105 @@ use DB;
 
 class PriceManagementController extends Controller
 {
+    /**
+     * This is for add product price. 
+     * @param  \App\Product  $product
+     * @return \Illuminate\Http\Response
+    */
+    public function manageProPrice(Request $request)
+    {
+    
+
+      \DB::beginTransaction();
+
+      try{
+
+        $validator = Validator::make($request->all(), [
+          'user_id'        => 'required', 
+          'BPT_Price'     => 'required',
+          'Price_Premium'        => 'required', 
+          'Misc_Expense'     => 'required',
+          'Credit_Cost_For_30_days'        => 'required', 
+          'Credit_Cost_For_40_days'     => 'required',
+          'Interest_Rate'        => 'required', 
+          'CAM_Discount'     => 'required',  
+        ]);
+
+        if ($validator->fails()) { 
+            return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $validator->errors()],config('global.failed_status'));
+        }
+
+        $input['user_id'] = $request->user_id;
+        $input['BPT_Price'] = $request->BPT_Price;
+        $input['Price_Premium'] = $request->Price_Premium;
+        $input['Misc_Expense'] = $request->Misc_Expense;
+        $input['Credit_Cost_For_30_days'] = $request->Credit_Cost_For_30_days;
+        $input['Credit_Cost_For_40_days'] = $request->Credit_Cost_For_40_days;
+        $input['Interest_Rate'] = $request->Interest_Rate;
+        $input['CAM_Discount'] = $request->CAM_Discount;
+
+          // dd($input);
+
+        $freightsData = PriceCalculation::create($input);
+
+        \DB::commit();
+
+        if($freightsData)
+        {
+          return response()->json(['status'=>1,'message' =>'Price added successfully','result' => $freightsData],config('global.success_status'));
+        }
+        else
+        { 
+          return response()->json(['status'=>1,'message' =>'Somthing went wrong','result' => []],config('global.success_status'));
+        } 
+         
+
+      }catch(\Exception $e){ 
+        \DB::rollback(); 
+        return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $e->getMessage()],config('global.failed_status'));
+      }
+    }
+
+    /**
+     * This is for get product price. 
+     * @param  \App\Product  $product
+     * @return \Illuminate\Http\Response
+    */
+    public function getProPrice(Request $request)
+    {
+        
+
+        try{ 
+            $priceData = PriceCalculation::where('user_id',$request->user_id)->first();
+
+            $getdeliverycost = Freights::where('pickup_from',$request->pickup_from)->where('location',$request->location)->first(); 
+
+
+            $data['BPT_Price'] = $priceData->BPT_Price;
+            $data['Price_Premium'] = $priceData->Price_Premium;
+            $data['Misc_Expense'] = $priceData->Misc_Expense;
+            $data['Delivery Cost'] = $getdeliverycost->freight_charges;
+            $data['Credit_Cost_For_30_days'] = $priceData->Credit_Cost_For_30_days;
+            $data['Credit_Cost_For_45_days'] = $priceData->Credit_Cost_For_40_days;
+            $data['Interest_Rate'] = $priceData->Interest_Rate;
+            $data['CAM_Discount'] = $priceData->CAM_Discount;
+           
+            if (!empty($priceData)) {
+               return response()->json(['status'=>1,'message' =>'success.','result' => $data],200);
+            }
+            else{
+
+               return response()->json(['status'=>1,'message' =>'No data found','result' => []],config('global.success_status'));
+
+            }
+            
+            
+            }catch(\Exception $e){
+                $response['error'] = $e->getMessage();
+                return response()->json([$response]);
+            }
+    }
+
     /**
      * This is for show product list. 
      * @param  \App\Product  $product
@@ -35,7 +136,7 @@ class PriceManagementController extends Controller
             $prolist = [];
             foreach ($data as $key => $value) 
             {   
-              	$prodata['product_id'] = $value->id;
+              $prodata['product_id'] = $value->id;
 	            $prodata['product_title'] = $value->pro_name;
 	            $prodata['product_desc'] = $value->pro_desc;
 	            $prodata['product_status'] = $value->status; 
