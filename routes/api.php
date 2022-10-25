@@ -109,7 +109,8 @@ Route::group(['prefix' => 'admin','middleware' => ['assign.guard:admins','jwtmid
 		Route::post('update-sub-category/{subCatId}', 'SubCategory\SubCategoryController@updateSubCategory')->name('update_sub_category');
 
 		Route::get('inactive-sub-category/{subCatId}', 'SubCategory\SubCategoryController@inactiveSubCategory')->name('inactive_sub_category');
-		Route::get('active-sub-category/{subCatId}', 'SubCategory\SubCategoryController@activeSubCategory')->name('active_sub_category');	
+		Route::get('active-sub-category/{subCatId}', 'SubCategory\SubCategoryController@activeSubCategory')->name('active_sub_category');
+		Route::get('delete-sub-category/{subCatId}', 'SubCategory\SubCategoryController@deleteSubCategory')->name('delete_sub_category');	
 		Route::get('sub-category-list-my', 'SubCategory\SubCategoryController@subCategoryListMy')->name('sub_category_list_my');
 
 		// Product Routes ....
@@ -138,7 +139,7 @@ Route::group(['prefix' => 'admin','middleware' => ['assign.guard:admins','jwtmid
 		Route::post('store-price','PriceManagement\PriceManagementController@storePrice')->name('store_price');
 		Route::post('store-pro-price','PriceManagement\PriceManagementController@manageProPrice')->name('store_pro_price');
 		Route::post('get-store-pro-price','PriceManagement\PriceManagementController@getProPrice')->name('get_store_pro_price');
-		Route::get('get-price','PriceManagement\PriceManagementController@getPrice')->name('get_price'); 
+		Route::get('get-price','PriceManagement\PriceManagementController@getPrice')->name('get_price');  //P  
 
 		// news Routes -------
 

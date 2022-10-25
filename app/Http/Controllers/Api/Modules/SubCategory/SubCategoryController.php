@@ -190,7 +190,7 @@
         {
             
             try{         
-             $data = ProductSubCategory::where('status','!=',2)->with('getCategoryDetails')->orderBy('id','desc')->get();
+             $data = ProductSubCategory::where('status','!=',3)->with('getCategoryDetails')->orderBy('id','desc')->get();
 
              $subcatdata = [];
              foreach ($data as $key => $value) 
@@ -295,6 +295,33 @@
      
             	return response()->json(['status'=>1,'message' =>'Sub category status active successfully.']);
             	 
+            }
+            else
+            {
+                return response()->json(['status'=>0,'message'=>'No data found'],200);
+            }
+            
+        }
+
+         /**
+         * This is for delete sub category.
+         *
+         * @param  \App\Product  $product
+         * @return \Illuminate\Http\Response
+         */
+        public function deleteSubCategory($id)
+        {  
+            $subCategory = ProductSubCategory::where('id',$id)->first();  
+
+            if(!empty($subCategory))
+            { 
+                $input['status'] = 3; //2=> Inactive/1=>Active/3=>Delete. 
+
+                $updateuser = ProductSubCategory::where('id',$subCategory->id)->update($input);
+
+     
+                return response()->json(['status'=>1,'message' =>'Sub category deleted successfully.']);
+                 
             }
             else
             {
