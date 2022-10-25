@@ -328,6 +328,7 @@ class QuoteController extends Controller
                 $quoteArr[$key]['valid_till'] = $value->valid_till;
                 $quoteArr[$key]['cat_name'] = $value->cat_name;
                 $quoteArr[$key]['sub_cat_name'] = $value->sub_cat_name;
+                $quoteArr[$key]['remarks'] = $value->remarks;
            	    
            	  
 
