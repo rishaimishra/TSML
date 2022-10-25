@@ -245,7 +245,7 @@ class QuoteController extends Controller
                  if(Auth::check())
                   {
 
-                      $user_id = Auth::user()->id;
+      	  	          $user_id = Auth::user()->id;
                   }
 
 
@@ -315,22 +315,22 @@ class QuoteController extends Controller
            // echo "<pre>";print_r($res);exit();
 
            foreach ($res as $key => $value) {
-               
-                $quoteArr[$key]['name'] = $value->name;
-                $quoteArr[$key]['pro_name'] = $value->pro_name;
-                $quoteArr[$key]['pro_desc'] = $value->pro_desc;
+           	   
+           	    $quoteArr[$key]['name'] = $value->name;
+           	    $quoteArr[$key]['pro_name'] = $value->pro_name;
+           	    $quoteArr[$key]['pro_desc'] = $value->pro_desc;
                 $quoteArr[$key]['size'] = $value->pro_size;
-                $quoteArr[$key]['rfq_no'] = $value->rfq_no;
-                $quoteArr[$key]['quantity'] = $value->quantity;
-                $quoteArr[$key]['kam_price'] = $value->kam_price;
-                $quoteArr[$key]['expected_price'] = $value->expected_price;
-                $quoteArr[$key]['rfq_date'] = date("d-m-Y", strtotime($value->created_at));  ;
+           	    $quoteArr[$key]['rfq_no'] = $value->rfq_no;
+           	    $quoteArr[$key]['quantity'] = $value->quantity;
+           	    $quoteArr[$key]['kam_price'] = $value->kam_price;
+           	    $quoteArr[$key]['expected_price'] = $value->expected_price;
+           	    $quoteArr[$key]['rfq_date'] = date("d-m-Y", strtotime($value->created_at));  ;
                 $quoteArr[$key]['valid_till'] = $value->valid_till;
                 $quoteArr[$key]['cat_name'] = $value->cat_name;
                 $quoteArr[$key]['sub_cat_name'] = $value->sub_cat_name;
                 $quoteArr[$key]['remarks'] = $value->remarks;
-                
-              
+           	    
+           	  
 
            }
 
