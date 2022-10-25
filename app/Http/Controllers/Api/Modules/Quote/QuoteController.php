@@ -242,8 +242,11 @@ class QuoteController extends Controller
 
       	  try{ 
 
+                 if(Auth::check())
+                  {
 
-      	  	    $user_id = Auth::user()->id;
+      	  	          $user_id = Auth::user()->id;
+                  }
 
 
                  $res = $this->getQuoteHistory($user_id,$rfq_no);
@@ -290,12 +293,15 @@ class QuoteController extends Controller
       	   $quoteArr=array();
            
            $res = DB::table('quotes')
+              ->leftjoin('quote_schedules','quotes.id','quote_schedules.quote_id')
               ->leftjoin('users','quotes.user_id','users.id')
               ->leftjoin('products','quotes.product_id','products.id')
-              ->select('quotes.*','users.name','products.pro_name','products.pro_desc')
+              ->leftjoin('categorys','quotes.cat_id','categorys.id')
+              ->leftjoin('sub_categorys','categorys.id','sub_categorys.cat_id')
+              ->select('quotes.rfq_no','users.name','products.pro_name','products.pro_desc','quote_schedules.*','categorys.cat_name','sub_categorys.sub_cat_name')
               ->whereNotNull('quotes.deleted_at');
               
-
+            
            if(!empty($user_id))
            {
            	   $res = $res->where('quotes.user_id',$user_id);
@@ -306,19 +312,23 @@ class QuoteController extends Controller
            }
 
            $res = $res->get();
+           // echo "<pre>";print_r($res);exit();
 
            foreach ($res as $key => $value) {
            	   
            	    $quoteArr[$key]['name'] = $value->name;
            	    $quoteArr[$key]['pro_name'] = $value->pro_name;
            	    $quoteArr[$key]['pro_desc'] = $value->pro_desc;
+                $quoteArr[$key]['size'] = $value->pro_size;
            	    $quoteArr[$key]['rfq_no'] = $value->rfq_no;
            	    $quoteArr[$key]['quantity'] = $value->quantity;
            	    $quoteArr[$key]['kam_price'] = $value->kam_price;
            	    $quoteArr[$key]['expected_price'] = $value->expected_price;
-           	    $quoteArr[$key]['plant'] = $value->plant;
-           	    $quoteArr[$key]['location'] = $value->location;
-           	    $quoteArr[$key]['schedules'] = $this->quoteSchedule($value->id);
+           	    $quoteArr[$key]['rfq_date'] = date("d-m-Y", strtotime($value->created_at));  ;
+                $quoteArr[$key]['valid_till'] = $value->valid_till;
+                $quoteArr[$key]['cat_name'] = $value->cat_name;
+                $quoteArr[$key]['sub_cat_name'] = $value->sub_cat_name;
+           	    
            	  
 
            }
