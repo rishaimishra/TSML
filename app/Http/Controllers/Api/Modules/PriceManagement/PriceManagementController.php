@@ -90,16 +90,19 @@ class PriceManagementController extends Controller
     {
       try{ 
             $ThresholdPriceData = ThresholdLimits::get();  
+
+             
+            foreach ($ThresholdPriceData as $ThresholdData) {
+              # code...
             
-            $data['price_premium'] = $ThresholdPriceData->Price_Premium;
-            $data['misc_expense'] = $ThresholdPriceData->Misc_Expense;
-            $data['delivery_cost'] = $ThresholdPriceData->Delivery_Cost;
-            $data['credit_cost_for30_days'] = $ThresholdPriceData->Credit_Cost_For_30_days;
-            $data['credit_cost_for45_days'] = $ThresholdPriceData->Credit_Cost_For_40_days;
-            
-            $data['cam_discount'] = $ThresholdPriceData->CAM_Discount;
-           
-            if (!empty($ThresholdPriceData)) {
+            $data['price_premium'] = $ThresholdData->Price_Premium;
+            $data['misc_expense'] = $ThresholdData->Misc_Expense;
+            $data['delivery_cost'] = $ThresholdData->Delivery_Cost;
+            $data['credit_cost_for30_days'] = $ThresholdData->Credit_Cost_For_30_days;
+            $data['credit_cost_for45_days'] = $ThresholdData->Credit_Cost_For_40_days; 
+            $data['cam_discount'] = $ThresholdData->CAM_Discount;
+            }
+            if (count($ThresholdPriceData)>0) {
                return response()->json(['status'=>1,'message' =>'success.','result' => $data],200);
             }
             else{
