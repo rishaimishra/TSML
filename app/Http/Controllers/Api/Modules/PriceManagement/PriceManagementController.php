@@ -12,6 +12,7 @@ use App\Models\Category;
 use App\Models\ProductSubCategory;
 use App\Models\PriceManagement;
 use App\Models\PriceCalculation;
+use App\Models\ThresholdLimits;
 use App\Models\Freights;
 use JWTAuth;
 use Validator;
@@ -23,6 +24,98 @@ use DB;
 
 class PriceManagementController extends Controller
 {
+   /**
+     * This is for add Threshold price. 
+     * @param  \App\Product  $product
+     * @return \Illuminate\Http\Response
+    */
+    public function storeThreshold(Request $request)
+    {
+
+        \DB::beginTransaction();
+
+        try{
+
+          $validator = Validator::make($request->all(), [              
+            'Price_Premium'        => 'required', 
+            'Misc_Expense'     => 'required',
+            'Delivery_Cost'        => 'required',
+            'Credit_Cost_For_30_days'        => 'required', 
+            'Credit_Cost_For_40_days'     => 'required', 
+            'CAM_Discount'     => 'required',  
+          ]);
+
+          if ($validator->fails()) { 
+              return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $validator->errors()],config('global.failed_status'));
+          }
+
+         
+          $input['Price_Premium'] = $request->Price_Premium;
+          $input['Misc_Expense'] = $request->Misc_Expense;
+          $input['Delivery_Cost'] = $request->Delivery_Cost;
+          $input['Credit_Cost_For_30_days'] = $request->Credit_Cost_For_30_days;
+          $input['Credit_Cost_For_40_days'] = $request->Credit_Cost_For_40_days; 
+          $input['CAM_Discount'] = $request->CAM_Discount;
+
+            // dd($input);
+
+          $freightsData = ThresholdLimits::create($input);
+
+          \DB::commit();
+
+          if($freightsData)
+          {
+            return response()->json(['status'=>1,'message' =>'Threshold price added successfully','result' => $freightsData],config('global.success_status'));
+          }
+          else
+          { 
+            return response()->json(['status'=>1,'message' =>'Somthing went wrong','result' => []],config('global.success_status'));
+          } 
+           
+
+        }catch(\Exception $e){ 
+          \DB::rollback(); 
+          return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $e->getMessage()],config('global.failed_status'));
+        }
+       
+
+    }
+
+    /**
+     * This is for get Threshold price. 
+     * @param  \App\Product  $product
+     * @return \Illuminate\Http\Response
+    */
+    public function getThresholdPrice(Request $request)
+    {
+      try{ 
+            $ThresholdPriceData = ThresholdLimits::get();  
+            
+            $data['price_premium'] = $ThresholdPriceData->Price_Premium;
+            $data['misc_expense'] = $ThresholdPriceData->Misc_Expense;
+            $data['delivery_cost'] = $ThresholdPriceData->Delivery_Cost;
+            $data['credit_cost_for30_days'] = $ThresholdPriceData->Credit_Cost_For_30_days;
+            $data['credit_cost_for45_days'] = $ThresholdPriceData->Credit_Cost_For_40_days;
+            
+            $data['cam_discount'] = $ThresholdPriceData->CAM_Discount;
+           
+            if (!empty($ThresholdPriceData)) {
+               return response()->json(['status'=>1,'message' =>'success.','result' => $data],200);
+            }
+            else{
+
+               return response()->json(['status'=>1,'message' =>'No data found','result' => []],config('global.success_status'));
+
+            }
+            
+            
+            }catch(\Exception $e){
+                $response['error'] = $e->getMessage();
+                return response()->json([$response]);
+            }
+
+    }
+
     /**
      * This is for add product price. 
      * @param  \App\Product  $product
