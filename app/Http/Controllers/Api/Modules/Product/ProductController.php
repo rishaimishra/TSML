@@ -462,36 +462,49 @@ class ProductController extends Controller
 
         $response = [];
         $data = [];
-        $data['data'] = ProductSubCategory::with('getProductDetails','getCategoryDetails')->where('status',1)->orderBy('id','desc');
+
+
+        $data['data'] = Category::with('getProductDetails')->where('status',1)->orderBy('id','desc');
 
 
         if(@$request->product_id)
         {
             $product_id = $request->product_id;
-            $data['data'] = $data['data']->where('pro_id', $product_id);
+            $data['data'] = $data['data']->where('product_id', $product_id);
+            $response['getCategory'] = Category::where('status','!=',2)->select('id','cat_name')->where('product_id',request('product_id'))->orderBy('id','desc')->get();
         }
 
 
         if(@$request->cat_id){
             $catId = $request->cat_id;
-            $data['data'] = $data['data']->where('cat_id', $catId);
+            $data['data'] = $data['data']->where('id', $catId);
             $response['subCategories'] = ProductSubCategory::where('cat_id',$request->cat_id)->get();
          }
 
 
         if (@$request->subcat_id) {
-            $data['data'] = $data['data']->where('id',request('subcat_id'));
+
+            $data['data'] = $data['data']->whereHas('subCategory',function($query){
+                $query->where('id',request('subcat_id'));
+            });
         }
 
         if (@$request->prosize) 
         {
             // $val = [100,250];
+            // $pluck = $data['data']->pluck('id');
             if (@$request->subcat_id) {
                 $filtered_data =ProductSubCategory::where('cat_id',request('cat_id'))->where('id',request('subcat_id'))->get();
             }else{
                 $category = $data['data']->pluck('id');
                 $filtered_data =ProductSubCategory::whereIn('cat_id',$category)->get();
             }
+
+            // return $filtered_data;
+
+
+
+            
             
             $max_value = max(@$request->prosize);
             // $min_value = min(@$val);
@@ -510,7 +523,7 @@ class ProductController extends Controller
                 }
             
 
-           $now_category = ProductSubCategory::with('getProductDetails')->where('status',1)->orderBy('id','desc')->whereIn('id',$array);
+           $now_category = Category::with('getProductDetails')->where('status',1)->orderBy('id','desc')->whereIn('id',$array);
            $data['data'] = $now_category;
 
         }
@@ -527,6 +540,9 @@ class ProductController extends Controller
 
         $response['success'] = true;
         $response['data'] = $data['data'];
+        $response['getProductList'] = Product::where('status',1)->select('id','pro_name')->get();
+        
+        $response['image_url'] = 'https://beas.in/mje-shop/storage/app/public/images/product/';
         return $response;
 
         // return response()->json(['status'=>1,'message' =>'Success.','result' => $data,'subCategories'=>$subCategories],200);
