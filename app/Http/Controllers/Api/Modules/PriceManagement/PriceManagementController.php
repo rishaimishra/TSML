@@ -411,9 +411,10 @@ class PriceManagementController extends Controller
       							'sub_categorys.id as sub_category_id',
       							'sub_categorys.sub_cat_name as sub_category_name',
       							)
-      					->where('products.pro_name',$request->product_name)
+      					->where('products.pro_name','LIKE',"%{$request->product_name}%") 
       					->where('price_management.status',$request->status) 
       					->get(); 
+
       					 
       		}
       		else if($request->product_name)
@@ -433,7 +434,7 @@ class PriceManagementController extends Controller
       							'sub_categorys.id as sub_category_id',
       							'sub_categorys.sub_cat_name as sub_category_name',
       							)
-      					->where('products.pro_name',$request->product_name) 
+      					->where('products.pro_name','LIKE',"%{$request->product_name}%") 
       					->get(); 
 
       		}

@@ -80,6 +80,7 @@ class AuthController extends Controller
         
         $userArr['user_id'] = Auth::user()->id;
         $userArr['user_name'] = Auth::user()->name;
+        $userArr['user_type'] = Auth::user()->user_type;
         return response()->json([
             'success' => true,
             'data' => $userArr,
