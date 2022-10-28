@@ -113,7 +113,7 @@
          </div>
 
          <div style="/*width:620px;*/background-color: #ffffff; /*padding: 0px 10px;*/ border:1px solid #dcd7d7;color: #000;">
-            <div id="sub-footer"">
+            <div id="sub-footer">
                 <div class="row footer_row">
                     <div class="column1" style=" font-family:Arial; font-size:14px; font-weight:500; color:#363839;margin: 0px 0px 10px 0px; text-align: center">CompanyName © <?php echo date("Y"); ?>. All Rights Reserved.</div>
                     <!-- <div class="column">info@OPConnect.com</div>

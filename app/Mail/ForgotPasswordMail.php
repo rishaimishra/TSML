@@ -30,10 +30,10 @@ class ForgotPasswordMail extends Mailable
     public function build()
     {
         $data['data'] =  $this->request;
-        // dd($data);
-
+        // dd(env('MAIL_FROM_ADDRESS'));
+        // dd($data['data']['email']);
         return $this->view('mail.forgot_password', $data)
-                    ->to($this->request['email']) 
+                    ->to(@$data['data']['email']) 
                     ->subject(env('APP_NAME').'Forgot Password')
                     ->from(env('MAIL_FROM_ADDRESS'));
     }
