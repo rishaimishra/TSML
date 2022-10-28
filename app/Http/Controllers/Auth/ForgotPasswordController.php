@@ -45,7 +45,8 @@ class ForgotPasswordController extends Controller
      */
 
     public function sendResetLinkEmail(Request $request)
-    {  
+    { 
+
         $validator = Validator::make($request->all(), [
                 'email' => ['required', 'string', 'email', 'max:255','regex:/^\w+[-\.\w]*@(?!(?:myemail)\.com$)\w+[-\.\w]*?\.\w{2,4}$/'],   
             ]);
@@ -57,7 +58,7 @@ class ForgotPasswordController extends Controller
 
         $data['email'] = $request->email;
         $user = User::where('email',$request->email)->first();
-        // dd($user);
+         
         if(!@$user){
             $response['error']['message'] = "No record found.";
             return Response::json($response); 
@@ -69,7 +70,8 @@ class ForgotPasswordController extends Controller
         $data['OTP'] =  $vcode;
         $data['name'] = $user->name;
         $data['email'] = $user->email;
-        $data['mailBody'] = 'forgotpassword';
+         
+        
         Mail::send(new ForgotPasswordMail($data));
         return response()->json(['status'=>1,'message' =>'A OTP send to your email address for reset your password .'],200);
         

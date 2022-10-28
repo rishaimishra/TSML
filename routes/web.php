@@ -20,3 +20,13 @@ Route::get('/user', function () {
 });
 Route::get('/users', 'UserController@index');
 
+
+Route::get('/quick-clean', function () {
+	\Artisan::call('config:cache');
+	\Artisan::call('view:clear');
+	\Artisan::call('route:clear');
+	\Artisan::call('event:clear');
+	\Artisan::call('cache:clear');
+	\Artisan::call('optimize:clear');
+	die("cache cleared");
+});
