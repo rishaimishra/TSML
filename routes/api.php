@@ -85,6 +85,7 @@ Route::group(['namespace'=>'Api\Modules'],function(){
 // Admin Routes....
 Route::post('admin-login', 'AdminAuthController@Adminlogin')->name('admin_login');
 Route::post('admin-register', 'AdminAuthController@Adminregister')->name('admin_register');
+Route::post('user-bulk-upload','Api\Modules\Bulk\BulkController@storeUser');
 
 Route::group(['prefix' => 'admin','middleware' => ['assign.guard:admins','jwtmiddleware']],function (){
 	Route::get('/demo','AdminController@demo');	
@@ -152,5 +153,7 @@ Route::group(['prefix' => 'admin','middleware' => ['assign.guard:admins','jwtmid
 		Route::delete('delete_news/{id}','News\NewsController@deleteNews');
 
 	});
+
+		
 
 });
