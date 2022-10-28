@@ -151,7 +151,7 @@ class QuoteController extends Controller
         
         foreach ($schedules as $key => $value) {
           
-          if(!empty($value['quantity']) &&  !empty($value['expected_price']) &&  !empty($value['remarks']))
+          if(!empty($value['quantity']) &&  !empty($value['expected_price']))
           {
            if(!empty($preQouteId))
            {
@@ -173,6 +173,7 @@ class QuoteController extends Controller
           $sche['remarks'] = $value['remarks'];
           $sche['valid_till'] = $value['valid_till'];
           $sche['schedule_no'] = $value['schedule_no'];
+          $sche['kamsRemarks'] = $value['kamsRemarks'];
           
           // echo "<pre>";print_r($sche);exit();
 
