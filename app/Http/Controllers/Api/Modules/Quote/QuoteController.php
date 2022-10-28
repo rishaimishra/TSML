@@ -537,7 +537,8 @@ class QuoteController extends Controller
            $status = $value['status'];
                  // echo "<pre>";print_r($id);exit();
 
-           $updated = QuoteSchedule::where('id',$id)->update(['quote_status' => $status]);
+           // $updated = QuoteSchedule::where('id',$id)->update(['quote_status' => $status]);
+           $updated = DB::table('quote_schedules')->where('schedule_no',$id)->update(['quote_status' => $status]);
          }
          
          
