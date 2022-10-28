@@ -900,4 +900,136 @@ class QuoteController extends Controller
 
 
 
+      /*
+      ---------------- quote list  -------------------
+
+  */
+      public function getKamQuotesList()
+      {  
+
+        \DB::beginTransaction();
+
+        try{ 
+
+
+                // $user_id = Auth::user()->id;
+
+         if(Auth::check())
+         {
+           $user_id =  Auth::user()->id;
+           $user_state =  Auth::user()->state;
+           
+         }
+
+
+                 // $res = $this->getQuoteHistory($user_id,$rfq_no);
+         $quoteArr = array();    
+
+             // $quotes = Quote::where('user_id',$user_id)->with('schedules')
+           //   ->with('product')->orderBy('updated_at','desc')
+
+         $quotes = DB::table('quotes')->leftjoin('users','quotes.user_id','users.id')
+         ->leftjoin('quote_schedules','quotes.id','quote_schedules.quote_id')
+         ->leftjoin('products','quotes.product_id','products.id')
+         ->leftjoin('categorys','quotes.cat_id','categorys.id')
+         ->leftjoin('sub_categorys','categorys.id','sub_categorys.cat_id')
+         ->select('quotes.*','users.name',DB::raw("(sum(quotes.quantity)) as tot_qt"),'products.pro_desc','quotes.rfq_no','categorys.cat_name','sub_categorys.sub_cat_name','categorys.primary_image')
+         ->groupBy('quotes.rfq_no')
+         ->orderBy('quotes.created_at','desc')
+         ->where('quote_schedules.location',$user_state)
+         ->whereNull('quotes.deleted_at');
+                         // ->toSql();
+         $quotes = $quotes->get();
+             // echo "<pre>";print_r($quotes);
+             // exit();
+         
+
+         foreach ($quotes as $key => $value) {
+           
+          $quoteArr[$key]['quote_id'] = $value->id;
+          $quoteArr[$key]['user_id'] = $value->user_id;
+          $quoteArr[$key]['rfq_no'] = $value->rfq_no;
+          $quoteArr[$key]['quantity'] = $value->tot_qt;
+          $quoteArr[$key]['kam_status'] = $value->kam_status;
+          $quoteArr[$key]['name'] = $value->name;
+          $quoteArr[$key]['created_at'] = date('jS F, Y',strtotime($value->created_at));
+          $quoteArr[$key]['cat_id'] = $value->cat_id;
+          $quoteArr[$key]['product_id'] = $value->product_id;
+          $quoteArr[$key]['cat_name'] = $value->cat_name;
+          $quoteArr[$key]['sub_cat_name'] = $value->sub_cat_name;
+          $quoteArr[$key]['pro_desc'] = $value->pro_desc;
+          $quoteArr[$key]['status'] = $this->schedule_status($value->rfq_no);
+                    // $quoteArr[$key]['schedules'] = $value->schedules;
+                    // $quoteArr[$key]['product'] = $value->product;
+                    // $size = DB::table('sub_categorys')->where('pro_id',$value['product_id'])->select('pro_size')->first();
+                    // $quoteArr[$key]['size'] = $size;
+          
+        }
+                 // echo "<pre>";print_r($quoteArr);exit();
+
+
+        \DB::commit();
+
+        if(!empty($quoteArr))
+        {
+         return response()->json(['status'=>1,
+          'message' =>config('global.sucess_msg'),
+          'result' => $quoteArr],
+          config('global.success_status'));
+       }
+       else{
+
+         return response()->json(['status'=>1,
+          'message' =>'not found',
+          'result' => []],
+          config('global.success_status'));
+       }
+
+
+     }catch(\Exception $e){
+
+       \DB::rollback();
+
+       return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $e->getMessage()],config('global.failed_status'));
+     }
+
+     
+   }
+
+
+
+   public function schedule_status($rfq_no)
+   { 
+       $sts = array();
+       $resa = DB::table('quotes')
+       ->leftjoin('quote_schedules','quotes.id','quote_schedules.quote_id')
+       ->select('quote_schedules.quote_status')
+       ->where('quotes.rfq_no',$rfq_no)
+       ->whereNull('quotes.deleted_at')
+       ->get();
+
+       foreach($resa as $k => $v)
+       {
+           array_push($sts,$v->quote_status);
+       }
+       
+       if (in_array(1, $sts) && !in_array(4, $sts))
+        {
+           $st = "Accepted";
+        }
+       elseif (in_array(4, $sts))
+        {
+           $st = "Delivered";
+        }
+       else
+        {
+           $st = "Pending";
+        }
+      
+       return $st;
+   } 
+
+
+
+
     }
