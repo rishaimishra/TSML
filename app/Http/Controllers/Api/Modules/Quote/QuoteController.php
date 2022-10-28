@@ -1039,6 +1039,59 @@ class QuoteController extends Controller
        return $st;
    } 
 
+   /*--------------------------view remarks --------------------------------------------*/
+
+
+    public function viewRemarks($rfq)
+    {
+         \DB::beginTransaction();
+
+       try{ 
+
+         
+           // echo "<pre>";print_r($user_id);exit();
+         $quoteArr = array();
+
+         
+
+         $quote = DB::table('quote_schedules')->whereNotNull('deleted_at')->where('schedule_no',$rfq)
+         ->select('remarks','kamsRemarks','created_at')->get();
+              // echo "<pre>";print_r($quote);exit();
+
+
+         foreach ($quote as $key => $value) {
+           
+           $quoteArr[$key]['remarks'] = $value->remarks;
+           $quoteArr[$key]['kamsRemarks'] = $value->kamsRemarks;
+           $quoteArr[$key]['created_at'] = $value->created_at;
+           
+         
+         }
+         \DB::commit();
+         if(!empty($quoteArr))
+         {
+          return response()->json(['status'=>1,'message' =>'success','result' => $quoteArr],config('global.success_status'));
+        }
+        else{
+
+         return response()->json(['status'=>1,'message' =>'success','result' => 'Quote not updated'],config('global.success_status'));
+
+       }
+       
+
+
+     }catch(\Exception $e){
+
+       \DB::rollback();
+
+       return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
+     }
+    }
+   /*--------------------------view remarks --------------------------------------------*/  
+
+
+
+
 
 
 

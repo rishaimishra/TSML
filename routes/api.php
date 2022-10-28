@@ -76,6 +76,7 @@ Route::group(['namespace'=>'Api\Modules'],function(){
    		 Route::get('get_quote_sche_by_id/{id}','Quote\QuoteController@getQuoteScheById');
    		 Route::post('delete_quote_sche','Quote\QuoteController@deleteQuoteSche');
    		 Route::get('kam_quotes_list','Quote\QuoteController@getKamQuotesList');
+   		 Route::get('view_remarks/{rfq_no}','Quote\QuoteController@viewRemarks');
 
    		 Route::post('get-store-pro-price','PriceManagement\PriceManagementController@getProPrice')->name('get_store_pro_price');
    		 Route::get('get-threshold-price','PriceManagement\PriceManagementController@getThresholdPrice')->name('get_threshold_price');
