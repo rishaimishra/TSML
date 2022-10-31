@@ -1089,7 +1089,124 @@ class QuoteController extends Controller
     }
    /*--------------------------view remarks --------------------------------------------*/  
 
+  /*
+      ----------------  get_quote_po_by_id -------------------
 
+  */
+
+      public function getPoQuoteById($id)
+      {
+       \DB::beginTransaction();
+
+       try{ 
+
+         $chk_quote = Quote::where('rfq_no',$id)->count();
+           // echo "<pre>";print_r($chk_quote);exit();
+         if($chk_quote > 0)
+         {
+          $quoteArr = array();
+
+          
+          $rfq_number = (!empty($id)) ? $id : '';
+
+          // $quote = Quote::where('rfq_no',$id)->with('schedules')->with('product')->with('category')->with('subCategory')->orderBy('updated_at','desc')->get()->toArray();
+
+           $quote = DB::table('quotes')
+           ->leftjoin('users','quotes.user_id','users.id')
+           ->leftjoin('products','quotes.product_id','products.id')
+           ->leftjoin('categorys','quotes.cat_id','categorys.id')
+           ->leftjoin('sub_categorys','categorys.id','sub_categorys.cat_id')
+           ->select('quotes.rfq_no','quotes.user_id','quotes.id as qid','products.slug','products.status','categorys.*','sub_categorys.*','users.id','products.id as pid','categorys.id as cid','quotes.quantity')
+           ->orderBy('quotes.updated_at','desc')
+           ->where('quotes.rfq_no',$id)
+           ->get()->toArray();
+           // echo "<pre>";print_r($quote);exit();
+          foreach ($quote as $key => $value) {
+            
+            $result[$key]['C'] = $value->C;
+            $result[$key]['Cr'] = $value->Cr;
+            $result[$key]['Phos'] = $value->Phos;
+            $result[$key]['S'] = $value->S;
+            $result[$key]['Si'] = $value->Si;
+            $result[$key]['cat_dese'] = $value->cat_dese;
+            $result[$key]['cat_id'] = $value->cid;
+            $result[$key]['cat_name'] = $value->cat_name;
+            $result[$key]['image_2_url'] = $value->image_2;
+            $result[$key]['image_3_url'] = $value->image_3;
+            $result[$key]['image_4_url'] = $value->image_4;
+            $result[$key]['is_populer'] = $value->is_populer;
+            $result[$key]['product_id'] = $value->pid;
+            $result[$key]['sizes'] = $value->pro_size;
+            $result[$key]['slug'] = $value->slug;
+            $result[$key]['status'] = $value->status;
+            $result[$key]['primary_image_url'] = 'https://beas.in/mje-shop/storage/app/public/images/product/'.$value->primary_image;
+            $result[$key]['schedule'] = $this->getSchedules($value->qid);
+            $result[$key]['quote_id'] = $value->qid;
+            $result[$key]['user_id'] = $value->user_id;
+            $result[$key]['rfq_no'] = $value->rfq_no;
+            $result[$key]['quantity'] = $value->quantity;
+            
+          }
+              // echo "<pre>";print_r($result);exit();
+          \DB::commit();
+          if(!empty($result))
+          {
+            return response()->json(['status'=>1,'message' =>'success','result' => $result],config('global.success_status'));
+          }
+          else{
+
+           return response()->json(['status'=>1,'message' =>'success','result' => 'Quote not updated'],config('global.success_status'));
+
+         }
+       }
+       else{
+
+         return response()->json(['status'=>1,'message' =>'Quote do no exists','result' => []],config('global.success_status'));
+
+       }
+
+
+     }catch(\Exception $e){
+
+       \DB::rollback();
+
+       return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
+     }
+   }
+
+
+    public function getSchedules($qid)
+    {
+        $quote_sches = array();
+
+        $res = DB::table('quote_schedules')->where('quote_id',$qid)->whereNull('deleted_at')->get();
+
+        foreach ($res as $key => $value) {
+           
+           $quote_sches[$key]['id'] = $value->id;
+           $quote_sches[$key]['schedule_no'] = $value->schedule_no;
+           $quote_sches[$key]['quantity'] = $value->quantity;
+           $quote_sches[$key]['pro_size'] = $value->pro_size;
+           $quote_sches[$key]['to_date'] = $value->to_date;
+           $quote_sches[$key]['from_date'] = $value->from_date;
+           $quote_sches[$key]['kam_price'] = $value->kam_price;
+           $quote_sches[$key]['expected_price'] = $value->expected_price;
+           $quote_sches[$key]['plant'] = $value->plant;
+           $quote_sches[$key]['location'] = $value->location;
+           $quote_sches[$key]['bill_to'] = $value->bill_to;
+           $quote_sches[$key]['ship_to'] = $value->ship_to;
+           $quote_sches[$key]['remarks'] = $value->remarks;
+           $quote_sches[$key]['kamsRemarks'] = $value->kamsRemarks;
+           $quote_sches[$key]['delivery'] = $value->delivery;
+           $quote_sches[$key]['valid_till'] = $value->valid_till;
+           $quote_sches[$key]['quote_status'] = $value->quote_status;
+      
+           
+
+        }
+
+        return $quote_sches;
+    }
 
 
 
