@@ -948,7 +948,7 @@ class QuoteController extends Controller
          ->select('quotes.*','users.name',DB::raw("(sum(quotes.quantity)) as tot_qt"),'products.pro_desc','quotes.rfq_no','categorys.cat_name','sub_categorys.sub_cat_name','categorys.primary_image')
          ->groupBy('quotes.rfq_no')
          ->orderBy('quotes.created_at','desc')
-         ->where('quote_schedules.location',$user_state)
+         ->where('users.state',$user_state)
          ->whereNull('quotes.deleted_at');
                          // ->toSql();
          $quotes = $quotes->get();
@@ -1365,6 +1365,128 @@ class QuoteController extends Controller
    }
 
 
+   /*------------------------get all po --------------------------------------*/
+
+      public function getPoAll()
+      {
+           \DB::beginTransaction();
+          try{
+
+            $user_id =  Auth::user()->id;
+
+
+             $result = $this->allPo($user_id);
+
+            \DB::commit();
+
+                if(!empty($result))
+                {
+                  return response()->json(['status'=>1,
+                    'message' =>'success',
+                    'result' => $result],
+                    config('global.success_status'));
+                }
+        }
+          catch(\Exception $e){
+
+              \DB::rollback();
+
+             return response()->json(['status'=>0,
+              'message' =>'error',
+              'result' => $e->getMessage()],
+              config('global.failed_status'));
+
+          }
+      
+    }
+
+
+   /*------------------------------------------------------------------------------*/
+
+
+
+      /*------------------------get all po kam--------------------------------------*/
+
+      public function getPoAllKam()
+      {
+           \DB::beginTransaction();
+          try{
+
+            $user_id =  "";
+            $user_state =  Auth::user()->state;
+
+
+             $result = $this->allPo($user_id,$user_state);
+
+            \DB::commit();
+
+                if(!empty($result))
+                {
+                  return response()->json(['status'=>1,
+                    'message' =>'success',
+                    'result' => $result],
+                    config('global.success_status'));
+                }
+        }
+          catch(\Exception $e){
+
+              \DB::rollback();
+
+             return response()->json(['status'=>0,
+              'message' =>'error',
+              'result' => $e->getMessage()],
+              config('global.failed_status'));
+
+          }
+      
+    }
+
+
+   /*------------------------------------------------------------------------------*/
+
+    public function allPo($user_id=NULL,$user_state=NULL)
+    {
+           $quote = DB::table('orders')
+           ->leftjoin('quotes','orders.rfq_no','quotes.rfq_no')
+           ->leftjoin('quote_schedules','quotes.id','quote_schedules.quote_id')
+           ->leftjoin('users','quotes.user_id','users.id')    
+           ->select('quotes.rfq_no','quotes.user_id','orders.letterhead','orders.po_no','orders.po_date','users.name','orders.status',DB::raw("(sum(quotes.quantity)) as tot_qt"))
+           ->orderBy('quotes.updated_at','desc')
+           ->groupBy('quotes.rfq_no');
+           if(!empty($user_id))
+           {
+              $quote = $quote->where('quotes.user_id',$user_id);
+            }
+           if(!empty($user_state))
+           {
+
+              $quote = $quote->where('users.state',$user_state);
+           }
+           $quote = $quote->whereNull('quotes.deleted_at')
+           ->get()->toArray();
+           // echo "<pre>";print_r($quote);exit();
+
+          if(!empty($quote))
+          {
+          foreach ($quote as $key => $value) {
+            
+            $result[$key]['po_no'] = $value->po_no;
+            $result[$key]['user'] = $value->name;
+            $result[$key]['rfq_no'] = $value->rfq_no;
+            $result[$key]['quantity'] = $value->tot_qt;
+            $date =  date_create($value->po_date);
+            $po_dt = date_format($date,"d/m/Y");
+            $result[$key]['po_date'] = $po_dt;
+            $result[$key]['status'] = $value->status;
+
+          }
+        }
+        else{
+          $result = [];
+        }
+
+          return $result;
+    }
 
 
     }

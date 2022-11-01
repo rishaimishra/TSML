@@ -80,6 +80,8 @@ Route::group(['namespace'=>'Api\Modules'],function(){
    		 Route::get('get_quote_po_by_id/{id}','Quote\QuoteController@getPoQuoteById');
    		 Route::post('submit_po','Quote\QuoteController@submitPo');
    		 Route::get('get_po_by_id/{id}','Quote\QuoteController@getPoById');
+   		 Route::get('get_po_all','Quote\QuoteController@getPoAll');
+   		 Route::get('get_po_all_kam','Quote\QuoteController@getPoAllKam');
 
    		 Route::post('get-store-pro-price','PriceManagement\PriceManagementController@getProPrice')->name('get_store_pro_price');
    		 Route::get('get-threshold-price','PriceManagement\PriceManagementController@getThresholdPrice')->name('get_threshold_price');
