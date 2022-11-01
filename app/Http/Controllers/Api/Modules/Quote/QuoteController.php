@@ -1221,17 +1221,7 @@ class QuoteController extends Controller
 
        try{ 
 
-            $validator = Validator::make($request->all(), [
-                  
-                'image' => 'mimes:jpg,jpeg,png,bmp',
-               
-
-              ]);
-
-              if ($validator->fails()) {
-                  
-                  return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $validator->errors()],config('global.failed_status'));
-              }
+            
 
             $poArr = array();
 
@@ -1239,9 +1229,13 @@ class QuoteController extends Controller
             $poArr['po_no'] = $request->input('po_no');
 
             $files = $request->file('letterhead');
-            $name = time().$files->getClientOriginalName(); 
-            $files->storeAs("public/images/letterheads",$name);  
-            $poArr['letterhead'] = $name;
+            if(!empty($files))
+            {
+              
+              $name = time().$files->getClientOriginalName(); 
+              $files->storeAs("public/images/letterheads",$name);  
+              $poArr['letterhead'] = $name;
+            }
 
             $date =  date_create($request->input('po_date'));
             $po_dt = date_format($date,"Y-m-d");
