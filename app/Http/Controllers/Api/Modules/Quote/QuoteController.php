@@ -9,6 +9,8 @@ use App\Models\QuoteSchedule;
 use App\Models\ProductSubCategory;
 use App\Models\Quotedelivery;
 use App\Models\Requote;
+use App\Models\Order;
+use Validator;
 use Auth;
 use DB;
 
@@ -1119,6 +1121,7 @@ class QuoteController extends Controller
            ->select('quotes.rfq_no','quotes.user_id','quotes.id as qid','products.slug','products.status','categorys.*','sub_categorys.*','users.id','products.id as pid','categorys.id as cid','quotes.quantity')
            ->orderBy('quotes.updated_at','desc')
            ->where('quotes.rfq_no',$id)
+           ->whereNull('quotes.deleted_at')
            ->get()->toArray();
            // echo "<pre>";print_r($quote);exit();
           foreach ($quote as $key => $value) {
@@ -1207,6 +1210,65 @@ class QuoteController extends Controller
 
         return $quote_sches;
     }
+
+
+    /*---------------------------- submit PO -----------------------------------------*/
+      
+      public function submitPo(Request $request)
+      {
+
+         // echo "<pre>";print_r($request->all());exit();
+
+       try{ 
+
+            $validator = Validator::make($request->all(), [
+                  
+                'image' => 'mimes:jpg,jpeg,png,bmp',
+               
+
+              ]);
+
+              if ($validator->fails()) {
+                  
+                  return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $validator->errors()],config('global.failed_status'));
+              }
+
+            $poArr = array();
+
+            $poArr['rfq_no'] = $request->input('rfq_no');
+            $poArr['po_no'] = $request->input('po_no');
+
+            $files = $request->file('letterhead');
+            $name = time().$files->getClientOriginalName(); 
+            $files->storeAs("public/images/letterheads",$name);  
+            $poArr['letterhead'] = $name;
+
+            $date =  date_create($request->input('po_date'));
+            $po_dt = date_format($date,"Y-m-d");
+            $poArr['po_date'] = $po_dt;
+            $poArr['status'] = 2;
+          
+            // echo "<pre>";print_r($poArr);exit();
+         
+            Order::create($poArr);
+
+            return response()->json(['status'=>1,
+              'message' =>'success',
+              'result' => 'P.O created'],
+              config('global.success_status'));
+
+
+
+      }catch(\Exception $e){
+
+              return response()->json(['status'=>0,
+                'message' =>'error',
+                'result' => $e->getMessage()],
+                config('global.failed_status'));
+          }
+      }
+
+    /*-----------------------------------------------------------------------------------*/
 
 
 
