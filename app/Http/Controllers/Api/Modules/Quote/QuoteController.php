@@ -896,11 +896,24 @@ class QuoteController extends Controller
         $arr = array();
 
         $id = $request->input('sche_id');
-        $sche_no = DB::table('quote_schedules')->where('id',$id)->select('schedule_no')->first();
+        $sche_no = DB::table('quote_schedules')->where('id',$id)->select('schedule_no','quantity','quote_id')->first();
+
+        $quote = DB::table('quotes')->where('id',$sche_no->quote_id)->first();
+
+        $tot = $quote->quantity - $sche_no->quantity;
+
+        DB::table('quotes')->where('id',$sche_no->quote_id)->update(['quantity' => $tot]);
         
 
         DB::table('quote_deliveries')->where('quote_sche_no',$sche_no->schedule_no)->delete();
         DB::table('quote_schedules')->where('id',$id)->delete();
+
+
+        $ct = DB::table('quote_schedules')->where('quote_id',$sche_no->quote_id)->get()->count();
+        if($ct == 0)
+        {
+           DB::table('quotes')->where('id',$sche_no->quote_id)->delete();
+        }
         
         // return $sche_no->schedule_no;exit();
 
@@ -1231,7 +1244,7 @@ class QuoteController extends Controller
             $files = $request->file('letterhead');
             if(!empty($files))
             {
-              
+
               $name = time().$files->getClientOriginalName(); 
               $files->storeAs("public/images/letterheads",$name);  
               $poArr['letterhead'] = $name;
