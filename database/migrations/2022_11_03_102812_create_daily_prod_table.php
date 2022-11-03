@@ -23,10 +23,6 @@ class CreateDailyProdTable extends Migration
             $table->string('grade_code');
             $table->string('size');
             $table->string('qty');
-            $table->decimal('export','9','2');
-            $table->string('offline','9','2');
-            $table->string('sap_order','9','2');
-            $table->string('fg_sap','9','2');
             $table->date('start');
             $table->date('end');
             $table->integer('status');
