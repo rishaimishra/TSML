@@ -481,6 +481,8 @@ class QuoteController extends Controller
 
           foreach ($quote as $key => $value) {
             
+            if(!empty($value['schedules']))
+            {
             $result[$key]['C'] = $value['sub_category']['C'];
             $result[$key]['Cr'] = $value['sub_category']['Cr'];
             $result[$key]['Phos'] = $value['sub_category']['Phos'];
@@ -503,6 +505,8 @@ class QuoteController extends Controller
             $result[$key]['user_id'] = $value['user_id'];
             $result[$key]['rfq_no'] = $value['rfq_no'];
             $result[$key]['quantity'] = $value['quantity'];
+            $result[$key]['st'] = $value['kam_status'];
+          }
             
           }
               // echo "<pre>";print_r($result);exit();
