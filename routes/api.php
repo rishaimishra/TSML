@@ -95,6 +95,8 @@ Route::group(['namespace'=>'Api\Modules'],function(){
 
 		Route::post('remarks-replay', 'Complain\ComplainController@remarksReplay')->name('remarks_replay');
 
+		Route::get('get-complain-list-kam', 'Complain\ComplainController@getComplainListKam')->name('get_complain_list_kam');
+
    		  
 
      });

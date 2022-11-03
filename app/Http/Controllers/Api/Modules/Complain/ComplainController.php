@@ -465,4 +465,42 @@ class ComplainController extends Controller
           return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $e->getMessage()],config('global.failed_status'));
         }
     }
+
+    /**
+     * This is for add getComplainCategory. 
+     * @param  \App\Product  $product
+     * @return \Illuminate\Http\Response
+    */
+    public function getComplainListKam(Request $request)
+    {
+    	try{ 
+            $ComplainListData = DB::table('complain_main')
+		     ->leftjoin('complain_categorys','complain_main.com_cate_id','complain_categorys.id')
+		     ->leftjoin('complain_sub_categorys','complain_main.com_sub_cate_id','complain_sub_categorys.id')
+		     ->leftjoin('complain_sub_categorys2','complain_main.com_sub_cate_2id','complain_sub_categorys2.id')
+		     ->leftjoin('complain_sub_categorys3','complain_main.com_sub_cate_3id','complain_sub_categorys3.id')
+		     
+		     ->select('complain_main.id','complain_main.customer_name','complain_main.created_at','complain_categorys.com_cate_name','complain_sub_categorys.com_sub_cate_name','complain_sub_categorys2.com_sub_cate2_name','complain_sub_categorys3.com_sub_cate3_name')
+		     ->get();
+		      
+
+             
+             
+            if ($ComplainListData) {
+               return response()->json(['status'=>1,'message' =>'success.','result' => $ComplainListData],200);
+            }
+            else{
+
+               return response()->json(['status'=>1,'message' =>'No data found','result' => []],config('global.success_status'));
+
+            }
+            
+            
+            }catch(\Exception $e){
+                $response['error'] = $e->getMessage();
+                return response()->json([$response]);
+            }
+
+
+    }
 }
