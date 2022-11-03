@@ -480,9 +480,17 @@ class ComplainController extends Controller
 		     ->leftjoin('complain_sub_categorys2','complain_main.com_sub_cate_2id','complain_sub_categorys2.id')
 		     ->leftjoin('complain_sub_categorys3','complain_main.com_sub_cate_3id','complain_sub_categorys3.id')
 		     
-		     ->select('complain_main.id','complain_main.customer_name','complain_main.created_at','complain_main.file','complain_categorys.com_cate_name','complain_sub_categorys.com_sub_cate_name','complain_sub_categorys2.com_sub_cate2_name','complain_sub_categorys3.com_sub_cate3_name')
-		     ->get();
+		     ->select('complain_main.id','complain_main.customer_name','complain_main.created_at','complain_main.file','complain_categorys.com_cate_name','complain_sub_categorys.com_sub_cate_name','complain_sub_categorys2.com_sub_cate2_name','complain_sub_categorys3.com_sub_cate3_name');
+		      
 		     
+		     if(!empty($request->customer_name))
+	         {
+	           $ComplainListData = $ComplainListData->where('complain_main.customer_name',$request->customer_name);
+	         }
+	          
+	         $ComplainListData = $ComplainListData->get();
+
+	         
 		      
 		     foreach ($ComplainListData as $ComplainList) {
 		     	$data['complain_id'] = $ComplainList->id;
