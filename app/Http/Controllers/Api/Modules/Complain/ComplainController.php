@@ -480,14 +480,33 @@ class ComplainController extends Controller
 		     ->leftjoin('complain_sub_categorys2','complain_main.com_sub_cate_2id','complain_sub_categorys2.id')
 		     ->leftjoin('complain_sub_categorys3','complain_main.com_sub_cate_3id','complain_sub_categorys3.id')
 		     
-		     ->select('complain_main.id','complain_main.customer_name','complain_main.created_at','complain_categorys.com_cate_name','complain_sub_categorys.com_sub_cate_name','complain_sub_categorys2.com_sub_cate2_name','complain_sub_categorys3.com_sub_cate3_name')
+		     ->select('complain_main.id','complain_main.customer_name','complain_main.created_at','complain_main.file','complain_categorys.com_cate_name','complain_sub_categorys.com_sub_cate_name','complain_sub_categorys2.com_sub_cate2_name','complain_sub_categorys3.com_sub_cate3_name')
 		     ->get();
+		     
 		      
+		     foreach ($ComplainListData as $ComplainList) {
+		     	$data['complain_id'] = $ComplainList->id;
+	            $data['customer_name'] = $ComplainList->customer_name;
+	            $data['created_at'] = $ComplainList->created_at;
+	            $data['com_cate_name'] = $ComplainList->com_cate_name;
+	            $data['com_sub_cate_name'] = $ComplainList->com_sub_cate_name; 
+	            $data['com_sub_cate2_name'] = $ComplainList->com_sub_cate2_name;
+	            $data['com_sub_cate3_name'] = $ComplainList->com_sub_cate3_name;
 
+	            if ($ComplainList->file) 
+		   		{
+
+		   			$data['file_url'] = asset('storage/app/public/images/complain/'.$ComplainList->file);
+		   		}
+		   		else
+		   		{
+		   			$data['file_url'] =  null;
+		   		}
+		     }
              
              
-            if ($ComplainListData) {
-               return response()->json(['status'=>1,'message' =>'success.','result' => $ComplainListData],200);
+            if ($data) {
+               return response()->json(['status'=>1,'message' =>'success.','result' => $data],200);
             }
             else{
 
