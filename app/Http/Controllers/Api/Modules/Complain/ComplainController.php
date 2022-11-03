@@ -1,0 +1,468 @@
+<?php
+
+namespace App\Http\Controllers\Api\Modules\Complain;
+
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use Illuminate\Support\Facades\Auth;
+use App\User;
+use App\Models\Product;
+use App\Models\Category;
+use App\Models\ProductSubCategory;
+use App\Models\PriceManagement;
+use App\Models\PriceCalculation;
+use App\Models\ThresholdLimits;
+use App\Models\Freights;
+use App\Models\ComplainCategory;
+use App\Models\ComplainSubCategory;
+use App\Models\ComplainSubCategory2;
+use App\Models\ComplainSubCategory3;
+use App\Models\ComplainRemarks;
+use App\Models\ComplainMain;
+use JWTAuth;
+use Validator;
+use File; 
+use Storage;
+use Response;
+use DB; 
+
+
+class ComplainController extends Controller
+{
+    /**
+     * This is for add storeComplainCategory. 
+     * @param  \App\Product  $product
+     * @return \Illuminate\Http\Response
+    */
+    public function storeComplainCategory(Request $request)
+    {
+    	\DB::beginTransaction();
+
+        try{
+
+          $validator = Validator::make($request->all(), [              
+            'com_cate_name'        => 'required', 
+          ]);
+
+          if ($validator->fails()) { 
+              return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $validator->errors()],config('global.failed_status'));
+          }
+
+         
+          $input['com_cate_name'] = $request->com_cate_name;
+           
+
+            // dd($input);
+
+          $freightsData = ComplainCategory::create($input);
+
+          \DB::commit();
+
+          if($freightsData)
+          {
+            return response()->json(['status'=>1,'message' =>'Complain category added successfully','result' => $freightsData],config('global.success_status'));
+          }
+          else
+          { 
+            return response()->json(['status'=>1,'message' =>'Somthing went wrong','result' => []],config('global.success_status'));
+          } 
+           
+
+        }catch(\Exception $e){ 
+          \DB::rollback(); 
+          return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $e->getMessage()],config('global.failed_status'));
+        }
+    }
+
+    /**
+     * This is for add getComplainCategory. 
+     * @param  \App\Product  $product
+     * @return \Illuminate\Http\Response
+    */
+    public function getComplainCategory(Request $request)
+    {
+    	try{ 
+            $ComplainCategoryData = ComplainCategory::get();  
+
+             
+             
+            if (count($ComplainCategoryData)>0) {
+               return response()->json(['status'=>1,'message' =>'success.','result' => $ComplainCategoryData],200);
+            }
+            else{
+
+               return response()->json(['status'=>1,'message' =>'No data found','result' => []],config('global.success_status'));
+
+            }
+            
+            
+            }catch(\Exception $e){
+                $response['error'] = $e->getMessage();
+                return response()->json([$response]);
+            }
+
+
+    }
+
+    /**
+     * This is for add storeComplainSubCategory. 
+     * @param  \App\Product  $product
+     * @return \Illuminate\Http\Response
+    */
+    public function storeComplainSubCategory(Request $request)
+    {
+    	\DB::beginTransaction();
+
+        try{
+
+          $validator = Validator::make($request->all(), [              
+            'com_cate_id'        => 'required',
+            'com_sub_cate_name'        => 'required', 
+          ]);
+
+          if ($validator->fails()) { 
+              return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $validator->errors()],config('global.failed_status'));
+          }
+
+         
+          $input['com_cate_id'] = $request->com_cate_id;
+          $input['com_sub_cate_name'] = $request->com_sub_cate_name;
+           
+
+            // dd($input);
+
+          $freightsData = ComplainSubCategory::create($input);
+
+          \DB::commit();
+
+          if($freightsData)
+          {
+            return response()->json(['status'=>1,'message' =>'Complain sub category added successfully','result' => $freightsData],config('global.success_status'));
+          }
+          else
+          { 
+            return response()->json(['status'=>1,'message' =>'Somthing went wrong','result' => []],config('global.success_status'));
+          } 
+           
+
+        }catch(\Exception $e){ 
+          \DB::rollback(); 
+          return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $e->getMessage()],config('global.failed_status'));
+        }
+    }
+
+    /**
+     * This is for add getComplainCategory. 
+     * @param  \App\Product  $product
+     * @return \Illuminate\Http\Response
+    */
+    public function getComplainSubCategory($com_cate_id)
+    {
+    	try{ 
+            $ComplainSubCategoryData = ComplainSubCategory::where('com_cate_id',$com_cate_id)->orderBy('id','desc')->get();  
+
+             
+             
+            if (count($ComplainSubCategoryData)>0) {
+               return response()->json(['status'=>1,'message' =>'success.','result' => $ComplainSubCategoryData],200);
+            }
+            else{
+
+               return response()->json(['status'=>1,'message' =>'No data found','result' => []],config('global.success_status'));
+
+            }
+            
+            
+            }catch(\Exception $e){
+                $response['error'] = $e->getMessage();
+                return response()->json([$response]);
+            }
+
+
+    }
+
+     
+    /**
+     * This is for add storeComplainSubCategory2. 
+     * @param  \App\Product  $product
+     * @return \Illuminate\Http\Response
+    */
+    public function storeComplainSubCategory2(Request $request)
+    {
+    	\DB::beginTransaction();
+
+        try{
+
+          $validator = Validator::make($request->all(), [              
+            'com_cate_id'        => 'required',
+            'com_sub_cate_id'        => 'required',
+            'com_sub_cate2_name'        => 'required', 
+          ]);
+
+          if ($validator->fails()) { 
+              return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $validator->errors()],config('global.failed_status'));
+          }
+
+         
+          $input['com_cate_id'] = $request->com_cate_id;
+          $input['com_sub_cate_id'] = $request->com_sub_cate_id;
+          $input['com_sub_cate2_name'] = $request->com_sub_cate2_name;
+           
+
+            // dd($input);
+
+          $freightsData = ComplainSubCategory2::create($input);
+
+          \DB::commit();
+
+          if($freightsData)
+          {
+            return response()->json(['status'=>1,'message' =>'Complain sub category 2 added successfully','result' => $freightsData],config('global.success_status'));
+          }
+          else
+          { 
+            return response()->json(['status'=>1,'message' =>'Somthing went wrong','result' => []],config('global.success_status'));
+          } 
+           
+
+        }catch(\Exception $e){ 
+          \DB::rollback(); 
+          return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $e->getMessage()],config('global.failed_status'));
+        }
+    }
+
+    /**
+     * This is for add storeComplainSubCategory2. 
+     * @param  \App\Product  $product
+     * @return \Illuminate\Http\Response
+    */
+    public function getComplainSubCategory2($com_sub_cate_id)
+    {
+    	try{ 
+            $ComplainSubCategory2Data = ComplainSubCategory2::where('com_sub_cate_id',$com_sub_cate_id)->orderBy('id','desc')->get();   
+             
+             
+            if (count($ComplainSubCategory2Data)>0) {
+               return response()->json(['status'=>1,'message' =>'success.','result' => $ComplainSubCategory2Data],200);
+            }
+            else{
+
+               return response()->json(['status'=>1,'message' =>'No data found','result' => []],config('global.success_status'));
+
+            }
+            
+            
+            }catch(\Exception $e){
+                $response['error'] = $e->getMessage();
+                return response()->json([$response]);
+            }
+    }
+
+    /**
+     * This is for add storeComplainSubCategory3. 
+     * @param  \App\Product  $product
+     * @return \Illuminate\Http\Response
+    */
+    public function storeComplainSubCategory3(Request $request)
+    {
+    	\DB::beginTransaction();
+
+        try{
+
+          $validator = Validator::make($request->all(), [              
+            'com_cate_id'        => 'required',
+            'com_sub_cate_id'        => 'required',
+            'com_sub_cate_2id'        => 'required',
+            'com_sub_cate3_name'        => 'required', 
+          ]);
+
+          if ($validator->fails()) { 
+              return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $validator->errors()],config('global.failed_status'));
+          }
+
+         
+          $input['com_cate_id'] = $request->com_cate_id;
+          $input['com_sub_cate_id'] = $request->com_sub_cate_id;
+          $input['com_sub_cate_2id'] = $request->com_sub_cate_2id;
+          $input['com_sub_cate3_name'] = $request->com_sub_cate3_name;
+           
+
+            // dd($input);
+
+          $freightsData = ComplainSubCategory3::create($input);
+
+          \DB::commit();
+
+          if($freightsData)
+          {
+            return response()->json(['status'=>1,'message' =>'Complain sub category 2 added successfully','result' => $freightsData],config('global.success_status'));
+          }
+          else
+          { 
+            return response()->json(['status'=>1,'message' =>'Somthing went wrong','result' => []],config('global.success_status'));
+          } 
+           
+
+        }catch(\Exception $e){ 
+          \DB::rollback(); 
+          return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $e->getMessage()],config('global.failed_status'));
+        }
+    }
+
+    /**
+     * This is for add storeComplainSubCategory2. 
+     * @param  \App\Product  $product
+     * @return \Illuminate\Http\Response
+    */
+    public function getComplainSubCategory3($com_sub_cate_2id)
+    {
+    	try{ 
+            $ComplainSubCategory3Data = ComplainSubCategory3::where('com_sub_cate_2id',$com_sub_cate_2id)->orderBy('id','desc')->get();   
+             
+             
+            if (count($ComplainSubCategory3Data)>0) {
+               return response()->json(['status'=>1,'message' =>'success.','result' => $ComplainSubCategory3Data],200);
+            }
+            else{
+
+               return response()->json(['status'=>1,'message' =>'No data found','result' => []],config('global.success_status'));
+
+            }
+            
+            
+            }catch(\Exception $e){
+                $response['error'] = $e->getMessage();
+                return response()->json([$response]);
+            }
+    }
+
+    /**
+     * This is for add storeComplain Main. 
+     * @param  \App\Product  $product
+     * @return \Illuminate\Http\Response
+    */
+    public function storeComplainMain(Request $request)
+    {
+
+    	\DB::beginTransaction();
+
+        try{
+
+          $validator = Validator::make($request->all(), [              
+            'com_cate_id'        => 'required',
+            'com_sub_cate_id'        => 'required',
+            'com_sub_cate_2id'        => 'required',
+            'com_sub_cate_3id'        => 'required', 
+          ]);
+
+          if ($validator->fails()) { 
+              return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $validator->errors()],config('global.failed_status'));
+          }
+
+         
+          $input['com_cate_id'] = $request->com_cate_id;
+          $input['com_sub_cate_id'] = $request->com_sub_cate_id;
+          $input['com_sub_cate_2id'] = $request->com_sub_cate_2id;
+          $input['com_sub_cate_3id'] = $request->com_sub_cate_3id;
+          $input['customer_name'] = $request->customer_name;
+
+          
+          
+          if ($request->hasFile('complain_file'))
+		    {  
+
+		    	$image = $request->complain_file; 
+
+                $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+                Storage::putFileAs('public/images/complain/', $image, $filename);
+
+                $input['file'] = $filename;
+
+
+
+		    }
+
+            // dd($input);
+
+          $complainData = ComplainMain::create($input);
+
+         
+
+          $remarksinput['complain_id'] = $complainData->id;
+          $remarksinput['customer_remarks'] = $request->customer_remarks;
+
+          $freightsData = ComplainRemarks::create($remarksinput);
+
+          \DB::commit();
+
+          if($freightsData)
+          {
+            return response()->json(['status'=>1,'message' =>'Complain added successfully','result' => 'success'],config('global.success_status'));
+          }
+          else
+          { 
+            return response()->json(['status'=>1,'message' =>'Somthing went wrong','result' => []],config('global.success_status'));
+          } 
+           
+
+        }catch(\Exception $e){ 
+          \DB::rollback(); 
+          return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $e->getMessage()],config('global.failed_status'));
+        }
+    }
+
+    /**
+     * This is for add remarksReplay. 
+     * @param  \App\Product  $product
+     * @return \Illuminate\Http\Response
+    */
+    public function remarksReplay(Request $request)
+    {
+    	\DB::beginTransaction();
+
+        try{
+
+          $validator = Validator::make($request->all(), [              
+            'complain_id'        => 'required', 
+          ]);
+
+          if ($validator->fails()) { 
+              return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $validator->errors()],config('global.failed_status'));
+          }
+
+          
+          
+          if ($request->customer_remarks) {
+          	$input['complain_id'] = $request->complain_id;
+          	$input['customer_remarks'] = $request->customer_remarks;
+
+          	$RemarksData = ComplainRemarks::create($input);
+          }
+          if ($request->kam_remarks) {
+          	$input['complain_id'] = $request->complain_id;
+          	$input['kam_remarks'] = $request->kam_remarks;
+
+          	$RemarksData = ComplainRemarks::create($input);
+          }
+
+            
+
+          \DB::commit();
+
+          if($RemarksData)
+          {
+            return response()->json(['status'=>1,'message' =>'Remarks added successfully','result' => $RemarksData],config('global.success_status'));
+          }
+          else
+          { 
+            return response()->json(['status'=>1,'message' =>'Somthing went wrong','result' => []],config('global.success_status'));
+          } 
+           
+
+        }catch(\Exception $e){ 
+          \DB::rollback(); 
+          return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $e->getMessage()],config('global.failed_status'));
+        }
+    }
+}
