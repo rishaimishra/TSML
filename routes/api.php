@@ -85,6 +85,17 @@ Route::group(['namespace'=>'Api\Modules'],function(){
 
    		 Route::post('get-store-pro-price','PriceManagement\PriceManagementController@getProPrice')->name('get_store_pro_price');
    		 Route::get('get-threshold-price','PriceManagement\PriceManagementController@getThresholdPrice')->name('get_threshold_price');
+   		 // Complain Remarks Routes....
+   		 Route::get('complain-category-list', 'Complain\ComplainController@getComplainCategory')->name('complain_category');
+   		 Route::get('complain-sub-category-list/{id}', 'Complain\ComplainController@getComplainSubCategory')->name('complain_sub_category');
+   		 Route::get('complain-sub-category2-list/{id}', 'Complain\ComplainController@getComplainSubCategory2')->name('complain_sub_category2');
+   		 Route::get('complain-sub-category3-list/{id}', 'Complain\ComplainController@getComplainSubCategory3')->name('complain_sub_category3');
+
+   		 Route::post('store-complain-main', 'Complain\ComplainController@storeComplainMain')->name('store_complain_main');
+
+		Route::post('remarks-replay', 'Complain\ComplainController@remarksReplay')->name('remarks_replay');
+
+   		  
 
      });
    	
@@ -162,19 +173,14 @@ Route::group(['prefix' => 'admin','middleware' => ['assign.guard:admins','jwtmid
 
 		// Complain Routs...
 		Route::post('store-complain-category', 'Complain\ComplainController@storeComplainCategory')->name('store_complain_category');
-		Route::get('complain-category-list', 'Complain\ComplainController@getComplainCategory')->name('complain_category');
+		 
 		Route::post('store-complain-sub-category', 'Complain\ComplainController@storeComplainSubCategory')->name('store_complain_sub_category');
-		Route::get('complain-sub-category-list/{id}', 'Complain\ComplainController@getComplainSubCategory')->name('complain_sub_category');
+		
 		Route::post('store-complain-sub-category2', 'Complain\ComplainController@storeComplainSubCategory2')->name('store_complain_sub_category2');
-		Route::get('complain-sub-category2-list/{id}', 'Complain\ComplainController@getComplainSubCategory2')->name('complain_sub_category2');
-		Route::post('store-complain-sub-category3', 'Complain\ComplainController@storeComplainSubCategory3')->name('store_complain_sub_category3');
-		Route::get('complain-sub-category3-list/{id}', '
-			Complain\ComplainController@getComplainSubCategory3')->name('complain_sub_category3');
+		
+		Route::post('store-complain-sub-category3', 'Complain\ComplainController@storeComplainSubCategory3')->name('store_complain_sub_category3'); 
 
-
-		Route::post('store-complain-main', 'Complain\ComplainController@storeComplainMain')->name('store_complain_main');
-
-		Route::post('remarks-replay', 'Complain\ComplainController@remarksReplay')->name('remarks_replay');
+		
 	});
 
 		
