@@ -540,18 +540,15 @@ class ComplainController extends Controller
 
     }
 
-     
-
     /**
      * This is for add get Complain Details. 
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
     */
-    public function getComplainDetails($complainId)
+    public function complainDetails($complainId)
     {
-      // header('Access-Control-Allow-Origin', $origin);
-      try{ 
-          $ComplainListData = DB::table('complain_main')
+      try{
+            $ComplainListData = DB::table('complain_main')
             ->leftjoin('complain_categorys','complain_main.com_cate_id','complain_categorys.id')
             ->leftjoin('complain_sub_categorys','complain_main.com_sub_cate_id','complain_sub_categorys.id')
             ->leftjoin('complain_sub_categorys2','complain_main.com_sub_cate_2id','complain_sub_categorys2.id')
@@ -578,14 +575,12 @@ class ComplainController extends Controller
           else
           {
             $data['file_url'] =  null;
-          }
-
+          } 
+          
           $remarksData = ComplainRemarks::where('complain_id',$complainId)->get();
-           
-            // dd($data);
              
-          if (!empty($ComplainListData)) {
-            return response()->json(['status'=>1,'message' =>'success','result' => $data,'remarks_data'=>$remarksData],200);
+          if (!empty($ComplainListData)){
+            return response()->json(['status'=>1,'message' =>'success','result' =>$data,'remarksData' =>$remarksData],200);
           }
           else{
 
@@ -598,9 +593,10 @@ class ComplainController extends Controller
             $response['error'] = $e->getMessage();
             return response()->json([$response]);
           }
-
-
     }
+     
+
+     
 
     /**
      * This is for closed complain.

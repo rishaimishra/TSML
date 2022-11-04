@@ -94,8 +94,8 @@ Route::group(['namespace'=>'Api\Modules'],function(){
    		 Route::post('store-complain-main', 'Complain\ComplainController@storeComplainMain')->name('store_complain_main');
 
 		Route::post('remarks-replay', 'Complain\ComplainController@remarksReplay')->name('remarks_replay');
-		 
-		Route::get('get-complain-details/{complainId}', 'Complain\ComplainController@getComplainDetails')->name('get_complain_details');
+
+		Route::get('complain-details/{complainId}', 'Complain\ComplainController@complainDetails')->name('complain_details'); 
 
 		Route::get('get-complain-list-kam', 'Complain\ComplainController@getComplainListKam')->name('get_complain_list_kam');
 		
