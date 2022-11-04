@@ -99,9 +99,19 @@ class OrderPlanningController extends Controller
         }
 
 
-       public function getOrderPlanning()
+       public function getOrderPlanning(Request $request)
        {
        	   try{ 
+
+       	   	   $start_date = (!empty($request->input('start_date'))) ? $request->input('start_date') : '';
+       	   	   $end_date = (!empty($request->input('end_date'))) ? $request->input('end_date') : '';
+       	   	   $plant = (!empty($request->input('plant'))) ? $request->input('plant') : '';
+       	   	   $mat_grp = (!empty($request->input('mat_grp'))) ? $request->input('mat_grp') : '';
+       	   	   $mat_no = (!empty($request->input('mat_no'))) ? $request->input('mat_no') : '';
+       	   	   $grade = (!empty($request->input('grade'))) ? $request->input('grade') : '';
+       	   	   
+
+       	   	   // echo "<pre>";print_r($start_date);exit();
 
        	   	   $result = array();
 
@@ -115,7 +125,35 @@ class OrderPlanningController extends Controller
                              $join->on('monthly_production_plans.cat_id','daily_productions.category');
                              $join->on('monthly_production_plans.sub_cat_id','daily_productions.subcategory');
                          })
-               ->select('monthly_production_plans.open_stk','monthly_production_plans.mnthly_prod','daily_productions.*','monthly_production_plans.export','monthly_production_plans.offline','monthly_production_plans.sap_order','monthly_production_plans.fg_sap','monthly_production_plans.id as mnt_id')->get();
+               ->select('monthly_production_plans.open_stk','monthly_production_plans.mnthly_prod','daily_productions.*','monthly_production_plans.export','monthly_production_plans.offline','monthly_production_plans.sap_order','monthly_production_plans.fg_sap','monthly_production_plans.id as mnt_id');
+
+               if(!empty($start_date) && !empty($end_date))
+               {
+               	  $st_dt = date('Y-m-d',strtotime($start_date));
+               	  $e_dt = date('Y-m-d',strtotime($end_date));
+
+               	  // return $e_dt;
+               	 $res = $res->whereDate('monthly_production_plans.start_date','>=',$st_dt)
+               	 ->whereDate('monthly_production_plans.end_date','<=',$e_dt);
+               }
+               if(!empty($plant))
+               {
+                       $res = $res->where('monthly_production_plans.plant',$plant);
+               } 
+               if(!empty($mat_grp))
+               {
+                       $res = $res->where('daily_productions.met_group',$mat_grp);
+               }
+               if(!empty($mat_no))
+               {
+                       $res = $res->where('daily_productions.met_no',$mat_no);
+               } 
+               if(!empty($grade))
+               {
+                       $res = $res->where('daily_productions.grade_code',$grade);
+               }
+               $res = $res->toSql();
+               return $res;
                // echo "<pre>";print_r($res);exit();
                foreach ($res as $k => $value) {
                	    
