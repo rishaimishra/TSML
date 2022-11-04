@@ -584,4 +584,50 @@ class ComplainController extends Controller
         }
         
     }
+
+    // public function complainDownload($complainId)
+    // {
+
+    //   try{
+    //         $ComplainListData = DB::table('complain_main')
+    //         ->leftjoin('complain_categorys','complain_main.com_cate_id','complain_categorys.id')
+    //         ->leftjoin('complain_sub_categorys','complain_main.com_sub_cate_id','complain_sub_categorys.id')
+    //         ->leftjoin('complain_sub_categorys2','complain_main.com_sub_cate_2id','complain_sub_categorys2.id')
+    //         ->leftjoin('complain_sub_categorys3','complain_main.com_sub_cate_3id','complain_sub_categorys3.id')
+         
+    //         ->select('complain_main.id','complain_main.customer_name','complain_main.created_at','complain_main.file','complain_main.closed_status','complain_categorys.com_cate_name','complain_sub_categorys.com_sub_cate_name','complain_sub_categorys2.com_sub_cate2_name','complain_sub_categorys3.com_sub_cate3_name')
+    //         ->where('complain_main.id',$complainId)
+    //         ->first(); 
+             
+    //         $filePath = public_path('images/complain/'.$ComplainListData->file);
+    //         $headers = ['Content-Type: application/pdf'];
+    //         $fileName = time().'.pdf';
+
+    //         return response()->download($filePath, $fileName, $headers);
+             
+    //       if (!empty($comfile)){
+    //         return response()->download($comfile);
+    //         // return response()->json(['status'=>1,'message' =>'success','result' =>$data,'remarksData' =>$remarksData],200);
+    //       }
+    //       else{
+
+    //        return response()->json(['status'=>1,'message' =>'No data found','result' => []],config('global.success_status'));
+
+    //       } 
+            
+    //       }catch(\Exception $e){
+    //         $response['error'] = $e->getMessage();
+    //         return response()->json([$response]);
+    //       }
+
+
+
+
+
+
+
+        //PDF file is stored under project/public/download/info.pdf
+      // $file="http://localhost/TSML/storage/app/public/images/complain/1667460708-9778.jpg";
+      //   return Response::download($file);
+    }
 }
