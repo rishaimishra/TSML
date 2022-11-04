@@ -474,13 +474,14 @@ class ComplainController extends Controller
     public function getComplainListKam(Request $request)
     {
     	try{ 
-            $ComplainListData = DB::table('complain_main')
-		     ->leftjoin('complain_categorys','complain_main.com_cate_id','complain_categorys.id')
-		     ->leftjoin('complain_sub_categorys','complain_main.com_sub_cate_id','complain_sub_categorys.id')
-		     ->leftjoin('complain_sub_categorys2','complain_main.com_sub_cate_2id','complain_sub_categorys2.id')
-		     ->leftjoin('complain_sub_categorys3','complain_main.com_sub_cate_3id','complain_sub_categorys3.id')
+          $ComplainListData = DB::table('complain_main')
+		      ->leftjoin('complain_categorys','complain_main.com_cate_id','complain_categorys.id')
+		      ->leftjoin('complain_sub_categorys','complain_main.com_sub_cate_id','complain_sub_categorys.id')
+		      ->leftjoin('complain_sub_categorys2','complain_main.com_sub_cate_2id','complain_sub_categorys2.id')
+		      ->leftjoin('complain_sub_categorys3','complain_main.com_sub_cate_3id','complain_sub_categorys3.id')
+          ->join('complain_remarks','complain_main.id','complain_remarks.complain_id')
 		     
-		     ->select('complain_main.id','complain_main.customer_name','complain_main.created_at','complain_main.file','complain_categorys.com_cate_name','complain_sub_categorys.com_sub_cate_name','complain_sub_categorys2.com_sub_cate2_name','complain_sub_categorys3.com_sub_cate3_name');
+		     ->select('complain_main.id','complain_main.customer_name','complain_main.created_at','complain_main.file','complain_categorys.com_cate_name','complain_sub_categorys.com_sub_cate_name','complain_sub_categorys2.com_sub_cate2_name','complain_sub_categorys3.com_sub_cate3_name','complain_remarks.customer_remarks'); 
 		      
 		     
 		     if(!empty($request->customer_name))
@@ -488,7 +489,9 @@ class ComplainController extends Controller
 	           $ComplainListData = $ComplainListData->where('complain_main.customer_name',$request->customer_name);
 	         }
 	          
-	         $ComplainListData = $ComplainListData->get();
+	         $ComplainListData = $ComplainListData->orderBy('complain_remarks.created_at','desc')->groupBy('complain_remarks.complain_id')->get();
+            
+
 
 
 	         $complainlist = [];
@@ -496,12 +499,13 @@ class ComplainController extends Controller
 		     foreach ($ComplainListData as $ComplainList) {
 
 		     	$data['complain_id'] = $ComplainList->id;
-	            $data['customer_name'] = $ComplainList->customer_name;
-	            $data['created_at'] = $ComplainList->created_at;
-	            $data['com_cate_name'] = $ComplainList->com_cate_name;
-	            $data['com_sub_cate_name'] = $ComplainList->com_sub_cate_name; 
-	            $data['com_sub_cate2_name'] = $ComplainList->com_sub_cate2_name;
-	            $data['com_sub_cate3_name'] = $ComplainList->com_sub_cate3_name;
+          $data['customer_name'] = $ComplainList->customer_name;
+          $data['created_at'] = $ComplainList->created_at;
+          $data['com_cate_name'] = $ComplainList->com_cate_name;
+          $data['com_sub_cate_name'] = $ComplainList->com_sub_cate_name; 
+          $data['com_sub_cate2_name'] = $ComplainList->com_sub_cate2_name;
+          $data['com_sub_cate3_name'] = $ComplainList->com_sub_cate3_name;
+          $data['remarks'] = $ComplainList->customer_remarks;
 
 	            if ($ComplainList->file) 
 		   		{
