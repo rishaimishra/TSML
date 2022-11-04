@@ -540,6 +540,8 @@ class ComplainController extends Controller
 
     }
 
+     
+
     /**
      * This is for add get Complain Details. 
      * @param  \App\Product  $product
@@ -547,6 +549,7 @@ class ComplainController extends Controller
     */
     public function getComplainDetails($complainId)
     {
+      // header('Access-Control-Allow-Origin', $origin);
       try{ 
           $ComplainListData = DB::table('complain_main')
             ->leftjoin('complain_categorys','complain_main.com_cate_id','complain_categorys.id')
@@ -582,7 +585,7 @@ class ComplainController extends Controller
             // dd($data);
              
           if (!empty($ComplainListData)) {
-            return response()->json(['status'=>1,'message' =>'success.','result' => $data,'remarks_data',$remarksData],200);
+            return response()->json(['status'=>1,'message' =>'success','result' => $data,'remarks_data'=>$remarksData],200);
           }
           else{
 
@@ -619,7 +622,7 @@ class ComplainController extends Controller
         }
         else
         {
-            return response()->json(['status'=>0,'message'=>'No data found'],200);
+          return response()->json(['status'=>0,'message'=>'No data found'],200);
         }
         
     }
