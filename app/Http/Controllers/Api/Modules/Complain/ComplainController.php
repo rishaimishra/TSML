@@ -50,10 +50,7 @@ class ComplainController extends Controller
           }
 
          
-          $input['com_cate_name'] = $request->com_cate_name;
-           
-
-            // dd($input);
+          $input['com_cate_name'] = $request->com_cate_name; 
 
           $freightsData = ComplainCategory::create($input);
 
@@ -76,7 +73,7 @@ class ComplainController extends Controller
     }
 
     /**
-     * This is for add getComplainCategory. 
+     * This is for get complain category. 
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
     */
@@ -84,8 +81,6 @@ class ComplainController extends Controller
     {
     	try{ 
             $ComplainCategoryData = ComplainCategory::get();  
-
-             
              
             if (count($ComplainCategoryData)>0) {
                return response()->json(['status'=>1,'message' =>'success.','result' => $ComplainCategoryData],200);
@@ -106,7 +101,7 @@ class ComplainController extends Controller
     }
 
     /**
-     * This is for add storeComplainSubCategory. 
+     * This is for store complain sub category. 
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
     */
@@ -122,15 +117,11 @@ class ComplainController extends Controller
           ]);
 
           if ($validator->fails()) { 
-              return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $validator->errors()],config('global.failed_status'));
-          }
-
+            return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $validator->errors()],config('global.failed_status'));
+          } 
          
           $input['com_cate_id'] = $request->com_cate_id;
-          $input['com_sub_cate_name'] = $request->com_sub_cate_name;
-           
-
-            // dd($input);
+          $input['com_sub_cate_name'] = $request->com_sub_cate_name; 
 
           $freightsData = ComplainSubCategory::create($input);
 
@@ -153,23 +144,21 @@ class ComplainController extends Controller
     }
 
     /**
-     * This is for add getComplainCategory. 
+     * This is for get complain category. 
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
     */
     public function getComplainSubCategory($com_cate_id)
     {
     	try{ 
-            $ComplainSubCategoryData = ComplainSubCategory::where('com_cate_id',$com_cate_id)->orderBy('id','desc')->get();  
-
-             
+            $ComplainSubCategoryData = ComplainSubCategory::where('com_cate_id',$com_cate_id)->orderBy('id','desc')->get(); 
              
             if (count($ComplainSubCategoryData)>0) {
                return response()->json(['status'=>1,'message' =>'success.','result' => $ComplainSubCategoryData],200);
             }
             else{
 
-               return response()->json(['status'=>1,'message' =>'No data found','result' => []],config('global.success_status'));
+              return response()->json(['status'=>1,'message' =>'No data found','result' => []],config('global.success_status'));
 
             }
             
@@ -209,9 +198,6 @@ class ComplainController extends Controller
           $input['com_sub_cate_id'] = $request->com_sub_cate_id;
           $input['com_sub_cate2_name'] = $request->com_sub_cate2_name;
            
-
-            // dd($input);
-
           $freightsData = ComplainSubCategory2::create($input);
 
           \DB::commit();
@@ -248,7 +234,7 @@ class ComplainController extends Controller
             }
             else{
 
-               return response()->json(['status'=>1,'message' =>'No data found','result' => []],config('global.success_status'));
+              return response()->json(['status'=>1,'message' =>'No data found','result' => []],config('global.success_status'));
 
             }
             
@@ -287,9 +273,6 @@ class ComplainController extends Controller
           $input['com_sub_cate_2id'] = $request->com_sub_cate_2id;
           $input['com_sub_cate3_name'] = $request->com_sub_cate3_name;
            
-
-            // dd($input);
-
           $freightsData = ComplainSubCategory3::create($input);
 
           \DB::commit();
@@ -318,23 +301,21 @@ class ComplainController extends Controller
     public function getComplainSubCategory3($com_sub_cate_2id)
     {
     	try{ 
-            $ComplainSubCategory3Data = ComplainSubCategory3::where('com_sub_cate_2id',$com_sub_cate_2id)->orderBy('id','desc')->get();   
+          $ComplainSubCategory3Data = ComplainSubCategory3::where('com_sub_cate_2id',$com_sub_cate_2id)->orderBy('id','desc')->get();   
              
              
-            if (count($ComplainSubCategory3Data)>0) {
-               return response()->json(['status'=>1,'message' =>'success.','result' => $ComplainSubCategory3Data],200);
-            }
-            else{
-
-               return response()->json(['status'=>1,'message' =>'No data found','result' => []],config('global.success_status'));
-
-            }
-            
-            
-            }catch(\Exception $e){
-                $response['error'] = $e->getMessage();
-                return response()->json([$response]);
-            }
+          if (count($ComplainSubCategory3Data)>0) {
+             return response()->json(['status'=>1,'message' =>'success.','result' => $ComplainSubCategory3Data],200);
+          }
+          else{ 
+            return response()->json(['status'=>1,'message' =>'No data found','result' => []],config('global.success_status')); 
+          }
+          
+          
+        }catch(\Exception $e){
+            $response['error'] = $e->getMessage();
+            return response()->json([$response]);
+        }
     }
 
     /**
@@ -357,38 +338,27 @@ class ComplainController extends Controller
           ]);
 
           if ($validator->fails()) { 
-              return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $validator->errors()],config('global.failed_status'));
-          }
-
+            return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $validator->errors()],config('global.failed_status'));
+          } 
          
           $input['com_cate_id'] = $request->com_cate_id;
           $input['com_sub_cate_id'] = $request->com_sub_cate_id;
           $input['com_sub_cate_2id'] = $request->com_sub_cate_2id;
           $input['com_sub_cate_3id'] = $request->com_sub_cate_3id;
-          $input['customer_name'] = $request->customer_name;
-
-          
+          $input['customer_name'] = $request->customer_name; 
           
           if ($request->hasFile('complain_file'))
 		    {  
 
 		    	$image = $request->complain_file; 
 
-                $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
-                Storage::putFileAs('public/images/complain/', $image, $filename);
+          $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+          Storage::putFileAs('public/images/complain/', $image, $filename);
 
-                $input['file'] = $filename;
-
-
-
+          $input['file'] = $filename; 
 		    }
-
-            // dd($input);
-
-          $complainData = ComplainMain::create($input);
-
-         
-
+ 
+          $complainData = ComplainMain::create($input); 
           $remarksinput['complain_id'] = $complainData->id;
           $remarksinput['customer_remarks'] = $request->customer_remarks;
 
@@ -429,9 +399,7 @@ class ComplainController extends Controller
 
           if ($validator->fails()) { 
               return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $validator->errors()],config('global.failed_status'));
-          }
-
-          
+          } 
           
           if ($request->customer_remarks) {
           	$input['complain_id'] = $request->complain_id;
@@ -444,9 +412,7 @@ class ComplainController extends Controller
           	$input['kam_remarks'] = $request->kam_remarks;
 
           	$RemarksData = ComplainRemarks::create($input);
-          }
-
-            
+          } 
 
           \DB::commit();
 
@@ -496,46 +462,43 @@ class ComplainController extends Controller
 
 	         $complainlist = [];
 		      
-		     foreach ($ComplainListData as $ComplainList) {
+		      foreach ($ComplainListData as $ComplainList) {
 
-		     	$data['complain_id'] = $ComplainList->id;
-          $data['customer_name'] = $ComplainList->customer_name;
-          $data['created_at'] = $ComplainList->created_at;
-          $data['com_cate_name'] = $ComplainList->com_cate_name;
-          $data['com_sub_cate_name'] = $ComplainList->com_sub_cate_name; 
-          $data['com_sub_cate2_name'] = $ComplainList->com_sub_cate2_name;
-          $data['com_sub_cate3_name'] = $ComplainList->com_sub_cate3_name;
-          $data['remarks'] = $ComplainList->customer_remarks;
+  		     	$data['complain_id'] = $ComplainList->id;
+            $data['customer_name'] = $ComplainList->customer_name;
+            $data['created_at'] = $ComplainList->created_at;
+            $data['com_cate_name'] = $ComplainList->com_cate_name;
+            $data['com_sub_cate_name'] = $ComplainList->com_sub_cate_name; 
+            $data['com_sub_cate2_name'] = $ComplainList->com_sub_cate2_name;
+            $data['com_sub_cate3_name'] = $ComplainList->com_sub_cate3_name;
+            $data['remarks'] = $ComplainList->customer_remarks;
 
-	            if ($ComplainList->file) 
-		   		{
+  	            if ($ComplainList->file) 
+  		   		{
 
-		   			$data['file_url'] = asset('storage/app/public/images/complain/'.$ComplainList->file);
-		   		}
-		   		else
-		   		{
-		   			$data['file_url'] =  null;
-		   		}
+  		   			$data['file_url'] = asset('storage/app/public/images/complain/'.$ComplainList->file);
+  		   		}
+  		   		else
+  		   		{
+  		   			$data['file_url'] =  null;
+  		   		}
 
-		   		$complainlist[] = $data;
-		     }
-		     
-            // dd($data);
-             
-            if (count($ComplainListData)>0) {
-               return response()->json(['status'=>1,'message' =>'success.','result' => $complainlist],200);
-            }
-            else{
+  		   		$complainlist[] = $data;
+		      }
+		      
+          if (count($ComplainListData)>0) {
+             return response()->json(['status'=>1,'message' =>'success.','result' => $complainlist],200);
+          }
+          else{
 
-               return response()->json(['status'=>1,'message' =>'No data found','result' => []],config('global.success_status'));
+             return response()->json(['status'=>1,'message' =>'No data found','result' => []],config('global.success_status'));
 
-            }
-            
-            
-            }catch(\Exception $e){
-                $response['error'] = $e->getMessage();
-                return response()->json([$response]);
-            }
+          } 
+          
+          }catch(\Exception $e){
+              $response['error'] = $e->getMessage();
+              return response()->json([$response]);
+          }
 
 
     }
@@ -586,8 +549,7 @@ class ComplainController extends Controller
 
            return response()->json(['status'=>1,'message' =>'No data found','result' => []],config('global.success_status'));
 
-          }
-            
+          } 
             
           }catch(\Exception $e){
             $response['error'] = $e->getMessage();
