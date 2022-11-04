@@ -554,13 +554,14 @@ class ComplainController extends Controller
             ->leftjoin('complain_sub_categorys2','complain_main.com_sub_cate_2id','complain_sub_categorys2.id')
             ->leftjoin('complain_sub_categorys3','complain_main.com_sub_cate_3id','complain_sub_categorys3.id')
          
-            ->select('complain_main.id','complain_main.customer_name','complain_main.created_at','complain_main.file','complain_categorys.com_cate_name','complain_sub_categorys.com_sub_cate_name','complain_sub_categorys2.com_sub_cate2_name','complain_sub_categorys3.com_sub_cate3_name')
+            ->select('complain_main.id','complain_main.customer_name','complain_main.created_at','complain_main.file','complain_main.closed_status','complain_categorys.com_cate_name','complain_sub_categorys.com_sub_cate_name','complain_sub_categorys2.com_sub_cate2_name','complain_sub_categorys3.com_sub_cate3_name')
             ->where('complain_main.id',$complainId)
             ->first(); 
 
           $data['complain_id'] = $ComplainListData->id;
           $data['customer_name'] = $ComplainListData->customer_name;
           $data['created_at'] = $ComplainListData->created_at;
+          $data['complain_status'] = $ComplainListData->closed_status;
           $data['com_cate_name'] = $ComplainListData->com_cate_name;
           $data['com_sub_cate_name'] = $ComplainListData->com_sub_cate_name; 
           $data['com_sub_cate2_name'] = $ComplainListData->com_sub_cate2_name;

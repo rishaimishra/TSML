@@ -17,7 +17,7 @@ class CreateComplainRemarksTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('complain_id');
             $table->string('customer_remarks')->nullable();
-            $table->string('kam_remarks')->nullable();
+            $table->string('kam_remarks')->nullable(); 
             $table->timestamps();
         });
     }
