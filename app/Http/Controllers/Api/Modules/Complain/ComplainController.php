@@ -490,9 +490,11 @@ class ComplainController extends Controller
 	          
 	         $ComplainListData = $ComplainListData->get();
 
-	         
+
+	         $complainlist = [];
 		      
 		     foreach ($ComplainListData as $ComplainList) {
+
 		     	$data['complain_id'] = $ComplainList->id;
 	            $data['customer_name'] = $ComplainList->customer_name;
 	            $data['created_at'] = $ComplainList->created_at;
@@ -510,11 +512,14 @@ class ComplainController extends Controller
 		   		{
 		   			$data['file_url'] =  null;
 		   		}
+
+		   		$complainlist[] = $data;
 		     }
+		     
+            // dd($data);
              
-             
-            if ($data) {
-               return response()->json(['status'=>1,'message' =>'success.','result' => $data],200);
+            if (count($ComplainListData)>0) {
+               return response()->json(['status'=>1,'message' =>'success.','result' => $complainlist],200);
             }
             else{
 
