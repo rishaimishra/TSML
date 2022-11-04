@@ -552,21 +552,7 @@ class ComplainController extends Controller
          
             ->select('complain_main.id','complain_main.customer_name','complain_main.created_at','complain_main.file','complain_categorys.com_cate_name','complain_sub_categorys.com_sub_cate_name','complain_sub_categorys2.com_sub_cate2_name','complain_sub_categorys3.com_sub_cate3_name')
             ->where('complain_main.id',$complainId)
-            ->first();
-         
-             
-         
-         // if(!empty($request->customer_name))
-         //   {
-         //     $ComplainListData = $ComplainListData->where('complain_main.customer_name',$request->customer_name);
-         //   }
-            
-         //   $ComplainListData = $ComplainListData->get();
-
-
-            
-          
-          
+            ->first(); 
 
           $data['complain_id'] = $ComplainListData->id;
           $data['customer_name'] = $ComplainListData->customer_name;
