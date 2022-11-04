@@ -98,6 +98,8 @@ Route::group(['namespace'=>'Api\Modules'],function(){
 		Route::get('get-complain-list-kam', 'Complain\ComplainController@getComplainListKam')->name('get_complain_list_kam');
 		Route::get('get-complain-details/{complainId}', 'Complain\ComplainController@getComplainDetails')->name('get_complain_details');
 
+		Route::get('closed-remarks/{complainId}', 'Complain\ComplainController@closedRemarks')->name('closed_remarks');
+
    		  
 
 

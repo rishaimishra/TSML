@@ -598,4 +598,29 @@ class ComplainController extends Controller
 
 
     }
+
+    /**
+     * This is for closed complain.
+     *
+     * @param  \App\Product  $product
+     * @return \Illuminate\Http\Response
+    */
+    public function closedRemarks($id)
+    {  
+        $getComplain = ComplainMain::where('id',$id)->first();  
+
+        if(!empty($getComplain))
+        { 
+        $input['closed_status'] = 2; //2=> Open/1=>Closed. 
+
+        $updateComplain = ComplainMain::where('id',$getComplain->id)->update($input);
+ 
+          return response()->json(['status'=>1,'message' =>'Complain status inactive successfully.']);          
+        }
+        else
+        {
+            return response()->json(['status'=>0,'message'=>'No data found'],200);
+        }
+        
+    }
 }
