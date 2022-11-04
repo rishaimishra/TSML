@@ -13,6 +13,8 @@ use PhpOffice\PhpSpreadsheet\Reader\Csv;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Response;
 use App\Models\DailyProduction;
+use App\Models\Category;
+use App\Models\Product;
 use DB;
 
 class OrderPlanningController extends Controller
@@ -52,6 +54,7 @@ class OrderPlanningController extends Controller
 
             	$start = $request->input('start');
             	$end = $request->input('end');
+            	$fg_sap = $request->input('fg_sap');
             
                 $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
                 $spreadsheet = $reader->load($request->excel);
@@ -63,7 +66,7 @@ class OrderPlanningController extends Controller
                 foreach($sheetData as $k => $val)
                 {
                    
-                    // return $val[5];
+                    // return $val[8];
                         $user = array();
   
                         
@@ -74,9 +77,10 @@ class OrderPlanningController extends Controller
                         $user['met_no'] = $val[4];
                         $user['grade_code'] = $val[5];
                         $user['size'] = $val[6];
-                        $user['qty'] = $val[7];
+                        $user['met_desc'] = $val[7];
                         $user['start'] = date("Y-m-d", strtotime($start));
                         $user['end'] = date("Y-m-d", strtotime($end));
+                        $user['qty'] = $fg_sap;
                         
                         DailyProduction::create($user);
               
@@ -99,25 +103,81 @@ class OrderPlanningController extends Controller
        {
        	   try{ 
 
+       	   	   $result = array();
+
                $res = DB::table('monthly_production_plans')
                 ->leftJoin('daily_productions', function($join)
                          {
                              $join->on('monthly_production_plans.plant', '=', 'daily_productions.plant');
                              $join->on('monthly_production_plans.start_date','=','daily_productions.start');
                              $join->on('monthly_production_plans.end_date','daily_productions.end');
-                             $join->on('monthly_production_plans.size','daily_productions.size');
+                             // $join->on('monthly_production_plans.size','daily_productions.size');
+                             $join->on('monthly_production_plans.cat_id','daily_productions.category');
+                             $join->on('monthly_production_plans.sub_cat_id','daily_productions.subcategory');
                          })
-               ->select('monthly_production_plans.open_stk','monthly_production_plans.mnthly_prod','daily_productions.*')->get();
-               echo "<pre>";print_r($res);exit();
+               ->select('monthly_production_plans.open_stk','monthly_production_plans.mnthly_prod','daily_productions.*','monthly_production_plans.export','monthly_production_plans.offline','monthly_production_plans.sap_order','monthly_production_plans.fg_sap','monthly_production_plans.id as mnt_id')->get();
+               // echo "<pre>";print_r($res);exit();
+               foreach ($res as $k => $value) {
+               	    
+               	    $result['plant'] = $value->plant;
+               	    $result['category'] = $value->category;
+               	    $result['subcategory'] = $value->subcategory;
+               	    $result['mat_grp'] = $value->met_group;
+               	    $result['mat_no'] = $value->met_no;
+               	    $result['grade'] = $value->grade_code;
+               	    $result['desc'] = $value->met_desc;
+               	    $result['op_stk'] = $value->open_stk;
+               	    $result['mnthl_prdo_stk'] = $value->mnthly_prod;
+               	    $result['export'] = $value->export;
+               	    $result['offline'] = $value->offline;
+               	    $result['tot_qty'] = ($value->open_stk + $value->mnthly_prod)-($value->export + $value->offline);
+               	    $result['on_dom'] = $this->poQtyOrder($value->plant,$value->category,$value->subcategory); 
+                    // echo "<pre>";print_r($result['on_dom']);exit();
+               	      //-- from po //
+               	    $result['bal_qty'] = "";
+               	    $result['order_pur'] = $value->sap_order;
+               	    $result['fg'] = $value->qty;
+               	    $result['fg_sap'] = $value->fg_sap;
+               	    $result['dispatch'] = "";
+               	    $result['plan_qty'] = "";
+               	    $result['daily_id'] = $value->id;
+               	    $result['mnt_id'] = $value->mnt_id;
+
+
+               }
 
 		        return response()->json(['status'=>1,
 		          'message' =>'success',
-		          'result' => 'Quote created'],
+		          'result' => $result],
 		          config('global.success_status'));
 
 		      }catch(\Exception $e){
 
 		       return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
 		     }
+       }
+
+
+       public function poQtyOrder($plant,$category,$subcategory)
+       {
+       	    $sum = 0;
+       	    $category = Product::where('pro_name',$category)->first();
+       	    $subcategory = Category::where('cat_name',$subcategory)->first();
+       	    // return $subcategory->id;
+       	    $res = DB::table('quotes')->leftJoin('quote_schedules','quotes.id','quote_schedules.quote_id')
+       	    ->where('quotes.product_id',$category->id)->where('quotes.cat_id',$subcategory->id)
+       	    ->where('quote_schedules.location',$plant)->select('quote_schedules.quantity')
+            ->where('quote_schedules.quote_status',1)
+            ->whereNull('quote_schedules.deleted_at')
+            ->whereNull('quotes.deleted_at')
+            ->where('quotes.kam_status',4)
+       	    ->get();
+   
+       	    foreach ($res as $key => $value) {
+       	    	 
+                 $sum += $value->quantity;
+       	    }
+
+       	    return $sum;
        }
 }

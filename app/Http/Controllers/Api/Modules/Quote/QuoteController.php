@@ -389,7 +389,7 @@ class QuoteController extends Controller
          ->leftjoin('products','quotes.product_id','products.id')
          ->leftjoin('categorys','quotes.cat_id','categorys.id')
          ->leftjoin('sub_categorys','categorys.id','sub_categorys.cat_id')
-         ->select('quotes.*','users.name',DB::raw("(sum(quotes.quantity)) as tot_qt"),'products.pro_desc','quotes.rfq_no','categorys.cat_name','sub_categorys.sub_cat_name','categorys.primary_image')
+         ->select('quotes.*','users.name',DB::raw('SUM(quotes.quantity) as tot_qt'),'products.pro_desc','quotes.rfq_no','categorys.cat_name','sub_categorys.sub_cat_name','categorys.primary_image')
          ->groupBy('quotes.rfq_no')
          ->orderBy('quotes.created_at','desc')
          ->whereNull('quotes.deleted_at');
