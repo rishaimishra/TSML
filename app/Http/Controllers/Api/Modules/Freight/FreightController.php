@@ -28,7 +28,8 @@ class FreightController extends Controller
 
    			$validator = Validator::make($request->all(), [
                 'pickup_from'        => 'required', 
-                'location'     => 'required',  
+                'pickup_location'     => 'required',
+                'destation_location'     => 'required',  
                 'freight_charges' => ['required','regex:/^\d+(((,\d+)?,\d+)?,\d+)?$/'], 
 	        ]);
 
@@ -37,7 +38,8 @@ class FreightController extends Controller
 	        }
 
 	        $input['pickup_from'] = $request->pickup_from;
-    	   	$input['location'] = $request->location;
+    	   	$input['location'] = $request->pickup_location;
+          $input['destation_location'] = $request->destation_location;
     	   	$input['freight_charges'] = $request->freight_charges;
     	   	$input['status'] = $request->status;
 
@@ -157,7 +159,8 @@ class FreightController extends Controller
    			$validator = Validator::make($request->all(), [
    				'freights_id'        => 'required|numeric', 
                 'pickup_from'        => 'required', 
-                'location'     => 'required',  
+                'pickup_location'     => 'required',
+                'destation_location'     => 'required',  
                 'freight_charges' => ['required','regex:/^\d+(((,\d+)?,\d+)?,\d+)?$/'], 
 	        ]);
 
@@ -166,7 +169,8 @@ class FreightController extends Controller
 	        }
 
 	        $update['pickup_from'] = $request->pickup_from;
-    	   	$update['location'] = $request->location;
+    	   	$update['location'] = $request->pickup_location;
+          $update['destation_location'] = $request->destation_location;
     	   	$update['freight_charges'] = $request->freight_charges;
     	   	$update['status'] = $request->status;
 

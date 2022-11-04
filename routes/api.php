@@ -95,8 +95,12 @@ Route::group(['namespace'=>'Api\Modules'],function(){
 
 		Route::post('remarks-replay', 'Complain\ComplainController@remarksReplay')->name('remarks_replay');
 
+		Route::get('complain-details/{complainId}', 'Complain\ComplainController@complainDetails')->name('complain_details');
+
+		Route::get('complain-download/{complainId}', 'Complain\ComplainController@complainDownload')->name('complain_download'); 
+
 		Route::get('get-complain-list-kam', 'Complain\ComplainController@getComplainListKam')->name('get_complain_list_kam');
-		Route::get('get-complain-details/{complainId}', 'Complain\ComplainController@getComplainDetails')->name('get_complain_details');
+		
 
 		Route::get('closed-remarks/{complainId}', 'Complain\ComplainController@closedRemarks')->name('closed_remarks');
 
