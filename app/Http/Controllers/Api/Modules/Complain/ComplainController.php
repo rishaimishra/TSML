@@ -334,7 +334,9 @@ class ComplainController extends Controller
             'com_cate_id'        => 'required',
             'com_sub_cate_id'        => 'required',
             'com_sub_cate_2id'        => 'required',
-            'com_sub_cate_3id'        => 'required', 
+            'com_sub_cate_3id'        => 'required',
+            'po_number'        => 'required',
+            'po_date'        => 'required', 
           ]);
 
           if ($validator->fails()) { 
@@ -345,6 +347,8 @@ class ComplainController extends Controller
           $input['com_sub_cate_id'] = $request->com_sub_cate_id;
           $input['com_sub_cate_2id'] = $request->com_sub_cate_2id;
           $input['com_sub_cate_3id'] = $request->com_sub_cate_3id;
+          $input['po_number'] = $request->po_number;
+          $input['po_date'] = date("Y-m-d", strtotime($request->po_date));
           $input['customer_name'] = $request->customer_name; 
           
           if ($request->hasFile('complain_file'))
@@ -357,6 +361,8 @@ class ComplainController extends Controller
 
           $input['file'] = $filename; 
 		    }
+
+        // dd($input);
  
           $complainData = ComplainMain::create($input); 
           $remarksinput['complain_id'] = $complainData->id;
@@ -447,7 +453,7 @@ class ComplainController extends Controller
 		      ->leftjoin('complain_sub_categorys3','complain_main.com_sub_cate_3id','complain_sub_categorys3.id')
           ->join('complain_remarks','complain_main.id','complain_remarks.complain_id')
 		     
-		     ->select('complain_main.id','complain_main.customer_name','complain_main.created_at','complain_main.file','complain_categorys.com_cate_name','complain_sub_categorys.com_sub_cate_name','complain_sub_categorys2.com_sub_cate2_name','complain_sub_categorys3.com_sub_cate3_name','complain_remarks.customer_remarks'); 
+		     ->select('complain_main.id','complain_main.customer_name','complain_main.po_number','complain_main.po_date','complain_main.created_at','complain_main.file','complain_categorys.com_cate_name','complain_sub_categorys.com_sub_cate_name','complain_sub_categorys2.com_sub_cate2_name','complain_sub_categorys3.com_sub_cate3_name','complain_remarks.customer_remarks'); 
 		      
 		     
 		     if(!empty($request->customer_name))
@@ -471,6 +477,8 @@ class ComplainController extends Controller
             $data['com_sub_cate_name'] = $ComplainList->com_sub_cate_name; 
             $data['com_sub_cate2_name'] = $ComplainList->com_sub_cate2_name;
             $data['com_sub_cate3_name'] = $ComplainList->com_sub_cate3_name;
+            $data['po_number'] = $ComplainList->po_number;
+            $data['po_date'] = $ComplainList->po_date;
             $data['remarks'] = $ComplainList->customer_remarks;
 
   	            if ($ComplainList->file) 
@@ -517,7 +525,7 @@ class ComplainController extends Controller
             ->leftjoin('complain_sub_categorys2','complain_main.com_sub_cate_2id','complain_sub_categorys2.id')
             ->leftjoin('complain_sub_categorys3','complain_main.com_sub_cate_3id','complain_sub_categorys3.id')
          
-            ->select('complain_main.id','complain_main.customer_name','complain_main.created_at','complain_main.file','complain_main.closed_status','complain_categorys.com_cate_name','complain_sub_categorys.com_sub_cate_name','complain_sub_categorys2.com_sub_cate2_name','complain_sub_categorys3.com_sub_cate3_name')
+            ->select('complain_main.id','complain_main.customer_name','complain_main.po_number','complain_main.po_date','complain_main.created_at','complain_main.file','complain_main.closed_status','complain_categorys.com_cate_name','complain_sub_categorys.com_sub_cate_name','complain_sub_categorys2.com_sub_cate2_name','complain_sub_categorys3.com_sub_cate3_name')
             ->where('complain_main.id',$complainId)
             ->first(); 
 
@@ -529,6 +537,8 @@ class ComplainController extends Controller
           $data['com_sub_cate_name'] = $ComplainListData->com_sub_cate_name; 
           $data['com_sub_cate2_name'] = $ComplainListData->com_sub_cate2_name;
           $data['com_sub_cate3_name'] = $ComplainListData->com_sub_cate3_name;
+          $data['po_number'] = $ComplainListData->po_number;
+          $data['po_date'] = $ComplainListData->po_date;
 
           if ($ComplainListData->file) 
           {
@@ -585,49 +595,5 @@ class ComplainController extends Controller
         
     }
 
-    // public function complainDownload($complainId)
-    // {
-
-    //   try{
-    //         $ComplainListData = DB::table('complain_main')
-    //         ->leftjoin('complain_categorys','complain_main.com_cate_id','complain_categorys.id')
-    //         ->leftjoin('complain_sub_categorys','complain_main.com_sub_cate_id','complain_sub_categorys.id')
-    //         ->leftjoin('complain_sub_categorys2','complain_main.com_sub_cate_2id','complain_sub_categorys2.id')
-    //         ->leftjoin('complain_sub_categorys3','complain_main.com_sub_cate_3id','complain_sub_categorys3.id')
-         
-    //         ->select('complain_main.id','complain_main.customer_name','complain_main.created_at','complain_main.file','complain_main.closed_status','complain_categorys.com_cate_name','complain_sub_categorys.com_sub_cate_name','complain_sub_categorys2.com_sub_cate2_name','complain_sub_categorys3.com_sub_cate3_name')
-    //         ->where('complain_main.id',$complainId)
-    //         ->first(); 
-             
-    //         $filePath = public_path('images/complain/'.$ComplainListData->file);
-    //         $headers = ['Content-Type: application/pdf'];
-    //         $fileName = time().'.pdf';
-
-    //         return response()->download($filePath, $fileName, $headers);
-             
-    //       if (!empty($comfile)){
-    //         return response()->download($comfile);
-    //         // return response()->json(['status'=>1,'message' =>'success','result' =>$data,'remarksData' =>$remarksData],200);
-    //       }
-    //       else{
-
-    //        return response()->json(['status'=>1,'message' =>'No data found','result' => []],config('global.success_status'));
-
-    //       } 
-            
-    //       }catch(\Exception $e){
-    //         $response['error'] = $e->getMessage();
-    //         return response()->json([$response]);
-    //       }
-
-
-
-
-
-
-
-        //PDF file is stored under project/public/download/info.pdf
-      // $file="http://localhost/TSML/storage/app/public/images/complain/1667460708-9778.jpg";
-      //   return Response::download($file);
-    }
+    
 }

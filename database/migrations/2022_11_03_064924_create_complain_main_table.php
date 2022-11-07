@@ -19,6 +19,9 @@ class CreateComplainMainTable extends Migration
             $table->unsignedBigInteger('com_sub_cate_id');
             $table->unsignedBigInteger('com_sub_cate_2id');
             $table->unsignedBigInteger('com_sub_cate_3id');
+            $table->unsignedBigInteger('com_sub_cate_3id');
+            $table->unsignedBigInteger('po_number')->nullable();
+            $table->date('po_date')->nullable();
             $table->string('file')->nullable();
             $table->string('customer_name')->nullable();
             $table->unsignedTinyInteger('closed_status')->default(1)->comment('1=Open|2=Closed');
