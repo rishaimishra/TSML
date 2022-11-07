@@ -15,6 +15,7 @@ use Response;
 use App\Models\DailyProduction;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Dispatchplan;
 use DB;
 
 class OrderPlanningController extends Controller
@@ -125,7 +126,7 @@ class OrderPlanningController extends Controller
                              $join->on('monthly_production_plans.cat_id','daily_productions.category');
                              $join->on('monthly_production_plans.sub_cat_id','daily_productions.subcategory');
                          })
-               ->select('monthly_production_plans.open_stk','monthly_production_plans.mnthly_prod','daily_productions.*','monthly_production_plans.export','monthly_production_plans.offline','monthly_production_plans.sap_order','monthly_production_plans.fg_sap','monthly_production_plans.id as mnt_id');
+               ->select('monthly_production_plans.open_stk','monthly_production_plans.mnthly_prod','daily_productions.*','monthly_production_plans.export','monthly_production_plans.offline','monthly_production_plans.sap_order','monthly_production_plans.fg_sap','monthly_production_plans.id as mnt_id','monthly_production_plans.start_date','monthly_production_plans.end_date','monthly_production_plans.size');
 
                if(!empty($start_date) && !empty($end_date))
                {
@@ -152,38 +153,38 @@ class OrderPlanningController extends Controller
                {
                        $res = $res->where('daily_productions.grade_code',$grade);
                }
-               $res = $res->toSql();
-               return $res;
+               $res = $res->get();
+               // return $res;
                // echo "<pre>";print_r($res);exit();
                foreach ($res as $k => $value) {
                	    
-               	    $result['plant'] = $value->plant;
-               	    $result['category'] = $value->category;
-               	    $result['subcategory'] = $value->subcategory;
-               	    $result['mat_grp'] = $value->met_group;
-               	    $result['mat_no'] = $value->met_no;
-               	    $result['grade'] = $value->grade_code;
-               	    $result['desc'] = $value->met_desc;
-               	    $result['op_stk'] = $value->open_stk;
-               	    $result['mnthl_prdo_stk'] = $value->mnthly_prod;
-               	    $result['export'] = $value->export;
-               	    $result['offline'] = $value->offline;
-               	    $result['tot_qty'] = ($value->open_stk + $value->mnthly_prod)-($value->export + $value->offline);
-               	    $result['on_dom'] = $this->poQtyOrder($value->plant,$value->category,$value->subcategory); 
+               	    $result[$k]['plant'] = $value->plant;
+               	    $result[$k]['category'] = $value->category;
+               	    $result[$k]['subcategory'] = $value->subcategory;
+               	    $result[$k]['mat_grp'] = $value->met_group;
+               	    $result[$k]['mat_no'] = $value->met_no;
+               	    $result[$k]['grade'] = $value->grade_code;
+               	    $result[$k]['desc'] = $value->met_desc;
+               	    $result[$k]['op_stk'] = $value->open_stk;
+               	    $result[$k]['mnthl_prdo_stk'] = $value->mnthly_prod;
+               	    $result[$k]['export'] = $value->export;
+               	    $result[$k]['offline'] = $value->offline;
+               	    $result[$k]['tot_qty'] = ($value->open_stk + $value->mnthly_prod)-($value->export + $value->offline);
+               	    $result[$k]['on_dom'] = $this->poQtyOrder($value->plant,$value->category,$value->subcategory,$value->start_date,$value->end_date,$value->size); 
                     // echo "<pre>";print_r($result['on_dom']);exit();
                	      //-- from po //
-               	    $result['bal_qty'] = "";
-               	    $result['order_pur'] = $value->sap_order;
-               	    $result['fg'] = $value->qty;
-               	    $result['fg_sap'] = $value->fg_sap;
-               	    $result['dispatch'] = "";
-               	    $result['plan_qty'] = "";
-               	    $result['daily_id'] = $value->id;
-               	    $result['mnt_id'] = $value->mnt_id;
+               	    $result[$k]['bal_qty'] = ($result[$k]['tot_qty'] - $result[$k]['on_dom']);
+               	    $result[$k]['order_pur'] = $value->sap_order;
+               	    $result[$k]['fg'] = $value->qty;
+               	    $result[$k]['fg_sap'] = $value->fg_sap;
+               	    $result[$k]['plan_qty'] = "";
+               	    $result[$k]['daily_id'] = $value->id;
+               	    $result[$k]['mnt_id'] = $value->mnt_id;
+                    $result[$k]['dispatch'] = $this->dispatchQty($value->plant,$value->category,$value->subcategory,$value->start_date,$value->end_date,$value->size);
 
 
                }
-
+             // echo "<pre>";print_r($result);exit();
 		        return response()->json(['status'=>1,
 		          'message' =>'success',
 		          'result' => $result],
@@ -196,7 +197,7 @@ class OrderPlanningController extends Controller
        }
 
 
-       public function poQtyOrder($plant,$category,$subcategory)
+       public function poQtyOrder($plant,$category,$subcategory,$start_date,$end_date,$size)
        {
        	    $sum = 0;
        	    $category = Product::where('pro_name',$category)->first();
@@ -204,8 +205,10 @@ class OrderPlanningController extends Controller
        	    // return $subcategory->id;
        	    $res = DB::table('quotes')->leftJoin('quote_schedules','quotes.id','quote_schedules.quote_id')
        	    ->where('quotes.product_id',$category->id)->where('quotes.cat_id',$subcategory->id)
-       	    ->where('quote_schedules.location',$plant)->select('quote_schedules.quantity')
+       	    ->where('quote_schedules.plant',$plant)->select('quote_schedules.quantity')
             ->where('quote_schedules.quote_status',1)
+            ->where('quote_schedules.pro_size',$size)
+            ->whereDate('quote_schedules.created_at','>=',$start_date)->whereDate('quote_schedules.created_at','<=',$end_date)
             ->whereNull('quote_schedules.deleted_at')
             ->whereNull('quotes.deleted_at')
             ->where('quotes.kam_status',4)
@@ -218,4 +221,97 @@ class OrderPlanningController extends Controller
 
        	    return $sum;
        }
+
+
+
+        public function submitDispatchPlan(Request $request)
+        {
+           // return $request->all();exit;
+            $response = [];
+            try{
+
+              $plant = $request->input('plant');
+              $category = $request->input('category');
+              $subcategory = $request->input('subcategory');
+              $size = $request->input('size');
+              $ds_dt = $request->input('ds_dt');
+              $ds_qty = $request->input('ds_qty');
+              $excel = $request->excel;
+
+              if(!empty($excel))
+              {
+            
+                $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+                $spreadsheet = $reader->load($request->excel);
+                $sheetData = $spreadsheet->getActiveSheet()->toArray();
+                // return $sheetData;
+                $removed = array_shift($sheetData);
+                $data = json_encode($sheetData);
+
+                foreach($sheetData as $k => $val)
+                {
+                   
+                    // return $val[8];
+                        $user = array();
+  
+                        
+                        $user['plant'] = $val[0];
+                        $user['cat_id'] = $val[1];
+                        $user['sub_cat_id'] = $val[2];
+                        $user['size'] = $val[3];
+                        $user['ds_qty'] = $val[4];
+                        $user['ds_date'] = $val[5];
+                        
+                        Dispatchplan::create($user);
+              
+                }
+              }
+              else{
+
+                     $user = array();
+  
+                        
+                        $user['plant'] = $plant;
+                        $user['cat_id'] = $category;
+                        $user['sub_cat_id'] = $subcategory;
+                        $user['size'] = $size;
+                        $user['ds_qty'] = $ds_qty;
+                        $user['ds_date'] = date("Y-m-d", strtotime($ds_dt));
+                        // return $user;exit;
+                        Dispatchplan::create($user);
+
+
+                        
+              }
+
+                $response['success'] = true;
+                $response['message'] = 'Dispatch Uploaded Successfully';
+                return Response::json($response);
+
+             
+            
+            }catch(\Exception $e){
+                $response['error'] = $e->getMessage();
+                return Response::json($response);
+            }
+        }
+
+
+
+        public function dispatchQty($plant,$category,$subcategory,$start_date,$end_date,$size)
+        {
+           $response = array();
+
+             $res = DB::table('dispatch_plans')->where('plant',$plant)->where('size',$size)->where('cat_id',$category)->where('sub_cat_id',$subcategory)
+             ->whereDate('ds_date','>=',$start_date)->whereDate('ds_date','<=',$end_date)->get();
+
+             foreach ($res as $key => $value) {
+                 
+                  $response[$key]['day'] = date("d", strtotime($value->ds_date));
+                  $response[$key]['ds_qty'] = $value->ds_qty;
+             }
+
+             return $response;
+
+        }
 }
