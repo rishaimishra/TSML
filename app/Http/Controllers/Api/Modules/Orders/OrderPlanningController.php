@@ -55,7 +55,7 @@ class OrderPlanningController extends Controller
 
             	$start = $request->input('start');
             	$end = $request->input('end');
-            	$fg_sap = $request->input('fg_sap');
+            	// $fg_sap = $request->input('fg_sap');
             
                 $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
                 $spreadsheet = $reader->load($request->excel);
@@ -67,7 +67,7 @@ class OrderPlanningController extends Controller
                 foreach($sheetData as $k => $val)
                 {
                    
-                    // return $val[8];
+                    // return $val[7];
                         $user = array();
   
                         
@@ -81,7 +81,9 @@ class OrderPlanningController extends Controller
                         $user['met_desc'] = $val[7];
                         $user['start'] = date("Y-m-d", strtotime($start));
                         $user['end'] = date("Y-m-d", strtotime($end));
-                        $user['qty'] = $fg_sap;
+                        $user['qty'] = $val[8];
+                        $user['fg_sap'] = $val[9];
+
                         
                         DailyProduction::create($user);
               
@@ -126,7 +128,7 @@ class OrderPlanningController extends Controller
                              $join->on('monthly_production_plans.cat_id','daily_productions.category');
                              $join->on('monthly_production_plans.sub_cat_id','daily_productions.subcategory');
                          })
-               ->select('monthly_production_plans.open_stk','monthly_production_plans.mnthly_prod','daily_productions.*','monthly_production_plans.export','monthly_production_plans.offline','monthly_production_plans.sap_order','monthly_production_plans.fg_sap','monthly_production_plans.id as mnt_id','monthly_production_plans.start_date','monthly_production_plans.end_date','monthly_production_plans.size');
+               ->select('monthly_production_plans.open_stk','monthly_production_plans.mnthly_prod','daily_productions.*','monthly_production_plans.export','monthly_production_plans.offline','monthly_production_plans.sap_order','monthly_production_plans.fg_sap as msap','monthly_production_plans.id as mnt_id','monthly_production_plans.start_date','monthly_production_plans.end_date','monthly_production_plans.size');
 
                if(!empty($start_date) && !empty($end_date))
                {
@@ -162,7 +164,7 @@ class OrderPlanningController extends Controller
                foreach ($res as $k => $value) {
                	    
                	    $dis_sum = 0;
-               	    
+
                	    $result[$k]['plant'] = $value->plant;
                	    $result[$k]['category'] = $value->category;
                	    $result[$k]['subcategory'] = $value->subcategory;
@@ -182,9 +184,8 @@ class OrderPlanningController extends Controller
                	    $result[$k]['bal_qty'] = ($result[$k]['tot_qty'] - $result[$k]['on_dom']);
                	    $result[$k]['order_pur'] = $value->sap_order;
                	    $result[$k]['fg'] = $value->qty;
-               	    $result[$k]['fg_sap'] = $value->fg_sap;
-               	    $result[$k]['fg_after_dis'] = "";
-               	    $result[$k]['plan_qty'] = "";
+               	    $result[$k]['fg_sap'] = $value->msap;
+               	    $result[$k]['fg_after_dis'] = $value->fg_sap;
                	    $result[$k]['daily_id'] = $value->id;
                	    $result[$k]['mnt_id'] = $value->mnt_id;
                     $result[$k]['dispatch'] = $this->dispatchQty($value->plant,$value->category,$value->subcategory,$value->start_date,$value->end_date,$value->size);
