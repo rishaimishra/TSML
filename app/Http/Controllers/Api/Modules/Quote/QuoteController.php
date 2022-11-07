@@ -1293,16 +1293,7 @@ class QuoteController extends Controller
 
        try{ 
 
-         $chk_quote = Quote::where('rfq_no',$id)->count();
-           // echo "<pre>";print_r($chk_quote);exit();
-         if($chk_quote > 0)
-         {
-          $quoteArr = array();
-
-          
-          $rfq_number = (!empty($id)) ? $id : '';
-
-          // $quote = Quote::where('rfq_no',$id)->with('schedules')->with('product')->with('category')->with('subCategory')->orderBy('updated_at','desc')->get()->toArray();
+      
 
            $quote = DB::table('orders')
            ->leftjoin('quotes','orders.rfq_no','quotes.rfq_no')
@@ -1312,7 +1303,7 @@ class QuoteController extends Controller
            ->leftjoin('sub_categorys','categorys.id','sub_categorys.cat_id')
            ->select('quotes.rfq_no','quotes.user_id','quotes.id as qid','products.slug','products.status','categorys.*','sub_categorys.*','users.id','products.id as pid','categorys.id as cid','quotes.quantity','orders.letterhead','orders.po_no','orders.po_date')
            ->orderBy('quotes.updated_at','desc')
-           ->where('orders.rfq_no',$id)
+           ->where('orders.po_no',$id)
            ->whereNull('quotes.deleted_at')
            ->get()->toArray();
            // echo "<pre>";print_r($quote);exit();
@@ -1356,15 +1347,10 @@ class QuoteController extends Controller
           }
           else{
 
-           return response()->json(['status'=>1,'message' =>'success','result' => 'Quote not updated'],config('global.success_status'));
+           return response()->json(['status'=>1,'message' =>'success','result' => 'PO not found'],config('global.success_status'));
 
          }
-       }
-       else{
-
-         return response()->json(['status'=>1,'message' =>'Quote do no exists','result' => []],config('global.success_status'));
-
-       }
+       
 
 
      }catch(\Exception $e){
