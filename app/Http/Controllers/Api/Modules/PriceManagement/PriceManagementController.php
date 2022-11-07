@@ -463,11 +463,10 @@ class PriceManagementController extends Controller
         
 
         try{ 
-            $priceData = PriceCalculation::where('user_id',$request->user_id)->first();
+            $priceData = PriceCalculation::where('user_id',$request->user_id)->where('pro_id',$request->pro_id)->where('cat_id',$request->cat_id)->where('sub_cat_id',$request->sub_cat_id)->where('size',$request->size)->first();
 
             $getdeliverycost = Freights::where('pickup_from',$request->pickup_from)->where('location',$request->location)->where('destation_location',$request->destation_location)->first(); 
-            // dd($getdeliverycost);
-
+              
             $data['bpt_price'] = $priceData->BPT_Price;
             $data['price_premium'] = $priceData->Price_Premium;
             $data['misc_expense'] = $priceData->Misc_Expense;
@@ -475,7 +474,7 @@ class PriceManagementController extends Controller
             $data['interest_rate'] = $priceData->Interest_Rate;
             $data['cam_discount'] = $priceData->CAM_Discount;
            
-            if (!empty($priceData)) {
+            if (!empty($getdeliverycost)) {
                return response()->json(['status'=>1,'message' =>'success.','result' => $data],200);
             }
             else{
