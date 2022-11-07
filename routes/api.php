@@ -173,9 +173,13 @@ Route::group(['prefix' => 'admin','middleware' => ['assign.guard:admins','jwtmid
 		Route::get('get-sub-category-list/{cateId}','PriceManagement\PriceManagementController@getSubCategoryList')->name('get_sub_category_list'); 
 		Route::post('store-price','PriceManagement\PriceManagementController@storePrice')->name('store_price');
 		Route::post('store-threshold-price','PriceManagement\PriceManagementController@storeThreshold')->name('store_threshold_price');
-		Route::post('store-pro-price','PriceManagement\PriceManagementController@manageProPrice')->name('store_pro_price');
+		Route::post('store-pro-price','PriceManagement\PriceManagementController@manageProPrice')->name('store_pro_price'); //For Admin asection
+		Route::get('get-threshold-price-admin','PriceManagement\PriceManagementController@getThresholdPriceAdmin')->name('get_threshold_price_admin'); //For Admin section....
 		Route::post('get-store-pro-price','PriceManagement\PriceManagementController@getProPrice')->name('get_store_pro_price');
+		Route::get('get-threshold-price-details-admin/{ThresholdId}','PriceManagement\PriceManagementController@getThresholdPriceDetailsAdmin')->name('get_threshold_price_details_admin'); //For Admin section....
+		Route::post('update-threshold-price-admin','PriceManagement\PriceManagementController@updateThresholdProPrice')->name('update_threshold_price_admin'); //For Admin section....
 		Route::get('get-price','PriceManagement\PriceManagementController@getPrice')->name('get_price');  //P  
+		Route::post('get-product-basic-price','PriceManagement\PriceManagementController@getProductBasicPrice')->name('get_product_basic_price');
 
 		// news Routes -------
 

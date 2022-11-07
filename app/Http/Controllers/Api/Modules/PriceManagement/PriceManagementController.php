@@ -120,7 +120,7 @@ class PriceManagementController extends Controller
     }
 
     /**
-     * This is for add product price. 
+     * This is for add product price in admin section. 
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
     */
@@ -133,12 +133,14 @@ class PriceManagementController extends Controller
       try{
 
         $validator = Validator::make($request->all(), [
+          'pro_id'        => 'required', 
+          'cat_id'     => 'required',
+          'sub_cat_id'        => 'required', 
+          'size'     => 'required',
           'user_id'        => 'required', 
           'BPT_Price'     => 'required',
           'Price_Premium'        => 'required', 
-          'Misc_Expense'     => 'required',
-          'Credit_Cost_For_30_days'        => 'required', 
-          'Credit_Cost_For_40_days'     => 'required',
+          'Misc_Expense'     => 'required', 
           'Interest_Rate'        => 'required', 
           'CAM_Discount'     => 'required',  
         ]);
@@ -147,12 +149,14 @@ class PriceManagementController extends Controller
             return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $validator->errors()],config('global.failed_status'));
         }
 
+        $input['pro_id'] = $request->pro_id;
+        $input['cat_id'] = $request->cat_id;
+        $input['sub_cat_id'] = $request->sub_cat_id;
+        $input['size'] = $request->size; 
         $input['user_id'] = $request->user_id;
         $input['BPT_Price'] = $request->BPT_Price;
         $input['Price_Premium'] = $request->Price_Premium;
-        $input['Misc_Expense'] = $request->Misc_Expense;
-        $input['Credit_Cost_For_30_days'] = $request->Credit_Cost_For_30_days;
-        $input['Credit_Cost_For_40_days'] = $request->Credit_Cost_For_40_days;
+        $input['Misc_Expense'] = $request->Misc_Expense; 
         $input['Interest_Rate'] = $request->Interest_Rate;
         $input['CAM_Discount'] = $request->CAM_Discount;
 
@@ -179,6 +183,277 @@ class PriceManagementController extends Controller
     }
 
     /**
+     * This is for add product price in admin section. 
+     * @param  \App\Product  $product
+     * @return \Illuminate\Http\Response
+    */
+    public function getThresholdPriceAdmin(Request $request)
+    {
+      try{ 
+          if($request->product_name && $request->status)
+          {
+            $data = DB::table('price_calculation')
+            ->leftjoin('products','price_calculation.pro_id','products.id')
+            ->leftjoin('categorys','price_calculation.cat_id','categorys.id')
+            ->leftjoin('sub_categorys','price_calculation.sub_cat_id','sub_categorys.id')
+            ->select('price_calculation.id as threshold',
+                'price_calculation.size as size',
+                'price_calculation.BPT_Price as basic_price',
+                'price_calculation.Price_Premium as Price_Premium',
+                'price_calculation.Misc_Expense as Misc_Expense',
+                'price_calculation.Interest_Rate as Interest_Rate',
+                'price_calculation.CAM_Discount as CAM_Discount',
+                'price_calculation.status as status',
+                'products.id as product_id',
+                'products.pro_name as product_title',
+                'categorys.id as category_id',
+                'categorys.cat_name as category_name',
+                'sub_categorys.id as sub_category_id',
+                'sub_categorys.sub_cat_name as sub_category_name',
+                )
+            ->where('products.pro_name','LIKE',"%{$request->product_name}%") 
+            ->where('price_calculation.status',$request->status) 
+            ->get();        
+          }
+          else if($request->product_name)
+          {
+            $data = DB::table('price_calculation')
+                ->leftjoin('products','price_calculation.pro_id','products.id')
+                ->leftjoin('categorys','price_calculation.cat_id','categorys.id')
+                ->leftjoin('sub_categorys','price_calculation.sub_cat_id','sub_categorys.id') 
+                ->select('price_calculation.id as threshold',
+                        'price_calculation.size as size',
+                        'price_calculation.BPT_Price as basic_price',
+                        'price_calculation.Price_Premium as Price_Premium',
+                        'price_calculation.Misc_Expense as Misc_Expense',
+                        'price_calculation.Interest_Rate as Interest_Rate',
+                        'price_calculation.CAM_Discount as CAM_Discount',
+                        'price_calculation.status as status',
+                        'products.id as product_id',
+                        'products.pro_name as product_title',
+                        'categorys.id as category_id',
+                        'categorys.cat_name as category_name',
+                        'sub_categorys.id as sub_category_id',
+                        'sub_categorys.sub_cat_name as sub_category_name',
+                    )
+                ->where('products.pro_name','LIKE',"%{$request->product_name}%") 
+                ->get(); 
+
+          }
+          else if($request->status)
+          {
+
+            $data =  DB::table('price_calculation')
+                ->leftjoin('products','price_calculation.pro_id','products.id')
+                ->leftjoin('categorys','price_calculation.cat_id','categorys.id')
+                ->leftjoin('sub_categorys','price_calculation.sub_cat_id','sub_categorys.id') 
+                ->select('price_calculation.id as threshold',
+                        'price_calculation.size as size',
+                        'price_calculation.BPT_Price as basic_price',
+                        'price_calculation.Price_Premium as Price_Premium',
+                        'price_calculation.Misc_Expense as Misc_Expense',
+                        'price_calculation.Interest_Rate as Interest_Rate',
+                        'price_calculation.CAM_Discount as CAM_Discount',
+                        'price_calculation.status as status',
+                        'products.id as product_id',
+                        'products.pro_name as product_title',
+                        'categorys.id as category_id',
+                        'categorys.cat_name as category_name',
+                        'sub_categorys.id as sub_category_id',
+                        'sub_categorys.sub_cat_name as sub_category_name',
+                    )
+                ->where('price_calculation.status',$request->status) 
+                ->get(); 
+
+          }
+          else
+          {
+            $data = DB::table('price_calculation')
+                ->leftjoin('products','price_calculation.pro_id','products.id')
+                ->leftjoin('categorys','price_calculation.cat_id','categorys.id')
+                ->leftjoin('sub_categorys','price_calculation.sub_cat_id','sub_categorys.id') 
+                ->select('price_calculation.id as threshold',
+                    'price_calculation.size as size',
+                    'price_calculation.BPT_Price as basic_price',
+                    'price_calculation.Price_Premium as Price_Premium',
+                    'price_calculation.Misc_Expense as Misc_Expense',
+                    'price_calculation.Interest_Rate as Interest_Rate',
+                    'price_calculation.CAM_Discount as CAM_Discount',
+                    'price_calculation.status as status',
+                    'products.id as product_id',
+                    'products.pro_name as product_title',
+                    'categorys.id as category_id',
+                    'categorys.cat_name as category_name',
+                    'sub_categorys.id as sub_category_id',
+                    'sub_categorys.sub_cat_name as sub_category_name',
+                    )
+                ->get(); 
+          }
+            
+           
+         // dd($data);  
+
+            \DB::commit(); 
+
+            if(!empty($data))
+            {      
+                
+                 
+              return response()->json(['status'=>1,'message' =>config('global.sucess_msg'),
+                'result' => $data],config('global.success_status'));
+          }
+          else{ 
+             return response()->json(['status'=>1,'message' =>'No data found','result' => []],
+              config('global.success_status'));
+          }
+
+
+        }catch(\Exception $e){ 
+          \DB::rollback(); 
+            return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $e->getMessage()],config('global.failed_status'));
+        }
+    }
+
+
+    /**
+     * This is for get get Threshold Price Details for Admin. 
+     * @param  \App\Product  $product
+     * @return \Illuminate\Http\Response
+    */
+    public function getThresholdPriceDetailsAdmin($ThresholdId)
+    {
+        
+
+        try{ 
+            $ThresholdData = PriceCalculation::where('id',$ThresholdId)->first();
+
+            // dd($ThresholdData);
+
+            // $getdeliverycost = Freights::where('pickup_from',$request->pickup_from)->where('location',$request->location)->where('destation_location',$request->destation_location)->first(); 
+            // dd($getdeliverycost);
+            $data['pro_id'] = $ThresholdData->pro_id;
+            $data['cat_id'] = $ThresholdData->cat_id;
+            $data['sub_cat_id'] = $ThresholdData->sub_cat_id;
+            $data['size'] = $ThresholdData->size;
+            $data['bpt_price'] = $ThresholdData->BPT_Price;
+            $data['price_premium'] = $ThresholdData->Price_Premium;
+            $data['misc_expense'] = $ThresholdData->Misc_Expense;
+            $data['delivery_cost'] = $ThresholdData->BPT_Price; 
+            $data['interest_rate'] = $ThresholdData->Interest_Rate;
+            $data['cam_discount'] = $ThresholdData->CAM_Discount;
+           
+            if (!empty($ThresholdData)) {
+               return response()->json(['status'=>1,'message' =>'success.','result' => $data],200);
+            }
+            else{
+
+               return response()->json(['status'=>1,'message' =>'No data found','result' => []],config('global.success_status'));
+
+            }
+            
+            
+            }catch(\Exception $e){
+                $response['error'] = $e->getMessage();
+                return response()->json([$response]);
+            }
+    }
+
+
+    /**
+     * This is for update Threshold Product Price in admin section. 
+     * @param  \App\Product  $product
+     * @return \Illuminate\Http\Response
+    */
+    public function updateThresholdProPrice(Request $request)
+    {
+    
+
+      \DB::beginTransaction();
+
+      try{
+
+        $validator = Validator::make($request->all(), [
+          'threshold_id'        => 'required',
+          'pro_id'        => 'required', 
+          'cat_id'     => 'required',
+          'sub_cat_id'        => 'required', 
+          'size'     => 'required',
+          'user_id'        => 'required', 
+          'BPT_Price'     => 'required',
+          'Price_Premium'        => 'required', 
+          'Misc_Expense'     => 'required', 
+          'Interest_Rate'        => 'required', 
+          'CAM_Discount'     => 'required',  
+        ]);
+
+        if ($validator->fails()) { 
+            return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $validator->errors()],config('global.failed_status'));
+        }
+
+        $input['pro_id'] = $request->pro_id;
+        $input['cat_id'] = $request->cat_id;
+        $input['sub_cat_id'] = $request->sub_cat_id;
+        $input['size'] = $request->size; 
+        $input['user_id'] = $request->user_id;
+        $input['BPT_Price'] = $request->BPT_Price;
+        $input['Price_Premium'] = $request->Price_Premium;
+        $input['Misc_Expense'] = $request->Misc_Expense; 
+        $input['Interest_Rate'] = $request->Interest_Rate;
+        $input['CAM_Discount'] = $request->CAM_Discount;
+
+          // dd($input);
+
+        $freightsData = PriceCalculation::where('id',$request->threshold_id)->update($input);
+
+        \DB::commit();
+
+        if($freightsData)
+        {
+          return response()->json(['status'=>1,'message' =>'Threshold price updated successfully','result' => $freightsData],config('global.success_status'));
+        }
+        else
+        { 
+          return response()->json(['status'=>1,'message' =>'Somthing went wrong','result' => []],config('global.success_status'));
+        } 
+         
+
+      }catch(\Exception $e){ 
+        \DB::rollback(); 
+        return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $e->getMessage()],config('global.failed_status'));
+      }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+    /**
      * This is for get product price. 
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
@@ -190,15 +465,13 @@ class PriceManagementController extends Controller
         try{ 
             $priceData = PriceCalculation::where('user_id',$request->user_id)->first();
 
-            $getdeliverycost = Freights::where('pickup_from',$request->pickup_from)->where('location',$request->location)->first(); 
-
+            $getdeliverycost = Freights::where('pickup_from',$request->pickup_from)->where('location',$request->location)->where('destation_location',$request->destation_location)->first(); 
+            // dd($getdeliverycost);
 
             $data['bpt_price'] = $priceData->BPT_Price;
             $data['price_premium'] = $priceData->Price_Premium;
             $data['misc_expense'] = $priceData->Misc_Expense;
-            $data['delivery_cost'] = $getdeliverycost->freight_charges;
-            $data['credit_cost_for30_days'] = $priceData->Credit_Cost_For_30_days;
-            $data['credit_cost_for45_days'] = $priceData->Credit_Cost_For_40_days;
+            $data['delivery_cost'] = $getdeliverycost->freight_charges; 
             $data['interest_rate'] = $priceData->Interest_Rate;
             $data['cam_discount'] = $priceData->CAM_Discount;
            
@@ -381,8 +654,11 @@ class PriceManagementController extends Controller
         }
     }
 
+
+    
+
     /**
-     * This is for price list.
+     * This is for price list .
      *
      * @param  Http\Controllers\Api\Modules\Freight  $product
      * @return \Illuminate\Http\Response
@@ -502,4 +778,45 @@ class PriceManagementController extends Controller
             return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $e->getMessage()],config('global.failed_status'));
       	}
 	}
+
+   /**
+     * This is for price list.
+     *
+     * @param  Http\Controllers\Api\Modules\Freight  $product
+     * @return \Illuminate\Http\Response
+    */
+  public function getProductBasicPrice(Request $request)
+  {
+    try{ 
+          $validator = Validator::make($request->all(), [
+          'pro_id'        => 'required', 
+          'cat_id'     => 'required',
+          'sub_cat_id'        => 'required', 
+          'size'     => 'required', 
+        ]);
+
+        if ($validator->fails()) { 
+            return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $validator->errors()],config('global.failed_status'));
+        }
+          $priceData = PriceManagement::where('pro_id',$request->pro_id)
+                                        ->where('cat_id',$request->cat_id)
+                                        ->where('sub_cat_id',$request->sub_cat_id)
+                                        ->where('size',$request->size)
+                                        ->first(); 
+           
+            if (!empty($priceData)) {
+               return response()->json(['status'=>1,'message' =>'success.','result' => $priceData],200);
+            }
+            else{
+
+               return response()->json(['status'=>1,'message' =>'No data found','result' => []],config('global.success_status'));
+
+            }
+            
+            
+            }catch(\Exception $e){
+                $response['error'] = $e->getMessage();
+                return response()->json([$response]);
+            }
+  }
 }

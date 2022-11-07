@@ -15,12 +15,14 @@ class CreatePriceCalculationTable extends Migration
     {
         Schema::create('price_calculation', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->unsignedBigInteger('pro_id');
+            $table->unsignedBigInteger('cat_id');
+            $table->unsignedBigInteger('sub_cat_id');
+            $table->string('size')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->string('BPT_Price')->nullable(); 
             $table->string('Price_Premium')->nullable();
-            $table->string('Misc_Expense')->nullable();
-            $table->string('Credit_Cost_For_30_days')->nullable(); 
-            $table->string('Credit_Cost_For_40_days')->nullable(); 
+            $table->string('Misc_Expense')->nullable(); 
             $table->string('Interest_Rate')->nullable();
             $table->string('CAM_Discount')->nullable();  
             $table->unsignedTinyInteger('status')->default(1)->comment('1=Active|2=Inactive|3=Delete');
