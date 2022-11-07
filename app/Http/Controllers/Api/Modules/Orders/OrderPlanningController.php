@@ -120,9 +120,9 @@ class OrderPlanningController extends Controller
                 ->leftJoin('daily_productions', function($join)
                          {
                              $join->on('monthly_production_plans.plant', '=', 'daily_productions.plant');
-                             $join->on('monthly_production_plans.start_date','=','daily_productions.start');
-                             $join->on('monthly_production_plans.end_date','daily_productions.end');
-                             // $join->on('monthly_production_plans.size','daily_productions.size');
+                             // $join->on('monthly_production_plans.start_date','=','daily_productions.start');
+                             // $join->on('monthly_production_plans.end_date','daily_productions.end');
+                             $join->on('monthly_production_plans.size','daily_productions.size');
                              $join->on('monthly_production_plans.cat_id','daily_productions.category');
                              $join->on('monthly_production_plans.sub_cat_id','daily_productions.subcategory');
                          })
@@ -135,7 +135,10 @@ class OrderPlanningController extends Controller
 
                	  // return $e_dt;
                	 $res = $res->whereDate('monthly_production_plans.start_date','>=',$st_dt)
-               	 ->whereDate('monthly_production_plans.end_date','<=',$e_dt);
+               	 ->whereDate('monthly_production_plans.end_date','<=',$e_dt)
+                 ->whereDate('daily_productions.start','>=',$st_dt)
+                 ->whereDate('daily_productions.end','<=',$e_dt)
+               	 ;
                }
                if(!empty($plant))
                {
@@ -158,6 +161,8 @@ class OrderPlanningController extends Controller
                // echo "<pre>";print_r($res);exit();
                foreach ($res as $k => $value) {
                	    
+               	    $dis_sum = 0;
+               	    
                	    $result[$k]['plant'] = $value->plant;
                	    $result[$k]['category'] = $value->category;
                	    $result[$k]['subcategory'] = $value->subcategory;
@@ -168,6 +173,7 @@ class OrderPlanningController extends Controller
                	    $result[$k]['op_stk'] = $value->open_stk;
                	    $result[$k]['mnthl_prdo_stk'] = $value->mnthly_prod;
                	    $result[$k]['export'] = $value->export;
+               	    $result[$k]['size'] = $value->size;
                	    $result[$k]['offline'] = $value->offline;
                	    $result[$k]['tot_qty'] = ($value->open_stk + $value->mnthly_prod)-($value->export + $value->offline);
                	    $result[$k]['on_dom'] = $this->poQtyOrder($value->plant,$value->category,$value->subcategory,$value->start_date,$value->end_date,$value->size); 
@@ -177,10 +183,17 @@ class OrderPlanningController extends Controller
                	    $result[$k]['order_pur'] = $value->sap_order;
                	    $result[$k]['fg'] = $value->qty;
                	    $result[$k]['fg_sap'] = $value->fg_sap;
+               	    $result[$k]['fg_after_dis'] = "";
                	    $result[$k]['plan_qty'] = "";
                	    $result[$k]['daily_id'] = $value->id;
                	    $result[$k]['mnt_id'] = $value->mnt_id;
                     $result[$k]['dispatch'] = $this->dispatchQty($value->plant,$value->category,$value->subcategory,$value->start_date,$value->end_date,$value->size);
+                    foreach ($result[$k]['dispatch'] as $key => $value) {
+                    	
+                    	 $dis_sum += $value['ds_qty'];
+                    }
+
+                    $result[$k]['dis_sum'] = $dis_sum;
 
 
                }
@@ -260,7 +273,7 @@ class OrderPlanningController extends Controller
                         $user['sub_cat_id'] = $val[2];
                         $user['size'] = $val[3];
                         $user['ds_qty'] = $val[4];
-                        $user['ds_date'] = $val[5];
+                        $user['ds_date'] = date("Y-m-d", strtotime($val[5]));
                         
                         Dispatchplan::create($user);
               
