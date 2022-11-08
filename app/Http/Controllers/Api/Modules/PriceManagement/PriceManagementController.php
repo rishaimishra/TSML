@@ -465,26 +465,18 @@ class PriceManagementController extends Controller
 
             $priceData = PriceCalculation::where('user_id',$request->user_id)->where('pro_id',$request->pro_id)->where('cat_id',$request->cat_id)->where('size',$request->size)->first();
             // dd($priceData);
-            if (!empty($priceData)) {
+            $getdeliverycost = Freights::where('pickup_from',$request->pickup_from)->where('location',$request->location)->where('destation_location',$request->destation_location)->first(); 
               
-              $getdeliverycost = Freights::where('pickup_from',$request->pickup_from)->where('location',$request->location)->where('destation_location',$request->destation_location)->first(); 
-              
-              $data['bpt_price'] = $priceData->BPT_Price;
-              $data['price_premium'] = $priceData->Price_Premium;
-              $data['misc_expense'] = $priceData->Misc_Expense;
-              $data['delivery_cost'] = $getdeliverycost->freight_charges; 
-              $data['interest_rate'] = $priceData->Interest_Rate;
-              $data['cam_discount'] = $priceData->CAM_Discount;
-             
-              if (!empty($getdeliverycost)) {
-                 return response()->json(['status'=>1,'message' =>'success.','result' => $data],200);
-              }
-              else{
-
-               return response()->json(['status'=>1,'message' =>'No data found','result' => []],config('global.success_status'));
-
-              }
-            }            
+            $data['bpt_price'] = $priceData->BPT_Price;
+            $data['price_premium'] = $priceData->Price_Premium;
+            $data['misc_expense'] = $priceData->Misc_Expense;
+            $data['delivery_cost'] = $getdeliverycost->freight_charges; 
+            $data['interest_rate'] = $priceData->Interest_Rate;
+            $data['cam_discount'] = $priceData->CAM_Discount;
+           
+            if (!empty($getdeliverycost)) {
+               return response()->json(['status'=>1,'message' =>'success.','result' => $data],200);
+            }
             else{
 
                return response()->json(['status'=>1,'message' =>'No data found','result' => []],config('global.success_status'));
@@ -506,18 +498,18 @@ class PriceManagementController extends Controller
     public function getProductList(Request $request)
     {    
 
-    	try{         
+      try{         
             $data = Product::orderBy('id','desc')->get();
 
             $prolist = [];
             foreach ($data as $key => $value) 
             {   
               $prodata['product_id'] = $value->id;
-	            $prodata['product_title'] = $value->pro_name;
-	            $prodata['product_desc'] = $value->pro_desc;
-	            $prodata['product_status'] = $value->status; 
-	              
-	            $prolist[] = $prodata;
+              $prodata['product_title'] = $value->pro_name;
+              $prodata['product_desc'] = $value->pro_desc;
+              $prodata['product_status'] = $value->status; 
+                
+              $prolist[] = $prodata;
             } 
               
              return response()->json(['status'=>1,'message' =>'success.','result' => $prolist],200); 
@@ -535,26 +527,26 @@ class PriceManagementController extends Controller
     */
     public function getCategoryList($proId)
     {
-    	try{         
+      try{         
             $data = Category::where('product_id',$proId)->orderBy('id','desc')->get();
 
             if(count($data)>0)
             {
-            	$catelist = [];
-	            foreach ($data as $key => $value) 
-	            {   
-	              	$catedata['category_id'] = $value->id;
-		            $catedata['category_name'] = $value->cat_name; 
+              $catelist = [];
+              foreach ($data as $key => $value) 
+              {   
+                  $catedata['category_id'] = $value->id;
+                $catedata['category_name'] = $value->cat_name; 
 
-		            $catelist[] = $catedata;
-	            } 
-	              
-	             return response()->json(['status'=>1,'message' =>'success.','result' => $catelist],200);
+                $catelist[] = $catedata;
+              } 
+                
+               return response()->json(['status'=>1,'message' =>'success.','result' => $catelist],200);
 
             }
             else{
-            	return response()->json(['status'=>0,'message' =>'No data found','result' => []],
-	        		config('global.success_status'));
+              return response()->json(['status'=>0,'message' =>'No data found','result' => []],
+              config('global.success_status'));
             }
 
             
@@ -573,32 +565,32 @@ class PriceManagementController extends Controller
     */
     public function getSubCategoryList($cateId)
     {
-    	try{         
+      try{         
             $data = ProductSubCategory::where('cat_id',$cateId)->orderBy('id','desc')->get();
 
             // dd($data);
 
             if(count($data)>0)
             {
-            	$subcatelist = [];
-	            foreach ($data as $key => $value) 
-	            {   
-	              	$subcatedata['sub_category_id'] = $value->id;
-		            $subcatedata['sub_category_name'] = $value->sub_cat_name;
+              $subcatelist = [];
+              foreach ($data as $key => $value) 
+              {   
+                  $subcatedata['sub_category_id'] = $value->id;
+                $subcatedata['sub_category_name'] = $value->sub_cat_name;
 
-		            $proSize = $value->pro_size;
+                $proSize = $value->pro_size;
 
-		            $subcatedata['product_size'] = explode(",",$proSize);
+                $subcatedata['product_size'] = explode(",",$proSize);
 
-		            $subcatelist[] = $subcatedata;
-	            } 
-	              
-	            return response()->json(['status'=>1,'message' =>'success.','result' => $subcatelist],200);
+                $subcatelist[] = $subcatedata;
+              } 
+                
+              return response()->json(['status'=>1,'message' =>'success.','result' => $subcatelist],200);
 
             }
             else{
-            	return response()->json(['status'=>0,'message' =>'No data found','result' => []],
-	        		config('global.success_status'));
+              return response()->json(['status'=>0,'message' =>'No data found','result' => []],
+              config('global.success_status'));
             } 
             
             }catch(\Exception $e){
@@ -615,49 +607,49 @@ class PriceManagementController extends Controller
     */
     public function storePrice(Request $request)
     {
-    	// dd($request->all());
+      // dd($request->all());
 
-    	\DB::beginTransaction();
+      \DB::beginTransaction();
 
-   		try{
+      try{
 
-   			$validator = Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
                 'pro_id'        => 'required', 
                 'cat_id'     => 'required',
                 'sub_cat_id'     => 'required',
                 'size'     => 'required', 
                 'basic_price' => ['required','regex:/^\d+(((,\d+)?,\d+)?,\d+)?$/'], 
-	        ]);
+          ]);
 
-	        if ($validator->fails()) { 
-	            return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $validator->errors()],config('global.failed_status'));
-	        }
+          if ($validator->fails()) { 
+              return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $validator->errors()],config('global.failed_status'));
+          }
 
-	        $input['pro_id'] = $request->pro_id;
-    	   	$input['cat_id'] = $request->cat_id;
-    	   	$input['sub_cat_id'] = $request->sub_cat_id;
-    	   	$input['basic_price'] = $request->basic_price;
-    	   	$input['size'] = $request->size;
-    	   	$input['status'] = $request->status;
+          $input['pro_id'] = $request->pro_id;
+          $input['cat_id'] = $request->cat_id;
+          $input['sub_cat_id'] = $request->sub_cat_id;
+          $input['basic_price'] = $request->basic_price;
+          $input['size'] = $request->size;
+          $input['status'] = $request->status;
 
-    	   	// dd($input);
+          // dd($input);
 
-    	   	$pricedata = PriceManagement::create($input);
+          $pricedata = PriceManagement::create($input);
 
-    	   	\DB::commit();
+          \DB::commit();
 
-    	   	if($pricedata)
+          if($pricedata)
                 {
-		            return response()->json(['status'=>1,'message' =>'Product base price successfully','result' => $pricedata],config('global.success_status'));
-		        }
-		        else{ 
-		         	return response()->json(['status'=>1,'message' =>'Somthing went wrong','result' => []],config('global.success_status'));
-		        } 
-    		 
+                return response()->json(['status'=>1,'message' =>'Product base price successfully','result' => $pricedata],config('global.success_status'));
+            }
+            else{ 
+              return response()->json(['status'=>1,'message' =>'Somthing went wrong','result' => []],config('global.success_status'));
+            } 
+         
 
-   		}catch(\Exception $e){ 
-    	  	\DB::rollback(); 
-           	return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $e->getMessage()],config('global.failed_status'));
+      }catch(\Exception $e){ 
+          \DB::rollback(); 
+            return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $e->getMessage()],config('global.failed_status'));
         }
     }
 
@@ -670,100 +662,100 @@ class PriceManagementController extends Controller
      * @param  Http\Controllers\Api\Modules\Freight  $product
      * @return \Illuminate\Http\Response
     */
-	public function getPrice(Request $request)
-	{
-		\DB::beginTransaction();
+  public function getPrice(Request $request)
+  {
+    \DB::beginTransaction();
 
-      	try{
+        try{
 
-      		if($request->product_name && $request->status)
-      		{
-      			 
-      			$data = DB::table('price_management')
-      					->leftjoin('products','price_management.pro_id','products.id')
-      					->leftjoin('categorys','price_management.cat_id','categorys.id')
-      					->leftjoin('sub_categorys','price_management.sub_cat_id','sub_categorys.id') 
-      					->select('price_management.id as price_id',
-      							'price_management.size as size',
-      							'price_management.basic_price as basic_price',
-      							'price_management.status as status',
-      							'products.id as product_id',
-      							'products.pro_name as product_title',
-      							'categorys.id as category_id',
-      							'categorys.cat_name as category_name',
-      							'sub_categorys.id as sub_category_id',
-      							'sub_categorys.sub_cat_name as sub_category_name',
-      							)
-      					->where('products.pro_name','LIKE',"%{$request->product_name}%") 
-      					->where('price_management.status',$request->status) 
-      					->get(); 
+          if($request->product_name && $request->status)
+          {
+             
+            $data = DB::table('price_management')
+                ->leftjoin('products','price_management.pro_id','products.id')
+                ->leftjoin('categorys','price_management.cat_id','categorys.id')
+                ->leftjoin('sub_categorys','price_management.sub_cat_id','sub_categorys.id') 
+                ->select('price_management.id as price_id',
+                    'price_management.size as size',
+                    'price_management.basic_price as basic_price',
+                    'price_management.status as status',
+                    'products.id as product_id',
+                    'products.pro_name as product_title',
+                    'categorys.id as category_id',
+                    'categorys.cat_name as category_name',
+                    'sub_categorys.id as sub_category_id',
+                    'sub_categorys.sub_cat_name as sub_category_name',
+                    )
+                ->where('products.pro_name','LIKE',"%{$request->product_name}%") 
+                ->where('price_management.status',$request->status) 
+                ->get(); 
 
-      					 
-      		}
-      		else if($request->product_name)
-      		{
-      			$data = DB::table('price_management')
-      					->leftjoin('products','price_management.pro_id','products.id')
-      					->leftjoin('categorys','price_management.cat_id','categorys.id')
-      					->leftjoin('sub_categorys','price_management.sub_cat_id','sub_categorys.id') 
-      					->select('price_management.id as price_id',
-      							'price_management.size as size',
-      							'price_management.basic_price as basic_price',
-      							'price_management.status as status',
-      							'products.id as product_id',
-      							'products.pro_name as product_title',
-      							'categorys.id as category_id',
-      							'categorys.cat_name as category_name',
-      							'sub_categorys.id as sub_category_id',
-      							'sub_categorys.sub_cat_name as sub_category_name',
-      							)
-      					->where('products.pro_name','LIKE',"%{$request->product_name}%") 
-      					->get(); 
+                 
+          }
+          else if($request->product_name)
+          {
+            $data = DB::table('price_management')
+                ->leftjoin('products','price_management.pro_id','products.id')
+                ->leftjoin('categorys','price_management.cat_id','categorys.id')
+                ->leftjoin('sub_categorys','price_management.sub_cat_id','sub_categorys.id') 
+                ->select('price_management.id as price_id',
+                    'price_management.size as size',
+                    'price_management.basic_price as basic_price',
+                    'price_management.status as status',
+                    'products.id as product_id',
+                    'products.pro_name as product_title',
+                    'categorys.id as category_id',
+                    'categorys.cat_name as category_name',
+                    'sub_categorys.id as sub_category_id',
+                    'sub_categorys.sub_cat_name as sub_category_name',
+                    )
+                ->where('products.pro_name','LIKE',"%{$request->product_name}%") 
+                ->get(); 
 
-      		}
-      		else if($request->status)
-      		{
-      			$data = DB::table('price_management')
-      					->leftjoin('products','price_management.pro_id','products.id')
-      					->leftjoin('categorys','price_management.cat_id','categorys.id')
-      					->leftjoin('sub_categorys','price_management.sub_cat_id','sub_categorys.id')  
-      					->select('price_management.id as price_id',
-      							'price_management.size as size',
-      							'price_management.basic_price as basic_price',
-      							'price_management.status as status',
-      							'products.id as product_id',
-      							'products.pro_name as product_title',
-      							'categorys.id as category_id',
-      							'categorys.cat_name as category_name',
-      							'sub_categorys.id as sub_category_id',
-      							'sub_categorys.sub_cat_name as sub_category_name',
-      							)
-      					->where('price_management.status',$request->status) 
-      					->get(); 
+          }
+          else if($request->status)
+          {
+            $data = DB::table('price_management')
+                ->leftjoin('products','price_management.pro_id','products.id')
+                ->leftjoin('categorys','price_management.cat_id','categorys.id')
+                ->leftjoin('sub_categorys','price_management.sub_cat_id','sub_categorys.id')  
+                ->select('price_management.id as price_id',
+                    'price_management.size as size',
+                    'price_management.basic_price as basic_price',
+                    'price_management.status as status',
+                    'products.id as product_id',
+                    'products.pro_name as product_title',
+                    'categorys.id as category_id',
+                    'categorys.cat_name as category_name',
+                    'sub_categorys.id as sub_category_id',
+                    'sub_categorys.sub_cat_name as sub_category_name',
+                    )
+                ->where('price_management.status',$request->status) 
+                ->get(); 
 
-      		}
-      		else
-      		{
-      			$data = DB::table('price_management')
-      					->leftjoin('products','price_management.pro_id','products.id')
-      					->leftjoin('categorys','price_management.cat_id','categorys.id')
-      					->leftjoin('sub_categorys','price_management.sub_cat_id','sub_categorys.id')
-      					->select('price_management.id as price_id',
-      							'price_management.size as size',
-      							'price_management.basic_price as basic_price',
-      							'price_management.status as status',
-      							'products.id as product_id',
-      							'products.pro_name as product_title',
-      							'categorys.id as category_id',
-      							'categorys.cat_name as category_name',
-      							'sub_categorys.id as sub_category_id',
-      							'sub_categorys.sub_cat_name as sub_category_name',
-      							)
-      					->get(); 
-      		}
+          }
+          else
+          {
+            $data = DB::table('price_management')
+                ->leftjoin('products','price_management.pro_id','products.id')
+                ->leftjoin('categorys','price_management.cat_id','categorys.id')
+                ->leftjoin('sub_categorys','price_management.sub_cat_id','sub_categorys.id')
+                ->select('price_management.id as price_id',
+                    'price_management.size as size',
+                    'price_management.basic_price as basic_price',
+                    'price_management.status as status',
+                    'products.id as product_id',
+                    'products.pro_name as product_title',
+                    'categorys.id as category_id',
+                    'categorys.cat_name as category_name',
+                    'sub_categorys.id as sub_category_id',
+                    'sub_categorys.sub_cat_name as sub_category_name',
+                    )
+                ->get(); 
+          }
 
-      		
-      		// dd($data);  
+          
+          // dd($data);  
 
             \DB::commit(); 
 
@@ -771,20 +763,20 @@ class PriceManagementController extends Controller
             {      
                 
                  
-	            return response()->json(['status'=>1,'message' =>config('global.sucess_msg'),
-	            	'result' => $data],config('global.success_status'));
-	        }
-	        else{ 
-	         	 return response()->json(['status'=>1,'message' =>'No data found','result' => []],
-	        		config('global.success_status'));
-	        }
+              return response()->json(['status'=>1,'message' =>config('global.sucess_msg'),
+                'result' => $data],config('global.success_status'));
+          }
+          else{ 
+             return response()->json(['status'=>1,'message' =>'No data found','result' => []],
+              config('global.success_status'));
+          }
 
 
-       	}catch(\Exception $e){ 
-        	\DB::rollback(); 
+        }catch(\Exception $e){ 
+          \DB::rollback(); 
             return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $e->getMessage()],config('global.failed_status'));
-      	}
-	}
+        }
+  }
 
    /**
      * This is for price list.
