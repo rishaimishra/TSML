@@ -126,7 +126,7 @@ class PriceManagementController extends Controller
     */
     public function manageProPrice(Request $request)
     {
-    
+       
 
       \DB::beginTransaction();
 
@@ -136,14 +136,15 @@ class PriceManagementController extends Controller
           'pro_id'        => 'required', 
           'cat_id'     => 'required',
           'sub_cat_id'        => 'required', 
-          'size'     => 'required',
-          'user_id'        => 'required', 
+          'size'     => 'required', 
           'BPT_Price'     => 'required',
           'Price_Premium'        => 'required', 
           'Misc_Expense'     => 'required', 
           'Interest_Rate'        => 'required', 
           'CAM_Discount'     => 'required',  
         ]);
+
+
 
         if ($validator->fails()) { 
             return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $validator->errors()],config('global.failed_status'));
@@ -153,9 +154,9 @@ class PriceManagementController extends Controller
         $input['cat_id'] = $request->cat_id;
         $input['sub_cat_id'] = $request->sub_cat_id;
         $input['size'] = $request->size; 
-        $input['user_id'] = $request->user_id;
+        // $input['user_id'] = $request->user_id;
         $input['BPT_Price'] = $request->BPT_Price;
-        $input['Price_Premium'] = $request->Price_Premium;
+        $input['Price_Premium'] = '-'.$request->Price_Premium;
         $input['Misc_Expense'] = $request->Misc_Expense; 
         $input['Interest_Rate'] = $request->Interest_Rate;
         $input['CAM_Discount'] = $request->CAM_Discount;
@@ -377,8 +378,7 @@ class PriceManagementController extends Controller
           'pro_id'        => 'required', 
           'cat_id'     => 'required',
           'sub_cat_id'        => 'required', 
-          'size'     => 'required',
-          'user_id'        => 'required', 
+          'size'     => 'required', 
           'BPT_Price'     => 'required',
           'Price_Premium'        => 'required', 
           'Misc_Expense'     => 'required', 
@@ -394,9 +394,9 @@ class PriceManagementController extends Controller
         $input['cat_id'] = $request->cat_id;
         $input['sub_cat_id'] = $request->sub_cat_id;
         $input['size'] = $request->size; 
-        $input['user_id'] = $request->user_id;
+        // $input['user_id'] = $request->user_id;
         $input['BPT_Price'] = $request->BPT_Price;
-        $input['Price_Premium'] = $request->Price_Premium;
+        $input['Price_Premium'] = '-'.$request->Price_Premium;
         $input['Misc_Expense'] = $request->Misc_Expense; 
         $input['Interest_Rate'] = $request->Interest_Rate;
         $input['CAM_Discount'] = $request->CAM_Discount;
@@ -463,10 +463,10 @@ class PriceManagementController extends Controller
         try{ 
             // $priceData = PriceCalculation::where('user_id',$request->user_id)->where('pro_id',$request->pro_id)->where('cat_id',$request->cat_id)->where('sub_cat_id',$request->sub_cat_id)->where('size',$request->size)->first();
 
-            $priceData = PriceCalculation::where('user_id',$request->user_id)->where('pro_id',$request->pro_id)->where('cat_id',$request->cat_id)->where('size',$request->size)->first();
+            $priceData = PriceCalculation::where('pro_id',$request->pro_id)->where('cat_id',$request->cat_id)->where('size',$request->size)->first();
             // dd($priceData);
             $getdeliverycost = Freights::where('pickup_from',$request->pickup_from)->where('location',$request->location)->where('destation_location',$request->destation_location)->first(); 
-              
+            // dd($getdeliverycost);
             $data['bpt_price'] = $priceData->BPT_Price;
             $data['price_premium'] = $priceData->Price_Premium;
             $data['misc_expense'] = $priceData->Misc_Expense;
