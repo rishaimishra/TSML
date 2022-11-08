@@ -66,8 +66,12 @@ class OrderPlanningController extends Controller
 
                 foreach($sheetData as $k => $val)
                 {
-                   
-                    // return $val[7];
+                   $res = DailyProduction::where('plant',$val[0])->where('category',$val[1])->where('subcategory',$val[2])->where('size',$val[6])->get()->toArray();
+                    // return $res;exit();
+                     if(empty($res))
+                     {
+
+                        // return $val[0];
                         $user = array();
   
                         
@@ -86,6 +90,17 @@ class OrderPlanningController extends Controller
 
                         
                         DailyProduction::create($user);
+                    }
+                    else{
+
+                        $user = array();
+
+                        $user['qty'] = $val[8];
+                        $user['fg_sap'] = $val[9];
+
+                        
+                        DailyProduction::where('plant',$val[0])->where('category',$val[1])->where('subcategory',$val[2])->where('size',$val[6])->update($user);
+                    }
               
                 }
 

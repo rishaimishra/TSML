@@ -111,6 +111,7 @@ Route::group(['namespace'=>'Api\Modules'],function(){
    		 Route::post('prod-qty-upload','Orders\OrderPlanningController@prodQtyUpload');
    		 Route::post('get_order_planning','Orders\OrderPlanningController@getOrderPlanning');
    		 Route::post('submit_dispatch_plan','Orders\OrderPlanningController@submitDispatchPlan');
+   		 Route::get('get_order_planning_by_id/{id}','Orders\OrderPlanningController@getOrderPlanById');
 
      });
    	
