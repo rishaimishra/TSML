@@ -101,6 +101,60 @@ class OrderPlanningController extends Controller
             }
         }
 
+         public function prodQtyUploadAdmin(Request $request)
+        {
+           // return $request->all();exit;
+            $response = [];
+            try{
+
+              $start = $request->input('start');
+              $end = $request->input('end');
+              // $fg_sap = $request->input('fg_sap');
+            
+                $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+                $spreadsheet = $reader->load($request->excel);
+                $sheetData = $spreadsheet->getActiveSheet()->toArray();
+                // return $sheetData;
+                $removed = array_shift($sheetData);
+                $data = json_encode($sheetData);
+
+                foreach($sheetData as $k => $val)
+                {
+                   
+                    // return $val[7];
+                        $user = array();
+  
+                        
+                        $user['plant'] = $val[0];
+                        $user['category'] = $val[1];
+                        $user['subcategory'] = $val[2];
+                        $user['met_group'] = $val[3];
+                        $user['met_no'] = $val[4];
+                        $user['grade_code'] = $val[5];
+                        $user['size'] = $val[6];
+                        $user['met_desc'] = $val[7];
+                        $user['start'] = date("Y-m-d", strtotime($start));
+                        $user['end'] = date("Y-m-d", strtotime($end));
+                        $user['qty'] = $val[8];
+                        $user['fg_sap'] = $val[9];
+
+                        
+                        DailyProduction::create($user);
+              
+                }
+
+                $response['success'] = true;
+                $response['message'] = 'Daily Production Uploaded Successfully';
+                return Response::json($response);
+
+             
+            
+            }catch(\Exception $e){
+                $response['error'] = $e->getMessage();
+                return Response::json($response);
+            }
+        }
+
 
        public function getOrderPlanning(Request $request)
        {

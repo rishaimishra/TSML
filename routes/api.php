@@ -198,7 +198,8 @@ Route::group(['prefix' => 'admin','middleware' => ['assign.guard:admins','jwtmid
 		Route::post('store-complain-sub-category2', 'Complain\ComplainController@storeComplainSubCategory2')->name('store_complain_sub_category2');
 		
 		Route::post('store-complain-sub-category3', 'Complain\ComplainController@storeComplainSubCategory3')->name('store_complain_sub_category3'); 
-
+		// Product qut upload exl...
+		Route::post('prod-qty-upload-admin','Orders\OrderPlanningController@prodQtyUploadAdmin');
 		
 	});
 
