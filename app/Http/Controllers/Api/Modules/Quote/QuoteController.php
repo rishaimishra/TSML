@@ -210,15 +210,15 @@ class QuoteController extends Controller
 
         try{ 
           
-         $quote_id = $request->input('quote_id');
+         $rfq_no = $request->input('rfq_no');
          $status = $request->input('status');
 
-         $updated = Quote::where('id',$quote_id)->update(['kam_status' => $status]);
+         $updated = Quote::where('rfq_no',$rfq_no)->update(['kam_status' => $status]);
          if($updated)
          {
            return response()->json(['status'=>1,
             'message' =>'status updated',
-            'result' => $updated],
+            'result' => 'Quote Status updated'],
             config('global.success_status'));
          }
               // echo "<pre>";print_r($quotes);exit();
