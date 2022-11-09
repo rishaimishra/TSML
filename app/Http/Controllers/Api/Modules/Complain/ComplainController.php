@@ -516,6 +516,62 @@ class ComplainController extends Controller
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
     */
+    public function complainDetailsKam($po_number)
+    {
+      try{
+            $ComplainListData = DB::table('complain_main')
+            ->leftjoin('complain_categorys','complain_main.com_cate_id','complain_categorys.id')
+            ->leftjoin('complain_sub_categorys','complain_main.com_sub_cate_id','complain_sub_categorys.id')
+            ->leftjoin('complain_sub_categorys2','complain_main.com_sub_cate_2id','complain_sub_categorys2.id')
+            ->leftjoin('complain_sub_categorys3','complain_main.com_sub_cate_3id','complain_sub_categorys3.id')
+         
+            ->select('complain_main.id','complain_main.customer_name','complain_main.po_number','complain_main.po_date','complain_main.created_at','complain_main.file','complain_main.closed_status','complain_categorys.com_cate_name','complain_sub_categorys.com_sub_cate_name','complain_sub_categorys2.com_sub_cate2_name','complain_sub_categorys3.com_sub_cate3_name')
+            ->where('complain_main.po_number',$po_number)
+            ->first(); 
+
+          $data['complain_id'] = $ComplainListData->id;
+          $data['customer_name'] = $ComplainListData->customer_name;
+          $data['created_at'] = $ComplainListData->created_at;
+          $data['complain_status'] = $ComplainListData->closed_status;
+          $data['com_cate_name'] = $ComplainListData->com_cate_name;
+          $data['com_sub_cate_name'] = $ComplainListData->com_sub_cate_name; 
+          $data['com_sub_cate2_name'] = $ComplainListData->com_sub_cate2_name;
+          $data['com_sub_cate3_name'] = $ComplainListData->com_sub_cate3_name;
+          $data['po_number'] = $ComplainListData->po_number;
+          $data['po_date'] = $ComplainListData->po_date;
+
+          if ($ComplainListData->file) 
+          {
+
+            $data['file_url'] = asset('storage/app/public/images/complain/'.$ComplainListData->file);
+          }
+          else
+          {
+            $data['file_url'] =  null;
+          } 
+          
+          $remarksData = ComplainRemarks::where('complain_id',$ComplainListData->id)->get();
+             
+          if (!empty($ComplainListData)){
+            return response()->json(['status'=>1,'message' =>'success','result' =>$data,'remarksData' =>$remarksData],200);
+          }
+          else{
+
+           return response()->json(['status'=>1,'message' =>'No data found','result' => []],config('global.success_status'));
+
+          } 
+            
+          }catch(\Exception $e){
+            $response['error'] = $e->getMessage();
+            return response()->json([$response]);
+          }
+    }
+
+    /**
+     * This is for add get Complain Details. 
+     * @param  \App\Product  $product
+     * @return \Illuminate\Http\Response
+    */
     public function complainDetails($complainId)
     {
       try{

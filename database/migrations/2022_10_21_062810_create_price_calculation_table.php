@@ -19,14 +19,13 @@ class CreatePriceCalculationTable extends Migration
             $table->unsignedBigInteger('cat_id');
             $table->unsignedBigInteger('sub_cat_id');
             $table->string('size')->nullable();
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->string('BPT_Price')->nullable(); 
             $table->string('Price_Premium')->nullable();
             $table->string('Misc_Expense')->nullable(); 
             $table->string('Interest_Rate')->nullable();
             $table->string('CAM_Discount')->nullable();  
-            $table->unsignedTinyInteger('status')->default(1)->comment('1=Active|2=Inactive|3=Delete');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedTinyInteger('status')->default(1)->comment('1=Active|2=Inactive|3=Delete'); 
             $table->timestamps();
         });
     }
