@@ -82,6 +82,7 @@ Route::group(['namespace'=>'Api\Modules'],function(){
    		 Route::get('get_po_by_id/{id}','Quote\QuoteController@getPoById');
    		 Route::get('get_po_all','Quote\QuoteController@getPoAll');
    		 Route::get('get_po_all_kam','Quote\QuoteController@getPoAllKam');
+   		 Route::post('po_status_update','Quote\QuoteController@poStatusUpdate');
 
    		 Route::post('get-store-pro-price','PriceManagement\PriceManagementController@getProPrice')->name('get_store_pro_price');
    		 Route::get('get-threshold-price','PriceManagement\PriceManagementController@getThresholdPrice')->name('get_threshold_price');
@@ -112,6 +113,7 @@ Route::group(['namespace'=>'Api\Modules'],function(){
    		 Route::post('get_order_planning','Orders\OrderPlanningController@getOrderPlanning');
    		 Route::post('submit_dispatch_plan','Orders\OrderPlanningController@submitDispatchPlan');
    		 Route::get('get_order_planning_by_id/{id}','Orders\OrderPlanningController@getOrderPlanById');
+   		 Route::post('monthly_prod_plan_up','Orders\OrderPlanningController@monthlyPlanUpdate');
 
      });
    	

@@ -291,6 +291,7 @@ class OrderPlanningController extends Controller
                foreach ($res as $k => $value) {
                	    
                	    $dis_sum = 0;
+                    $sp_dis = $value->fg_sap + $value->qty;
 
                	    $result[$k]['plant'] = $value->plant;
                	    $result[$k]['category'] = $value->category;
@@ -311,8 +312,7 @@ class OrderPlanningController extends Controller
                	    $result[$k]['bal_qty'] = ($result[$k]['tot_qty'] - $result[$k]['on_dom']);
                	    $result[$k]['order_pur'] = $value->sap_order;
                	    $result[$k]['fg'] = $value->qty;
-               	    $result[$k]['fg_sap'] = $value->msap;
-               	    $result[$k]['fg_after_dis'] = $value->fg_sap;
+               	    $result[$k]['fg_sap'] = $value->fg_sap;
                	    $result[$k]['daily_id'] = $value->id;
                	    $result[$k]['mnt_id'] = $value->mnt_id;
                     $result[$k]['dispatch'] = $this->dispatchQty($value->plant,$value->category,$value->subcategory,$value->start_date,$value->end_date,$value->size);
@@ -322,6 +322,7 @@ class OrderPlanningController extends Controller
                     }
 
                     $result[$k]['dis_sum'] = $dis_sum;
+                    $result[$k]['fg_after_dis'] =  $sp_dis - $dis_sum;
 
 
                }
@@ -392,7 +393,7 @@ class OrderPlanningController extends Controller
                 foreach($sheetData as $k => $val)
                 {
                    
-                    // return $val[8];
+                    // return $val[5];
                         $user = array();
   
                         
@@ -402,6 +403,8 @@ class OrderPlanningController extends Controller
                         $user['size'] = $val[3];
                         $user['ds_qty'] = $val[4];
                         $user['ds_date'] = date("Y-m-d", strtotime($val[5]));
+
+                        // return $user['ds_date'];
                         
                         Dispatchplan::create($user);
               
@@ -533,4 +536,34 @@ class OrderPlanningController extends Controller
 		       return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
 		     }
        }
+
+
+
+           public function monthlyPlanUpdate(Request $request)
+		    {
+		    	 // echo "<pre>";print_r($request->all());exit();
+
+		      try{ 
+		      	        $id = $request->input('mth_id');
+
+		                $data = $request->except('mth_id');
+		                $data['start_date'] = date("Y-m-d", strtotime($data['start_date']));
+		                $data['end_date'] = date("Y-m-d", strtotime($data['end_date']));
+		                $data['status'] = 0;
+
+		                $res = Monthlyproductionplan::where('id',$id)->update($data);
+		            
+
+				        return response()->json(['status'=>1,
+				          'message' =>'success',
+				          'result' => 'Production plan updated'],
+				          config('global.success_status'));
+		       
+
+
+		      }catch(\Exception $e){
+
+		       return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
+		     }
+		    }
 }
