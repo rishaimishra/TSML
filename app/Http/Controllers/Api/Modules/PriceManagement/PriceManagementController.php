@@ -326,20 +326,43 @@ class PriceManagementController extends Controller
         
 
         try{ 
-            $ThresholdData = PriceCalculation::where('id',$ThresholdId)->first();
+            // $ThresholdData = PriceCalculation::where('id',$ThresholdId)->first();
+ 
 
+             $ThresholdData = DB::table('price_calculation')
+            ->leftjoin('products','price_calculation.pro_id','products.id')
+            ->leftjoin('categorys','price_calculation.cat_id','categorys.id')
+            ->leftjoin('sub_categorys','price_calculation.sub_cat_id','sub_categorys.id')
+            ->select('price_calculation.id as threshold',
+                'price_calculation.size as size',
+                'price_calculation.BPT_Price as basic_price',
+                'price_calculation.Price_Premium as Price_Premium',
+                'price_calculation.Misc_Expense as Misc_Expense',
+                'price_calculation.Interest_Rate as Interest_Rate',
+                'price_calculation.CAM_Discount as CAM_Discount',
+                'price_calculation.status as status',
+                'products.id as product_id',
+                'products.pro_name as product_title',
+                'categorys.id as category_id',
+                'categorys.cat_name as category_name',
+                'sub_categorys.id as sub_category_id',
+                'sub_categorys.sub_cat_name as sub_category_name',
+                ) 
+            ->where('price_calculation.id',$ThresholdId) 
+            ->first();   
             // dd($ThresholdData);
-
-            // $getdeliverycost = Freights::where('pickup_from',$request->pickup_from)->where('location',$request->location)->where('destation_location',$request->destation_location)->first(); 
-            // dd($getdeliverycost);
-            $data['pro_id'] = $ThresholdData->pro_id;
-            $data['cat_id'] = $ThresholdData->cat_id;
-            $data['sub_cat_id'] = $ThresholdData->sub_cat_id;
+             
+            $data['pro_id'] = $ThresholdData->product_id;
+            $data['product_title'] = $ThresholdData->product_title;
+            $data['cat_id'] = $ThresholdData->category_id;
+            $data['category_name'] = $ThresholdData->category_name; 
+            $data['sub_cat_id'] = $ThresholdData->sub_category_id;
+            $data['sub_category_name'] = $ThresholdData->sub_category_name;
             $data['size'] = $ThresholdData->size;
-            $data['bpt_price'] = $ThresholdData->BPT_Price;
+            $data['bpt_price'] = $ThresholdData->basic_price;
             $data['price_premium'] = $ThresholdData->Price_Premium;
             $data['misc_expense'] = $ThresholdData->Misc_Expense;
-            $data['delivery_cost'] = $ThresholdData->BPT_Price; 
+            // $data['delivery_cost'] = $ThresholdData->BPT_Price; 
             $data['interest_rate'] = $ThresholdData->Interest_Rate;
             $data['cam_discount'] = $ThresholdData->CAM_Discount;
            
