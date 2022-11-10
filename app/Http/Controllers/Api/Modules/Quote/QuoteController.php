@@ -373,7 +373,8 @@ class QuoteController extends Controller
 
          if(Auth::check())
          {
-           $user_id =  Auth::user()->id;;
+           $user_id =  Auth::user()->id;
+           $user_type =  Auth::user()->user_type;
            
          }
 
@@ -393,13 +394,13 @@ class QuoteController extends Controller
          ->groupBy('quotes.rfq_no')
          ->orderBy('quotes.created_at','desc')
          ->whereNull('quotes.deleted_at');
-         if(!empty($user_id))
+         if(!empty($user_id) && $user_type == 'C')
          {
            $quotes = $quotes->where('quotes.user_id',$user_id);
          }
                          // ->toSql();
          $quotes = $quotes->get();
-             // echo "<pre>";print_r($quotes);
+             // echo "<pre>";print_r($user_id);
              // exit();
          
 
@@ -1160,7 +1161,7 @@ class QuoteController extends Controller
             $result[$key]['slug'] = $value->slug;
             $result[$key]['status'] = $value->status;
             $result[$key]['primary_image_url'] = 'https://beas.in/mje-shop/storage/app/public/images/product/'.$value->primary_image;
-            $result[$key]['schedule'] = $this->getSchedules($value->qid);
+            $result[$key]['schedule'] = $this->getPoSchedules($value->qid);
             $result[$key]['quote_id'] = $value->qid;
             $result[$key]['user_id'] = $value->user_id;
             $result[$key]['rfq_no'] = $value->rfq_no;
@@ -1484,6 +1485,74 @@ class QuoteController extends Controller
 
           return $result;
     }
+
+
+        /*
+      ---------------- po status update  -------------------
+
+  */
+      public function poStatusUpdate(Request $request)
+      {
+
+        try{ 
+          
+         $po_no = $request->input('po_no');
+         $status = $request->input('status');
+
+         $updated = Order::where('po_no',$po_no)->update(['status' => $status]);
+         if($updated)
+         {
+           return response()->json(['status'=>1,
+            'message' =>'status updated',
+            'result' => 'PO Status updated'],
+            config('global.success_status'));
+         }
+              // echo "<pre>";print_r($quotes);exit();
+
+       }catch(\Exception $e){
+
+         return response()->json(['status'=>0,
+          'message' =>'error',
+          'result' => $e->getMessage()],
+          config('global.failed_status'));
+       }
+       
+     }
+
+
+
+     public function getPoSchedules($qid)
+      {
+          $quote_sches = array();
+
+          $res = DB::table('quote_schedules')->where('quote_id',$qid)->where('quote_status',1)->whereNull('deleted_at')->get();
+
+          foreach ($res as $key => $value) {
+             
+             $quote_sches[$key]['id'] = $value->id;
+             $quote_sches[$key]['schedule_no'] = $value->schedule_no;
+             $quote_sches[$key]['quantity'] = $value->quantity;
+             $quote_sches[$key]['pro_size'] = $value->pro_size;
+             $quote_sches[$key]['to_date'] = $value->to_date;
+             $quote_sches[$key]['from_date'] = $value->from_date;
+             $quote_sches[$key]['kam_price'] = $value->kam_price;
+             $quote_sches[$key]['expected_price'] = $value->expected_price;
+             $quote_sches[$key]['plant'] = $value->plant;
+             $quote_sches[$key]['location'] = $value->location;
+             $quote_sches[$key]['bill_to'] = $value->bill_to;
+             $quote_sches[$key]['ship_to'] = $value->ship_to;
+             $quote_sches[$key]['remarks'] = $value->remarks;
+             $quote_sches[$key]['kamsRemarks'] = $value->kamsRemarks;
+             $quote_sches[$key]['delivery'] = $value->delivery;
+             $quote_sches[$key]['valid_till'] = $value->valid_till;
+             $quote_sches[$key]['quote_status'] = $value->quote_status;
+        
+             
+
+          }
+
+          return $quote_sches;
+      }
 
 
     }
