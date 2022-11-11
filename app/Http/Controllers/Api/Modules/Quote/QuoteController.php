@@ -146,7 +146,7 @@ class QuoteController extends Controller
         $quoteArr['product_id'] = $request->input('product_id');
         $quoteArr['cat_id'] = $request->input('cat_id');
         $quoteArr['quantity'] = $request->input('quantity');
-        $quoteArr['quote_type'] = "K";
+        $quoteArr['quote_type'] = $request->input('quote_type');;
         $quoteArr['rfq_no'] = $rfq_number;
         $quoteArr['quote_no']  = rand(100,9999);
 
