@@ -308,10 +308,10 @@ class QuoteController extends Controller
      ->whereNotNull('quotes.deleted_at');
      
      
-     if(!empty($user_id))
-     {
-       $res = $res->where('quotes.user_id',$user_id);
-     }
+     // if(!empty($user_id))
+     // {
+     //   $res = $res->where('quotes.user_id',$user_id);
+     // }
      if(!empty($rfq_no))
      {
        $res = $res->where('quotes.rfq_no',$rfq_no);
