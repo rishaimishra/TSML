@@ -833,7 +833,7 @@ class QuoteController extends Controller
          ->leftjoin('products','quotes.product_id','products.id')
          ->leftjoin('categorys','quotes.cat_id','categorys.id')
          ->leftjoin('users','quotes.user_id','users.id')
-         ->select('quote_schedules.*','products.pro_name','categorys.cat_name','users.name as uname')
+         ->select('quote_schedules.*','products.pro_name','categorys.cat_name','users.name as uname','quotes.product_id','quotes.cat_id')
          ->whereIn('quote_status',[0,3])
          ->whereIn('quote_id',$quoteArr)->orderBy('id','desc')->get();
               // echo "<pre>";print_r($quote);exit();
@@ -864,6 +864,8 @@ class QuoteController extends Controller
           $result[$key]['pro_name']       = $value->pro_name;
           $result[$key]['cat_name']       = $value->cat_name;
           $result[$key]['uname']          = $value->uname;
+          $result[$key]['product_id']     = $value->product_id;
+          $result[$key]['cat_id']         = $value->cat_id;
 
 
           
