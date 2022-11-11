@@ -829,7 +829,7 @@ class QuoteController extends Controller
          }
          
 
-         $quote = DB::table('quote_schedules')->where('quote_status',0)
+         $quote = DB::table('quote_schedules')->whereIn('quote_status',[0,3])
          ->whereIn('quote_id',$quoteArr)->orderBy('id','desc')->get();
               // echo "<pre>";print_r($quote);exit();
 
@@ -1336,7 +1336,7 @@ class QuoteController extends Controller
             $date =  date_create($value->po_date);
             $po_dt = date_format($date,"d-m-Y");
             $result[$key]['po_date'] = $po_dt;
-            $result[$key]['schedule'] = $this->getSchedules($value->qid);
+            $result[$key]['schedule'] = $this->getPoSchedules($value->qid);
             
             
           }
