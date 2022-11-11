@@ -866,6 +866,7 @@ class QuoteController extends Controller
           $result[$key]['uname']          = $value->uname;
           $result[$key]['product_id']     = $value->product_id;
           $result[$key]['cat_id']         = $value->cat_id;
+          $result[$key]['kam_remarks']    = $value->kamsRemarks;
 
 
           
