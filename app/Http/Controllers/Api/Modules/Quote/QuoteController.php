@@ -38,6 +38,7 @@ class QuoteController extends Controller
           $array['product_id'] = $value['product_id'];
           $array['cat_id'] = $value['cat_id'];
           $array['quantity'] = $value['quantity'];
+          $array['quote_type'] = $value['quote_type'];
           $array['quote_schedules'] = $value['quote_schedules'];
           $rfq_number = $value['rfq_number'];
           
@@ -95,6 +96,7 @@ class QuoteController extends Controller
           $array['product_id'] = $value['product_id'];
           $array['cat_id'] = $value['cat_id'];
           $array['quantity'] = $value['quantity'];
+          $array['quote_type'] = $value['quote_type'];
           $array['quote_schedules'] = $value['quote_schedules'];
           $rfq_number = $value['rfq_number'];
           
@@ -144,11 +146,12 @@ class QuoteController extends Controller
         $quoteArr['product_id'] = $request->input('product_id');
         $quoteArr['cat_id'] = $request->input('cat_id');
         $quoteArr['quantity'] = $request->input('quantity');
+        $quoteArr['quote_type'] = "K";
         $quoteArr['rfq_no'] = $rfq_number;
         $quoteArr['quote_no']  = rand(100,9999);
 
         $schedules = $request->input('quote_schedules');
-         // echo "<pre>";print_r($schedules);exit();
+         // echo "<pre>";print_r($quoteArr);exit();
         $quote = Quote::create($quoteArr);
         
         foreach ($schedules as $key => $value) {
@@ -418,6 +421,7 @@ class QuoteController extends Controller
           $quoteArr[$key]['cat_name'] = $value->cat_name;
           $quoteArr[$key]['sub_cat_name'] = $value->sub_cat_name;
           $quoteArr[$key]['pro_desc'] = $value->pro_desc;
+          $quoteArr[$key]['quote_type'] = $value->quote_type;
           $quoteArr[$key]['status'] = $this->schedule_status($value->rfq_no);
           $quoteArr[$key]['dash_dt'] = date('jS F, Y',strtotime($value->created_at));
                     // $quoteArr[$key]['schedules'] = $value->schedules;
@@ -999,6 +1003,7 @@ class QuoteController extends Controller
           $quoteArr[$key]['cat_name'] = $value->cat_name;
           $quoteArr[$key]['sub_cat_name'] = $value->sub_cat_name;
           $quoteArr[$key]['pro_desc'] = $value->pro_desc;
+          $quoteArr[$key]['quote_type'] = $value->quote_type;
           $quoteArr[$key]['status'] = $this->schedule_status($value->rfq_no);
                     // $quoteArr[$key]['schedules'] = $value->schedules;
                     // $quoteArr[$key]['product'] = $value->product;
