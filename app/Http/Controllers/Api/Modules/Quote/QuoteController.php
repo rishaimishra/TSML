@@ -1353,6 +1353,7 @@ class QuoteController extends Controller
 
             $poArr['rfq_no'] = $request->input('rfq_no');
             $poArr['po_no'] = $request->input('po_no');
+            $poArr['amdnt_no'] = $request->input('amdnt_no');
 
             $files = $request->file('letterhead');
             if(!empty($files))
@@ -1434,7 +1435,7 @@ class QuoteController extends Controller
             $result[$key]['sizes'] = $value->pro_size;
             $result[$key]['slug'] = $value->slug;
             $result[$key]['status'] = $value->status;
-            $result[$key]['primary_image_url'] = 'https://beas.in/mje-shop/storage/app/public/images/product/'.$value->primary_image;
+            $result[$key]['primary_image_url'] = asset('storage/app/public/images/images/product/'.$value->primary_image);
             $result[$key]['quote_id'] = $value->qid;
             $result[$key]['user_id'] = $value->user_id;
             $result[$key]['rfq_no'] = $value->rfq_no;
@@ -1661,6 +1662,60 @@ class QuoteController extends Controller
 
           return $quote_sches;
       }
+
+
+
+          /*---------------------------- update PO -----------------------------------------*/
+      
+      public function updatePo(Request $request)
+      {
+
+         // echo "<pre>";print_r($request->all());exit();
+
+       try{ 
+
+            
+
+            $poArr = array();
+
+            $po_no = $request->input('po_no');
+            $poArr['amdnt_no'] = $request->input('amdnt_no');
+
+            // $files = $request->file('letterhead');
+            // if(!empty($files))
+            // {
+
+            //   $name = time().$files->getClientOriginalName(); 
+            //   $files->storeAs("public/images/letterheads",$name);  
+            //   $poArr['letterhead'] = $name;
+            // }
+
+            // $date =  date_create($request->input('po_date'));
+            // $po_dt = date_format($date,"Y-m-d");
+            // $poArr['po_date'] = $po_dt;
+            // $poArr['status'] = 2;
+          
+            // echo "<pre>";print_r($poArr);exit();
+         
+            Order::where('po_no',$po_no)->update($poArr);
+
+            return response()->json(['status'=>1,
+              'message' =>'success',
+              'result' => 'P.O updated'],
+              config('global.success_status'));
+
+
+
+      }catch(\Exception $e){
+
+              return response()->json(['status'=>0,
+                'message' =>'error',
+                'result' => $e->getMessage()],
+                config('global.failed_status'));
+          }
+      }
+
+    /*-----------------------------------------------------------------------------------*/
 
 
     }
