@@ -306,6 +306,7 @@ class QuoteController extends Controller
      ->leftjoin('categorys','quotes.cat_id','categorys.id')
      ->leftjoin('sub_categorys','categorys.id','sub_categorys.cat_id')
      ->select('quotes.rfq_no','users.name','products.pro_name','products.pro_desc','quote_schedules.*','categorys.cat_name','sub_categorys.sub_cat_name')
+     ->orderBy('quote_schedules.schedule_no','asc')
      ->whereNotNull('quotes.deleted_at');
      
      
