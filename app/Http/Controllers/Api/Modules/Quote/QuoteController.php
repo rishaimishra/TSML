@@ -10,6 +10,7 @@ use App\Models\ProductSubCategory;
 use App\Models\Quotedelivery;
 use App\Models\Requote;
 use App\Models\Order;
+use App\Models\Deleteremark;
 use Validator;
 use Auth;
 use DB;
@@ -916,6 +917,8 @@ class QuoteController extends Controller
   */
       public function deleteQuoteSche(Request $request)
       {   
+
+        // echo "<pre>";print_r($request->all());exit();
         $arr = array();
 
         $id = $request->input('sche_id');
@@ -930,6 +933,17 @@ class QuoteController extends Controller
 
         DB::table('quote_deliveries')->where('quote_sche_no',$sche_no->schedule_no)->delete();
         DB::table('quote_schedules')->where('id',$id)->delete();
+
+        $dleArr = array();
+        $dleArr['user_id'] = $quote->user_id;
+        $dleArr['kam_id'] = $request->input('kam_id');
+        $dleArr['rfq_no'] = $quote->rfq_no;
+        $dleArr['sche_no'] = $sche_no->schedule_no;
+        $dleArr['remarks'] = $request->input('remarks');
+
+
+
+        Deleteremark::create($dleArr);
 
 
         $ct = DB::table('quote_schedules')->where('quote_id',$sche_no->quote_id)->get()->count();
