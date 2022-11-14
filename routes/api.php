@@ -51,6 +51,8 @@ Route::group(['namespace'=>'Api\Modules'],function(){
 
 //  });
 
+Route::get('download-po-pdf/{id}','Api\Modules\Quote\QuoteController@downloadPdf')->name('downloadPdf');
+
  Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmiddleware']],function ()
 {
     Route::post('logout', 'AuthController@logout');
@@ -61,7 +63,7 @@ Route::group(['namespace'=>'Api\Modules'],function(){
    	Route::post('reset-password', 'UserController@resetPassword')->name('reset_password');
 
    	Route::group(['namespace'=>'Api\Modules'],function(){
-
+   		Route::post('download-pdf','Quote\QuoteController@downloadPdf')->name('downloadPdf');
    		 Route::post('store_quotes','Quote\QuoteController@storeQuotes');
    		 Route::post('update_quotes','Quote\QuoteController@updateQuotes');
    		 Route::post('quotes_status_update','Quote\QuoteController@quotesStatusUpdate');
@@ -92,7 +94,7 @@ Route::group(['namespace'=>'Api\Modules'],function(){
    		 Route::get('complain-sub-category2-list/{id}', 'Complain\ComplainController@getComplainSubCategory2')->name('complain_sub_category2');
    		 Route::get('complain-sub-category3-list/{id}', 'Complain\ComplainController@getComplainSubCategory3')->name('complain_sub_category3');
 
-   		 Route::post('store-complain-main', 'Complain\ComplainController@storeComplainMain')->name('store_complain_main');
+   		Route::post('store-complain-main', 'Complain\ComplainController@storeComplainMain')->name('store_complain_main');
 
 		Route::post('remarks-replay', 'Complain\ComplainController@remarksReplay')->name('remarks_replay');
 
