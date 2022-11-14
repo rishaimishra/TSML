@@ -322,6 +322,7 @@ class QuoteController extends Controller
 
      foreach ($res as $key => $value) {
        
+      $quoteArr[$key]['sc_id'] = $value->id;
       $quoteArr[$key]['name'] = $value->name;
       $quoteArr[$key]['pro_name'] = $value->pro_name;
       $quoteArr[$key]['pro_desc'] = $value->pro_desc;
@@ -482,7 +483,7 @@ class QuoteController extends Controller
           
           $rfq_number = (!empty($id)) ? $id : '';
 
-          $quote = Quote::where('rfq_no',$id)->with('schedules')->with('product')->with('category')->with('subCategory')->orderBy('updated_at','desc')->get()->toArray();
+          $quote = Quote::where('rfq_no',$id)->with('schedules')->with('product')->with('category')->with('subCategory')->with('user')->orderBy('updated_at','desc')->get()->toArray();
 
           foreach ($quote as $key => $value) {
             
@@ -511,6 +512,8 @@ class QuoteController extends Controller
             $result[$key]['rfq_no'] = $value['rfq_no'];
             $result[$key]['quantity'] = $value['quantity'];
             $result[$key]['st'] = $value['kam_status'];
+            $result[$key]['user_name'] = $value['user']['name'];
+            $result[$key]['dt'] = date('m-d-y',strtotime($value['created_at']));
           }
             
           }
