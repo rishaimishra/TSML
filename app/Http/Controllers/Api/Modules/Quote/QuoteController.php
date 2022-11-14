@@ -783,14 +783,27 @@ class QuoteController extends Controller
       ---------------- delete  quote -------------------
 
   */
-      public function deleteQuoteById($id)
-      {   
+      public function deleteQuoteById(Request $request)
+      {  
+        // echo "<pre>";print_r($request->all());exit(); 
         $arr = array();
+
+        $id = $request->input('quote_id');
         $sche_no = DB::table('quote_schedules')->where('quote_id',$id)->select('schedule_no')->get();
+        $quote = DB::table('quotes')->where('id',$id)->first();
         foreach ($sche_no as $key => $value) {
           
           array_push($arr,$value->schedule_no);
         }
+        
+        $dleArr = array();
+        $dleArr['user_id'] = $quote->user_id;
+        $dleArr['kam_id'] = $request->input('kam_id');
+        $dleArr['rfq_no'] = $quote->rfq_no;
+        $dleArr['sche_no'] = "";
+        $dleArr['remarks'] = $request->input('remarks');
+
+        Deleteremark::create($dleArr);
 
         DB::table('quote_deliveries')->whereIn('quote_sche_no',$arr)->delete();
         DB::table('quote_schedules')->where('quote_id',$id)->delete();
