@@ -10,6 +10,7 @@ use App\Models\ProductSubCategory;
 use App\Models\Quotedelivery;
 use App\Models\Requote;
 use App\Models\Order;
+use App\Models\Deleteremark;
 use Validator;
 use Auth;
 use DB;
@@ -366,6 +367,7 @@ class QuoteController extends Controller
      ->leftjoin('categorys','quotes.cat_id','categorys.id')
      ->leftjoin('sub_categorys','categorys.id','sub_categorys.cat_id')
      ->select('quotes.rfq_no','users.name','products.pro_name','products.pro_desc','quote_schedules.*','categorys.cat_name','sub_categorys.sub_cat_name')
+     ->orderBy('quote_schedules.schedule_no','asc')
      ->whereNotNull('quotes.deleted_at');
      
      
@@ -383,6 +385,7 @@ class QuoteController extends Controller
 
      foreach ($res as $key => $value) {
        
+      $quoteArr[$key]['sc_id'] = $value->id;
       $quoteArr[$key]['name'] = $value->name;
       $quoteArr[$key]['pro_name'] = $value->pro_name;
       $quoteArr[$key]['pro_desc'] = $value->pro_desc;
@@ -543,7 +546,7 @@ class QuoteController extends Controller
           
           $rfq_number = (!empty($id)) ? $id : '';
 
-          $quote = Quote::where('rfq_no',$id)->with('schedules')->with('product')->with('category')->with('subCategory')->orderBy('updated_at','desc')->get()->toArray();
+          $quote = Quote::where('rfq_no',$id)->with('schedules')->with('product')->with('category')->with('subCategory')->with('user')->orderBy('updated_at','desc')->get()->toArray();
 
           foreach ($quote as $key => $value) {
             
@@ -572,6 +575,8 @@ class QuoteController extends Controller
             $result[$key]['rfq_no'] = $value['rfq_no'];
             $result[$key]['quantity'] = $value['quantity'];
             $result[$key]['st'] = $value['kam_status'];
+            $result[$key]['user_name'] = $value['user']['name'];
+            $result[$key]['dt'] = date('m-d-y',strtotime($value['created_at']));
           }
             
           }
@@ -839,14 +844,27 @@ class QuoteController extends Controller
       ---------------- delete  quote -------------------
 
   */
-      public function deleteQuoteById($id)
-      {   
+      public function deleteQuoteById(Request $request)
+      {  
+        // echo "<pre>";print_r($request->all());exit(); 
         $arr = array();
+
+        $id = $request->input('quote_id');
         $sche_no = DB::table('quote_schedules')->where('quote_id',$id)->select('schedule_no')->get();
+        $quote = DB::table('quotes')->where('id',$id)->first();
         foreach ($sche_no as $key => $value) {
           
           array_push($arr,$value->schedule_no);
         }
+        
+        $dleArr = array();
+        $dleArr['user_id'] = $quote->user_id;
+        $dleArr['kam_id'] = $request->input('kam_id');
+        $dleArr['rfq_no'] = $quote->rfq_no;
+        $dleArr['sche_no'] = "";
+        $dleArr['remarks'] = $request->input('remarks');
+
+        Deleteremark::create($dleArr);
 
         DB::table('quote_deliveries')->whereIn('quote_sche_no',$arr)->delete();
         DB::table('quote_schedules')->where('quote_id',$id)->delete();
@@ -974,6 +992,8 @@ class QuoteController extends Controller
   */
       public function deleteQuoteSche(Request $request)
       {   
+
+        // echo "<pre>";print_r($request->all());exit();
         $arr = array();
 
         $id = $request->input('sche_id');
@@ -988,6 +1008,17 @@ class QuoteController extends Controller
 
         DB::table('quote_deliveries')->where('quote_sche_no',$sche_no->schedule_no)->delete();
         DB::table('quote_schedules')->where('id',$id)->delete();
+
+        $dleArr = array();
+        $dleArr['user_id'] = $quote->user_id;
+        $dleArr['kam_id'] = $request->input('kam_id');
+        $dleArr['rfq_no'] = $quote->rfq_no;
+        $dleArr['sche_no'] = $sche_no->schedule_no;
+        $dleArr['remarks'] = $request->input('remarks');
+
+
+
+        Deleteremark::create($dleArr);
 
 
         $ct = DB::table('quote_schedules')->where('quote_id',$sche_no->quote_id)->get()->count();
