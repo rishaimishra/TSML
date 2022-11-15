@@ -112,7 +112,7 @@ class OrderPlanningController extends Controller
             try{
 
             	$start = $request->input('start');
-            	$end = $request->input('end');
+            	$end = '';
             	// $fg_sap = $request->input('fg_sap');
             
                 $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
@@ -142,7 +142,7 @@ class OrderPlanningController extends Controller
                         $user['size'] = $val[6];
                         $user['met_desc'] = $val[7];
                         $user['start'] = date("Y-m-d", strtotime($start));
-                        $user['end'] = date("Y-m-d", strtotime($end));
+                        $user['end'] = '';
                         $user['qty'] = $val[8];
                         $user['fg_sap'] = $val[9];
 
