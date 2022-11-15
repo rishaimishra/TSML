@@ -67,8 +67,8 @@ class QuoteController extends Controller
           // echo "<pre>";print_r($result);exit(); 
     $data['po_no'] = $id;
     $data['po_date'] = $po_dt;
-    $data['user_name'] = $quote;
-    dd($result,$data);    
+    $data['user_name'] = $quote[0]->uname;
+    // dd($result,$data);    
     $pdf = PDF::loadView('user.po_download',['result'=>$result,'data'=>$data]);
     
     return $pdf->download('po_report.pdf');

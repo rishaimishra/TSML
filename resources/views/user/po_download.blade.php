@@ -19,6 +19,7 @@
                     </tr>
                 </thead>
             </table>
+            <p><b>Customer Name: {{$data['user_name']}}</b></p>
     	</div>
     	@foreach($result as $show)
 	        <div class="paydata">
