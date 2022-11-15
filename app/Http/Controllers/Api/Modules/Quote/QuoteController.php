@@ -235,6 +235,7 @@ class QuoteController extends Controller
           $sche['valid_till'] = $value['valid_till'];
           $sche['schedule_no'] = $value['schedule_no'];
           $sche['kamsRemarks'] = $value['kamsRemarks'];
+          $sche['confirm_date'] = $value['confirm_date'];
           
           // echo "<pre>";print_r($sche);exit();
 
