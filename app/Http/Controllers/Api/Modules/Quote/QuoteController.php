@@ -1411,7 +1411,7 @@ class QuoteController extends Controller
            ->leftjoin('products','quotes.product_id','products.id')
            ->leftjoin('categorys','quotes.cat_id','categorys.id')
            ->leftjoin('sub_categorys','categorys.id','sub_categorys.cat_id')
-           ->select('quotes.rfq_no','quotes.user_id','quotes.id as qid','products.slug','products.status','categorys.*','sub_categorys.*','users.id','products.id as pid','categorys.id as cid','quotes.quantity','orders.letterhead','orders.po_no','orders.po_date')
+           ->select('quotes.rfq_no','quotes.user_id','quotes.id as qid','products.slug','products.status','categorys.*','sub_categorys.*','users.id','products.id as pid','categorys.id as cid','quotes.quantity','orders.letterhead','orders.po_no','orders.po_date','orders.status as po_st','orders.amdnt_no')
            ->orderBy('quotes.updated_at','desc')
            ->where('orders.po_no',$id)
            ->whereNull('quotes.deleted_at')
@@ -1435,6 +1435,8 @@ class QuoteController extends Controller
             $result[$key]['sizes'] = $value->pro_size;
             $result[$key]['slug'] = $value->slug;
             $result[$key]['status'] = $value->status;
+            $result[$key]['po_st'] = $value->po_st;
+            $result[$key]['amdnt_no'] = $value->amdnt_no;
             $result[$key]['primary_image_url'] = asset('storage/app/public/images/images/product/'.$value->primary_image);
             $result[$key]['quote_id'] = $value->qid;
             $result[$key]['user_id'] = $value->user_id;
@@ -1557,7 +1559,7 @@ class QuoteController extends Controller
            ->leftjoin('quotes','orders.rfq_no','quotes.rfq_no')
            ->leftjoin('quote_schedules','quotes.id','quote_schedules.quote_id')
            ->leftjoin('users','quotes.user_id','users.id')    
-           ->select('quotes.rfq_no','quotes.user_id','orders.letterhead','orders.po_no','orders.po_date','users.name','orders.status',DB::raw("(sum(quotes.quantity)) as tot_qt"))
+           ->select('quotes.rfq_no','quotes.user_id','orders.letterhead','orders.po_no','orders.po_date','users.name','orders.status',DB::raw("(sum(quotes.quantity)) as tot_qt"),'orders.amdnt_no')
            ->orderBy('quotes.updated_at','desc')
            ->groupBy('quotes.rfq_no');
            if(!empty($user_id))
@@ -1581,6 +1583,7 @@ class QuoteController extends Controller
             $result[$key]['user'] = $value->name;
             $result[$key]['rfq_no'] = $value->rfq_no;
             $result[$key]['quantity'] = $value->tot_qt;
+            $result[$key]['amdnt_no'] = $value->amdnt_no;
             $date =  date_create($value->po_date);
             $po_dt = date_format($date,"d/m/Y");
             $result[$key]['po_date'] = $po_dt;
