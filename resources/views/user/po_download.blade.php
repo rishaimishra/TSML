@@ -41,7 +41,7 @@
 	                                <strong>Chemical Composition: </strong> 
 	                                Cr - {{@$show['Cr']}}, 
 	                                C - {{@$show['C']}}, 
-	                                Phos - {{@$show['Phos']}} Max, 
+	                                Phos - {{@$show['Phos']}}, 
 	                                S -{{@$show['S']}}, 
 	                                Si - {{@$show['Si']}}
 	                            </p>
