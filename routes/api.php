@@ -51,7 +51,8 @@ Route::group(['namespace'=>'Api\Modules'],function(){
 
 //  });
 
- 
+Route::get('download-po-pdf/{id}','Api\Modules\Quote\QuoteController@downloadPdf')->name('downloadPdf');
+
 Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmiddleware']],function ()
 {
     Route::post('logout', 'AuthController@logout');
@@ -62,7 +63,7 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
    	Route::post('reset-password', 'UserController@resetPassword')->name('reset_password');
 
    	Route::group(['namespace'=>'Api\Modules'],function(){
-   		Route::get('download-po-pdf/{id}','Quote\QuoteController@downloadPdf')->name('downloadPdf');
+   		// Route::get('download-po-pdf/{id}','Quote\QuoteController@downloadPdf')->name('downloadPdf');
    		 Route::post('store_quotes','Quote\QuoteController@storeQuotes');
    		 Route::post('update_quotes','Quote\QuoteController@updateQuotes');
    		 Route::post('quotes_status_update','Quote\QuoteController@quotesStatusUpdate');
