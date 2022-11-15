@@ -23,13 +23,14 @@
     	</div>
     	@foreach($result as $show)
 	        <div class="paydata">
+	        	<div style="padding-top: 25px;">
 	            <table class="" style="width:100%; margin-top: 0px;">
 	                <thead>
 	                    <tr>
-	                        <th style="vertical-align: middle;">
+	                        <th style="text-align: left; vertical-align: middle; width: 10%;">
 	                            <img src="{{@$show['primary_image_url']}}" style="width: 100px; border-radius: 0.25rem;">
 	                        </th>
-	                        <th style="text-align: left; vertical-align: middle;">
+	                        <th style="text-align: left; vertical-align: middle; width: 90%;">
 	                        	<div style="padding-left: 15px;">
 	                            <h3
 	                                style="font-size: 16px; font-weight: 500; font-family: 'Roboto', sans-serif; color: #000; margin: 0;">
@@ -51,6 +52,7 @@
 	                    </tr>
 	                </thead>
 	            </table>
+	            </div>
 	             
 	            @foreach($show['schedule'] as $showshed)
 		            <table class="" style="width:100%; margin-top: 0px;">
@@ -93,15 +95,15 @@
 		                        </td>
 		                        <td>
 		                            <label style="font-size: 14px; white-space: nowrap;">Valid Till</label>
-		                            <input style="width: 100%;" type="text" name="" value="{{$showshed['valid_till']}}">
+		                            <input style="width: 100%;" type="text" name="" value="{{date('d-m-Y', strtotime($showshed['valid_till']))}}">
 		                        </td>
 		                    </tr>
 		                    <tr>
 		                        <td colspan="4">
 		                            <label style="font-size: 14px; white-space: nowrap; width: 100%; float: left;">Delivery Between &</label>
 		                            <div style="clear: both;"></div>
-		                            <input style="width: 50%; float: left;" type="text" name="" value="{{$showshed['to_date']}}">
-		                            <input style="width: 50%; float: right;" type="text" name="" value="{{$showshed['from_date']}}">
+		                            <input style="width: 50%; float: left;" type="text" name="" value="{{date('d-m-Y', strtotime($showshed['to_date']))}} ">
+		                            <input style="width: 50%; float: right;" type="text" name="" value="{{date('d-m-Y', strtotime($showshed['from_date']))}}">
 		                            <div style="clear: both;"></div>
 		                        </td>
 		                    </tr>
