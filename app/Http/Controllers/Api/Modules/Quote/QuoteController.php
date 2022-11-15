@@ -26,7 +26,7 @@ class QuoteController extends Controller
     //         'title' => 'Payment Report',
     //         'date' => date('d-m-Y')
     // ];
-
+     
      
     $quote = DB::table('orders')
             ->leftjoin('quotes','orders.rfq_no','quotes.rfq_no')
