@@ -51,7 +51,8 @@ Route::group(['namespace'=>'Api\Modules'],function(){
 
 //  });
 
- 
+// Route::get('download-po-pdf/{id}','Api\Modules\Quote\QuoteController@downloadPdf')->name('downloadPdf');
+
 Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmiddleware']],function ()
 {
     Route::post('logout', 'AuthController@logout');

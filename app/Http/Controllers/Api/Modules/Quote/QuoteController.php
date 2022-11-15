@@ -51,8 +51,8 @@ class QuoteController extends Controller
       $result[$key]['product_id'] = $value->pid;
       $result[$key]['sizes'] = $value->pro_size;
       $result[$key]['slug'] = $value->slug;
-      $result[$key]['status'] = $value->status;
-      $result[$key]['primary_image_url'] = 'https://beas.in/mje-shop/storage/app/public/images/product/'.$value->primary_image;
+      $result[$key]['status'] = $value->status; 
+      $result[$key]['primary_image_url'] = asset('storage/app/public/images/product/'.$value->primary_image); 
       $result[$key]['quote_id'] = $value->qid;
       $result[$key]['user_id'] = $value->user_id;
       $result[$key]['rfq_no'] = $value->rfq_no;
