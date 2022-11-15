@@ -118,15 +118,17 @@
 		                    </tr>
 		                    <tr>
 		                        <td colspan="4">
-		                            <label style="font-size: 14px; white-space: nowrap;">Proposed Remarks</label>
-		                            <textarea style="width: 100%;">{{$showshed['remarks']}}</textarea>
+		                            <label style="font-size: 14px; white-space: nowrap;">Customer Remarks</label>
+		                            <div style="border: 1.5px solid #ccc; padding: 4px;">{{$showshed['remarks']}}
+		                            </div>
 		                        </td>
 		                    </tr>
 
 		                    <tr>
 		                        <td colspan="4">
-		                            <label style="font-size: 14px; white-space: nowrap;">Proposed Remarks</label>
-		                            <textarea style="width: 100%;">{{$showshed['kamsRemarks']}}</textarea>
+		                            <label style="font-size: 14px; white-space: nowrap;">KAM Remarks</label>
+		                            <div style="border: 1.5px solid #ccc; padding: 4px;">{{$showshed['kamsRemarks']}}
+									</div>
 		                        </td>
 		                    </tr>
 		                </tbody> 
