@@ -562,7 +562,8 @@ class QuoteController extends Controller
             $result[$key]['sizes'] = "";
             $result[$key]['slug'] = $value['product']['slug'];
             $result[$key]['status'] = $value['product']['status'];
-            $result[$key]['primary_image_url'] = 'https://beas.in/mje-shop/storage/app/public/images/product/'.$value['category']['primary_image'];
+            $result[$key]['quotest'] = $value['kam_status'];
+            $result[$key]['primary_image_url'] = asset('storage/app/public/images/product/'.$value['category']['primary_image']);
             $result[$key]['schedule'] = $value['schedules'];
             $result[$key]['quote_id'] = $value['id'];
             $result[$key]['user_id'] = $value['user_id'];
@@ -1713,6 +1714,42 @@ class QuoteController extends Controller
       }
 
     /*-----------------------------------------------------------------------------------*/
+
+
+        /*
+      ----------------  sales quote update -------------------
+
+  */
+
+      public function salesUpdateRfq(Request $request)
+      {
+         // echo "<pre>";print_r($request->all());exit();
+       try{ 
+              foreach ($request->all() as $key => $value) {
+               
+                $schedule_no = $value['schedule_no'];
+                $confirm_date = date("Y-m-d", strtotime($value['confirm_date']));
+                // echo "<pre>";print_r($confirm_date);exit();
+
+                QuoteSchedule::where('schedule_no',$schedule_no )->update(['confirm_date' => $confirm_date]);
+              }
+          // echo "<pre>";print_r($quotes);exit();
+       
+               return response()->json(['status'=>1,
+                'message' =>'success',
+                'result' => 'Quote updated'],
+                config('global.success_status'));
+
+
+
+         }catch(\Exception $e){
+
+             return response()->json(['status'=>0,
+              'message' =>'error',
+              'result' => $e->getMessage()],
+              config('global.failed_status'));
+     }
+   }
 
 
     }
