@@ -28,7 +28,7 @@ class QuoteController extends Controller
             ->leftjoin('products','quotes.product_id','products.id')
             ->leftjoin('categorys','quotes.cat_id','categorys.id')
             ->leftjoin('sub_categorys','categorys.id','sub_categorys.cat_id')
-            ->select('quotes.rfq_no','quotes.user_id','quotes.id as qid','products.slug','products.status','categorys.*','sub_categorys.*','users.id','products.id as pid','categorys.id as cid','quotes.quantity','orders.letterhead','orders.po_no','orders.po_date')
+            ->select('quotes.rfq_no','quotes.user_id','quotes.id as qid','products.slug','products.status','categorys.*','sub_categorys.*','users.id','users.name as uname','products.id as pid','categorys.id as cid','quotes.quantity','orders.letterhead','orders.po_no','orders.po_date')
             ->orderBy('quotes.updated_at','desc')
             ->where('orders.po_no',$id)
             ->whereNull('quotes.deleted_at')
@@ -66,7 +66,8 @@ class QuoteController extends Controller
     }
           // echo "<pre>";print_r($result);exit(); 
     $data['po_no'] = $id;
-    $data['po_date'] = $po_dt; 
+    $data['po_date'] = $po_dt;
+    $data['user_name'] = $quote[0]->uname;
     // dd($result,$data);    
     $pdf = PDF::loadView('user.po_download',['result'=>$result,'data'=>$data]);
     
