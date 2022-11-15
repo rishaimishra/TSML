@@ -1433,7 +1433,7 @@ class QuoteController extends Controller
             $result[$key]['status'] = $value->status;
             $result[$key]['po_st'] = $value->po_st;
             $result[$key]['amdnt_no'] = $value->amdnt_no;
-            $result[$key]['primary_image_url'] = asset('storage/app/public/images/images/product/'.$value->primary_image);
+            $result[$key]['primary_image_url'] = asset('storage/app/public/images/product/'.$value->primary_image);
             $result[$key]['quote_id'] = $value->qid;
             $result[$key]['user_id'] = $value->user_id;
             $result[$key]['rfq_no'] = $value->rfq_no;
