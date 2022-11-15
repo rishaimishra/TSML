@@ -29,6 +29,7 @@ class OrderPlanningController extends Controller
 
       	        if($excel)
       	        {
+                    $date = $request->input('date');
 
 		      	        $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
 		                $spreadsheet = $reader->load($request->excel);
@@ -40,7 +41,7 @@ class OrderPlanningController extends Controller
 		                foreach($sheetData as $k => $val)
 		                {
 		                   
-		                    $res = Monthlyproductionplan::where('start_date',date("Y-m-d", strtotime($val[0])))->where('end_date',date("Y-m-d", strtotime($val[1])))->where('plant',$val[2])->where('cat_id',$val[3])->where('sub_cat_id',$val[4])->where('size',$val[5])->get()->toArray();
+		                    $res = Monthlyproductionplan::where('start_date',date("Y-m-d", strtotime($date)))->where('plant',$val[0])->where('cat_id',$val[1])->where('sub_cat_id',$val[2])->where('size',$val[3])->get()->toArray();
 
 		                     // return $res;
 
@@ -51,18 +52,17 @@ class OrderPlanningController extends Controller
 
 		                     if(empty($res))   
 		                     {
-		                        $user['start_date'] = date("Y-m-d", strtotime($val[0]));
-		                        $user['end_date'] = date("Y-m-d", strtotime($val[1]));
-		                        $user['plant'] = $val[2];
-		                        $user['cat_id'] = $val[3];
-		                        $user['sub_cat_id'] = $val[4];
-		                        $user['size'] = $val[5];
-		                        $user['open_stk'] = $val[6];
-		                        $user['mnthly_prod'] = $val[7];
-		                        $user['export'] = $val[8];
-		                        $user['offline'] = $val[9];
-		                        $user['sap_order'] = $val[10];
-		                        // $user['fg_sap'] = $val[11];
+		                        $user['start_date'] = date("Y-m-d", strtotime($date));
+		                        $user['end_date'] = "";
+		                        $user['plant'] = $val[0];
+		                        $user['cat_id'] = $val[1];
+		                        $user['sub_cat_id'] = $val[2];
+		                        $user['size'] = $val[3];
+		                        $user['open_stk'] = $val[4];
+		                        $user['mnthly_prod'] = $val[5];
+		                        $user['export'] = $val[6];
+		                        $user['offline'] = $val[7];
+		                        $user['sap_order'] = $val[8];
 		                        $user['status'] = 2;
 
 		                        
@@ -71,14 +71,14 @@ class OrderPlanningController extends Controller
 		                   else{
                                 
 
-                                $user['open_stk'] = $val[6];
-		                        $user['mnthly_prod'] = $val[7];
-		                        $user['export'] = $val[8];
-		                        $user['offline'] = $val[9];
-		                        $user['sap_order'] = $val[10];
+                                $user['open_stk'] = $val[4];
+		                        $user['mnthly_prod'] = $val[5];
+		                        $user['export'] = $val[6];
+		                        $user['offline'] = $val[7];
+		                        $user['sap_order'] = $val[8];
                                 
 
-                              Monthlyproductionplan::where('start_date',date("Y-m-d", strtotime($val[0])))->where('end_date',date("Y-m-d", strtotime($val[1])))->where('plant',$val[2])->where('cat_id',$val[3])->where('sub_cat_id',$val[4])->where('size',$val[5])->update($user);
+                              Monthlyproductionplan::where('start_date',date("Y-m-d", strtotime($date)))->where('plant',$val[0])->where('cat_id',$val[1])->where('sub_cat_id',$val[2])->where('size',$val[3])->update($user);
 		                   }
 		      	        }
       	    }else{
@@ -257,16 +257,16 @@ class OrderPlanningController extends Controller
                          })
                ->select('monthly_production_plans.open_stk','monthly_production_plans.mnthly_prod','daily_productions.*','monthly_production_plans.export','monthly_production_plans.offline','monthly_production_plans.sap_order','monthly_production_plans.fg_sap as msap','monthly_production_plans.id as mnt_id','monthly_production_plans.start_date','monthly_production_plans.end_date','monthly_production_plans.size');
 
-               if(!empty($start_date) && !empty($end_date))
+               if(!empty($start_date))
                {
                	  $st_dt = date('Y-m-d',strtotime($start_date));
-               	  $e_dt = date('Y-m-d',strtotime($end_date));
+               	  
 
-               	  // return $e_dt;
-               	 $res = $res->whereDate('monthly_production_plans.start_date','>=',$st_dt)
-               	 ->whereDate('monthly_production_plans.end_date','<=',$e_dt)
-                 ->whereDate('daily_productions.start','>=',$st_dt)
-                 ->whereDate('daily_productions.end','<=',$e_dt)
+               	  // return $st_dt;
+               	 $res = $res->whereDate('monthly_production_plans.start_date','=',$st_dt)
+               	 // ->whereDate('monthly_production_plans.end_date','<=',$e_dt)
+                 ->whereDate('daily_productions.start','=',$st_dt)
+                 // ->whereDate('daily_productions.end','<=',$e_dt)
                	 ;
                }
                if(!empty($plant))
@@ -306,7 +306,7 @@ class OrderPlanningController extends Controller
                	    $result[$k]['size'] = $value->size;
                	    $result[$k]['offline'] = $value->offline;
                	    $result[$k]['tot_qty'] = ($value->open_stk + $value->mnthly_prod)-($value->export + $value->offline);
-               	    $result[$k]['on_dom'] = $this->poQtyOrder($value->plant,$value->category,$value->subcategory,$value->start_date,$value->end_date,$value->size); 
+               	    $result[$k]['on_dom'] = $this->poQtyOrder($value->plant,$value->category,$value->subcategory,$value->start_date,$value->size); 
                     // echo "<pre>";print_r($result['on_dom']);exit();
                	      //-- from po //
                	    $result[$k]['bal_qty'] = ($result[$k]['tot_qty'] - $result[$k]['on_dom']);
@@ -315,7 +315,7 @@ class OrderPlanningController extends Controller
                	    $result[$k]['fg_sap'] = $value->fg_sap;
                	    $result[$k]['daily_id'] = $value->id;
                	    $result[$k]['mnt_id'] = $value->mnt_id;
-                    $result[$k]['dispatch'] = $this->dispatchQty($value->plant,$value->category,$value->subcategory,$value->start_date,$value->end_date,$value->size);
+                    $result[$k]['dispatch'] = $this->dispatchQty($value->plant,$value->category,$value->subcategory,$value->start_date,$value->size);
                     foreach ($result[$k]['dispatch'] as $key => $value) {
                     	
                     	 $dis_sum += $value['ds_qty'];
@@ -339,7 +339,7 @@ class OrderPlanningController extends Controller
        }
 
 
-       public function poQtyOrder($plant,$category,$subcategory,$start_date,$end_date,$size)
+       public function poQtyOrder($plant,$category,$subcategory,$start_date,$size)
        {
        	    $sum = 0;
        	    $category = Product::where('pro_name',$category)->first();
@@ -350,7 +350,8 @@ class OrderPlanningController extends Controller
        	    ->where('quote_schedules.plant',$plant)->select('quote_schedules.quantity')
             ->where('quote_schedules.quote_status',1)
             ->where('quote_schedules.pro_size',$size)
-            ->whereDate('quote_schedules.created_at','>=',$start_date)->whereDate('quote_schedules.created_at','<=',$end_date)
+            ->whereDate('quote_schedules.created_at','=',$start_date)
+            // ->whereDate('quote_schedules.created_at','<=',$end_date)
             ->whereNull('quote_schedules.deleted_at')
             ->whereNull('quotes.deleted_at')
             ->where('quotes.kam_status',4)
@@ -442,12 +443,14 @@ class OrderPlanningController extends Controller
 
 
 
-        public function dispatchQty($plant,$category,$subcategory,$start_date,$end_date,$size)
+        public function dispatchQty($plant,$category,$subcategory,$start_date,$size)
         {
            $response = array();
-
+             $d = date("m", strtotime($start_date));
              $res = DB::table('dispatch_plans')->where('plant',$plant)->where('size',$size)->where('cat_id',$category)->where('sub_cat_id',$subcategory)
-             ->whereDate('ds_date','>=',$start_date)->whereDate('ds_date','<=',$end_date)->get();
+             ->whereMonth('ds_date','=',$d)
+             // ->whereDate('ds_date','<=',$end_date)
+             ->get();
 
              foreach ($res as $key => $value) {
                  
