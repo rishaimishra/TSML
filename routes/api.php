@@ -86,6 +86,7 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
    		 Route::get('get_po_all_kam','Quote\QuoteController@getPoAllKam');
    		 Route::post('po_status_update','Quote\QuoteController@poStatusUpdate');
    		 Route::post('update_po','Quote\QuoteController@updatePo');
+   		 Route::post('sales_update_rfq','Quote\QuoteController@salesUpdateRfq');
 
    		 Route::post('get-store-pro-price','PriceManagement\PriceManagementController@getProPrice')->name('get_store_pro_price');
    		 Route::get('get-threshold-price','PriceManagement\PriceManagementController@getThresholdPrice')->name('get_threshold_price');
