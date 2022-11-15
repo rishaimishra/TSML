@@ -21,60 +21,54 @@ class QuoteController extends Controller
 
   public function downloadPdf($id)
   {
-
-    // $data = [
-    //         'title' => 'Payment Report',
-    //         'date' => date('d-m-Y')
-    // ];
-
-     
-           $quote = DB::table('orders')
-           ->leftjoin('quotes','orders.rfq_no','quotes.rfq_no')
-           ->leftjoin('users','quotes.user_id','users.id')
-           ->leftjoin('products','quotes.product_id','products.id')
-           ->leftjoin('categorys','quotes.cat_id','categorys.id')
-           ->leftjoin('sub_categorys','categorys.id','sub_categorys.cat_id')
-           ->select('quotes.rfq_no','quotes.user_id','quotes.id as qid','products.slug','products.status','categorys.*','sub_categorys.*','users.id','products.id as pid','categorys.id as cid','quotes.quantity','orders.letterhead','orders.po_no','orders.po_date')
-           ->orderBy('quotes.updated_at','desc')
-           ->where('orders.po_no',$id)
-           ->whereNull('quotes.deleted_at')
-           ->get()->toArray();
-           // echo "<pre>";print_r($quote);exit();
-          foreach ($quote as $key => $value) {
-            
-            $result[$key]['C'] = $value->C;
-            $result[$key]['Cr'] = $value->Cr;
-            $result[$key]['Phos'] = $value->Phos;
-            $result[$key]['S'] = $value->S;
-            $result[$key]['Si'] = $value->Si;
-            $result[$key]['cat_dese'] = $value->cat_dese;
-            $result[$key]['cat_id'] = $value->cid;
-            $result[$key]['cat_name'] = $value->cat_name;
-            $result[$key]['image_2_url'] = $value->image_2;
-            $result[$key]['image_3_url'] = $value->image_3;
-            $result[$key]['image_4_url'] = $value->image_4;
-            $result[$key]['is_populer'] = $value->is_populer;
-            $result[$key]['product_id'] = $value->pid;
-            $result[$key]['sizes'] = $value->pro_size;
-            $result[$key]['slug'] = $value->slug;
-            $result[$key]['status'] = $value->status;
-            $result[$key]['primary_image_url'] = 'https://beas.in/mje-shop/storage/app/public/images/product/'.$value->primary_image;
-            $result[$key]['quote_id'] = $value->qid;
-            $result[$key]['user_id'] = $value->user_id;
-            $result[$key]['rfq_no'] = $value->rfq_no;
-            $result[$key]['quantity'] = $value->quantity;
-            $result[$key]['po_no'] = $value->po_no;
-            $result[$key]['letterhead'] = asset('storage/app/public/images/letterheads/'.$value->letterhead);
-            $date =  date_create($value->po_date);
-            $po_dt = date_format($date,"d-m-Y");
-            $result[$key]['po_date'] = $po_dt;
-            $result[$key]['schedule'] = $this->getPoSchedules($value->qid);
-             
-          }
-          // echo "<pre>";print_r($result);exit(); 
  
-          
-    $pdf = PDF::loadView('user.po_download',['result'=>$result]);
+    $quote = DB::table('orders')
+            ->leftjoin('quotes','orders.rfq_no','quotes.rfq_no')
+            ->leftjoin('users','quotes.user_id','users.id')
+            ->leftjoin('products','quotes.product_id','products.id')
+            ->leftjoin('categorys','quotes.cat_id','categorys.id')
+            ->leftjoin('sub_categorys','categorys.id','sub_categorys.cat_id')
+            ->select('quotes.rfq_no','quotes.user_id','quotes.id as qid','products.slug','products.status','categorys.*','sub_categorys.*','users.id','products.id as pid','categorys.id as cid','quotes.quantity','orders.letterhead','orders.po_no','orders.po_date')
+            ->orderBy('quotes.updated_at','desc')
+            ->where('orders.po_no',$id)
+            ->whereNull('quotes.deleted_at')
+            ->get()->toArray();
+           // echo "<pre>";print_r($quote);exit();
+    foreach ($quote as $key => $value) {
+      
+      $result[$key]['C'] = $value->C;
+      $result[$key]['Cr'] = $value->Cr;
+      $result[$key]['Phos'] = $value->Phos;
+      $result[$key]['S'] = $value->S;
+      $result[$key]['Si'] = $value->Si;
+      $result[$key]['cat_dese'] = $value->cat_dese;
+      $result[$key]['cat_id'] = $value->cid;
+      $result[$key]['cat_name'] = $value->cat_name;
+      $result[$key]['image_2_url'] = $value->image_2;
+      $result[$key]['image_3_url'] = $value->image_3;
+      $result[$key]['image_4_url'] = $value->image_4;
+      $result[$key]['is_populer'] = $value->is_populer;
+      $result[$key]['product_id'] = $value->pid;
+      $result[$key]['sizes'] = $value->pro_size;
+      $result[$key]['slug'] = $value->slug;
+      $result[$key]['status'] = $value->status;
+      $result[$key]['primary_image_url'] = 'https://beas.in/mje-shop/storage/app/public/images/product/'.$value->primary_image;
+      $result[$key]['quote_id'] = $value->qid;
+      $result[$key]['user_id'] = $value->user_id;
+      $result[$key]['rfq_no'] = $value->rfq_no;
+      $result[$key]['quantity'] = $value->quantity;
+      $result[$key]['po_no'] = $value->po_no; 
+      $date =  date_create($value->po_date);
+      $po_dt = date_format($date,"d-m-Y");
+      $result[$key]['po_date'] = $po_dt;
+      $result[$key]['schedule'] = $this->getPoSchedules($value->qid);
+       
+    }
+          // echo "<pre>";print_r($result);exit(); 
+    $data['po_no'] = $id;
+    $data['po_date'] = $po_dt; 
+    // dd($result,$data);    
+    $pdf = PDF::loadView('user.po_download',['result'=>$result,'data'=>$data]);
     
     return $pdf->download('po_report.pdf');
   }
