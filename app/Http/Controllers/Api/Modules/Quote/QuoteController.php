@@ -155,7 +155,7 @@ class QuoteController extends Controller
           $array['quantity'] = $value['quantity'];
           $array['quote_type'] = $value['quote_type'];
           $array['quote_schedules'] = $value['quote_schedules'];
-          $array['kam_status'] = (!empty($quote_id->kam_status) ? $quote_id->kam_status : '';
+          $array['kam_status'] = (!empty($quote_id->kam_status)) ? $quote_id->kam_status : '';
           $rfq_number = $value['rfq_number'];
           
               // echo "<pre>";print_r($array);exit();
