@@ -147,15 +147,15 @@ class QuoteController extends Controller
          
         foreach ($request->all() as $key => $value) {
 
-          $quote_id = DB::table('quotes')->where('rfq_no',$value['rfq_number'])->where('product_id',$value['product_id'])->where('cat_id',$value['cat_id'])->whereNull('deleted_at')->select('id','user_id')->first();
+          $quote_id = DB::table('quotes')->where('rfq_no',$value['rfq_number'])->where('product_id',$value['product_id'])->where('cat_id',$value['cat_id'])->whereNull('deleted_at')->select('id','user_id','kam_status')->first();
             // echo "<pre>";print_r($quote_id);exit();
 
           $array['product_id'] = $value['product_id'];
           $array['cat_id'] = $value['cat_id'];
           $array['quantity'] = $value['quantity'];
           $array['quote_type'] = $value['quote_type'];
-          $array['quote_schedules'] = $value['quote_schedules'];
           $array['kam_status'] = (!empty($quote_id->kam_status)) ? $quote_id->kam_status : '';
+          $array['quote_schedules'] = $value['quote_schedules'];
           $rfq_number = $value['rfq_number'];
           
               // echo "<pre>";print_r($array);exit();
@@ -204,7 +204,8 @@ class QuoteController extends Controller
         $quoteArr['product_id'] = $request->input('product_id');
         $quoteArr['cat_id'] = $request->input('cat_id');
         $quoteArr['quantity'] = $request->input('quantity');
-        $quoteArr['quote_type'] = $request->input('quote_type');;
+        $quoteArr['quote_type'] = $request->input('quote_type');
+        $quoteArr['kam_status'] = $request->input('kam_status');
         $quoteArr['rfq_no'] = $rfq_number;
         $quoteArr['quote_no']  = rand(100,9999);
 
