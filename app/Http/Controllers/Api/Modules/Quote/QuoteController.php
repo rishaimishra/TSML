@@ -1735,7 +1735,7 @@ class QuoteController extends Controller
               foreach ($request->all() as $key => $value) {
                
                 $schedule_no = $value['schedule_no'];
-                $confirm_date = date("Y-m-d", strtotime($value['confirm_date']));
+                $confirm_date = $value['confirm_date'];
                 // echo "<pre>";print_r($confirm_date);exit();
 
                 QuoteSchedule::where('schedule_no',$schedule_no )->update(['confirm_date' => $confirm_date]);
