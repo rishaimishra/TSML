@@ -475,7 +475,7 @@ class QuoteController extends Controller
           $quoteArr[$key]['quote_id'] = $value->id;
           $quoteArr[$key]['user_id'] = $value->user_id;
           $quoteArr[$key]['rfq_no'] = $value->rfq_no;
-          $quoteArr[$key]['quantity'] = $value->tot_qt;
+          $quoteArr[$key]['quantity'] = $this->rfqtotQt($value->rfq_no);
           $quoteArr[$key]['kam_status'] = $value->kam_status;
           $quoteArr[$key]['name'] = $value->name;
           $quoteArr[$key]['created_at'] = date('d-m-Y',strtotime($value->created_at));
@@ -1086,7 +1086,7 @@ class QuoteController extends Controller
           $quoteArr[$key]['quote_id'] = $value->id;
           $quoteArr[$key]['user_id'] = $value->user_id;
           $quoteArr[$key]['rfq_no'] = $value->rfq_no;
-          $quoteArr[$key]['quantity'] = $value->tot_qt;
+          $quoteArr[$key]['quantity'] = $this->rfqtotQt($value->rfq_no);
           $quoteArr[$key]['kam_status'] = $value->kam_status;
           $quoteArr[$key]['name'] = $value->name;
           $quoteArr[$key]['created_at'] = date('jS F, Y',strtotime($value->created_at));
@@ -1559,7 +1559,7 @@ class QuoteController extends Controller
            ->leftjoin('quotes','orders.rfq_no','quotes.rfq_no')
            ->leftjoin('quote_schedules','quotes.id','quote_schedules.quote_id')
            ->leftjoin('users','quotes.user_id','users.id')    
-           ->select('quotes.rfq_no','quotes.user_id','orders.letterhead','orders.po_no','orders.po_date','users.name','orders.status',DB::raw("(sum(quotes.quantity)) as tot_qt"),'orders.amdnt_no')
+           ->select('quotes.rfq_no','quotes.user_id','orders.letterhead','orders.po_no','orders.po_date','users.name','orders.status',DB::raw("(sum(quote_schedules.quantity)) as tot_qt"),'orders.amdnt_no')
            ->orderBy('quotes.updated_at','desc')
            ->groupBy('quotes.rfq_no');
            if(!empty($user_id))
@@ -1571,7 +1571,7 @@ class QuoteController extends Controller
 
               $quote = $quote->where('users.state',$user_state);
            }
-           $quote = $quote->whereNull('quotes.deleted_at')
+           $quote = $quote->whereNull('quotes.deleted_at')->where('quote_schedules.quote_status',1)
            ->get()->toArray();
            // echo "<pre>";print_r($quote);exit();
 
@@ -1755,6 +1755,22 @@ class QuoteController extends Controller
               'result' => $e->getMessage()],
               config('global.failed_status'));
      }
+   }
+
+
+
+   /*-----------------------------------------------------------------------*/
+
+   public function rfqtotQt($rfq_no)
+   {
+        $sum = 0;
+        $res = Quote::where('rfq_no',$rfq_no)->select('quantity')->get();
+
+        foreach ($res as $key => $value) {
+          
+           $sum += $value->quantity;
+        }
+        return $sum;
    }
 
 
