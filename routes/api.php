@@ -13,6 +13,10 @@ use Illuminate\Http\Request;
 |
 */
 
+Route::get('get-po-list-admin','Api\Modules\PoDetails\PoDetailsController@getPoDetails')->name('get_po_list_admin');
+
+Route::get('get-po-details-admin/{id}','Api\Modules\PoDetails\PoDetailsController@getPoDetailsId')->name('get_po_details_admin');
+
 Route::post('/register', 'UserController@store');
 Route::post('login', 'AuthController@login');
 Route::post('send-mobile-otp', 'UserController@sendOtpToMobile')->name('send_mobile_otp');
@@ -209,6 +213,9 @@ Route::group(['prefix' => 'admin','middleware' => ['assign.guard:admins','jwtmid
 		Route::post('store-complain-sub-category3', 'Complain\ComplainController@storeComplainSubCategory3')->name('store_complain_sub_category3'); 
 		// Product qut upload exl...
 		Route::post('prod-qty-upload-admin','Orders\OrderPlanningController@prodQtyUploadAdmin');
+
+		// PO Details Routes...
+		Route::get('get-po-details-admin','PoDetails\PoDetailsController@getPoDetails')->name('get_po_details_admin'); 
 		
 	});
 
