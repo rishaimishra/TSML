@@ -1658,6 +1658,7 @@ class QuoteController extends Controller
              $quote_sches[$key]['delivery'] = $value->delivery;
              $quote_sches[$key]['valid_till'] = $value->valid_till;
              $quote_sches[$key]['quote_status'] = $value->quote_status;
+             $quote_sches[$key]['confirm_date'] = $value->confirm_date;
         
              
 
