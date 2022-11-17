@@ -71,9 +71,10 @@ class PoDetailsController extends Controller
             $result[$key]['schedule'] = $this->getPoSchedules($value->qid); 
             
         }
-          
-
+        // return $result;
+        
         $newArr  = $this->createPoPdfArr($result);
+        // dd($newArr);
         // dd($newArr);
         $getsum = 0;
         foreach ($newArr as $key => $value) 
@@ -85,9 +86,9 @@ class PoDetailsController extends Controller
          
         $data['total_price'] = $getsum;
         $data['po_no'] = $id;
-    	$data['po_date'] = $po_dt;
-    	$data['user_name'] = $quote[0]->uname;
-
+    	  $data['po_date'] = $po_dt;
+    	  $data['user_name'] = $quote[0]->uname;
+        // dd($newArr,$data);
         $pdf = PDF::loadView('user.po_sales_download',['result'=>$newArr,'data'=>$data]);
     
     	return $pdf->download('po_sales_report.pdf');
@@ -411,26 +412,30 @@ class PoDetailsController extends Controller
 
       public function createPoPdfArr($result)
       {
+      		 
           $newArr = array();
+          $arra = array();
           foreach ($result as $key => $value) {
-              
+              	
                 $product = $value['product_name'];
                 $cat = $value['cat_name'];
                 foreach ($value['schedule'] as $k => $v) {
                     
-                    $newArr[$k]['product_name'] = $product;
-                    $newArr[$k]['cat_name'] = $cat;
-                    $newArr[$k]['pro_size'] = $v['pro_size'];
-                    $newArr[$k]['qty'] = $v['quantity'];
-                    $newArr[$k]['ship_to'] = $v['ship_to']; 
-                    $newArr[$k]['kam_price'] = $v['kam_price'];
-                    $newArr[$k]['to_dt'] = $v['to_date'];
-                    $newArr[$k]['from_dt'] = $v['from_date']; 
+                    $newArr['product_name'] = $product;
+                    $newArr['cat_name'] = $cat;
+                    $newArr['pro_size'] = $v['pro_size'];
+                    $newArr['qty'] = $v['quantity'];
+                    $newArr['ship_to'] = $v['ship_to']; 
+                    $newArr['kam_price'] = $v['kam_price'];
+                    $newArr['to_dt'] = $v['to_date'];
+                    $newArr['from_dt'] = $v['from_date']; 
+
+                    array_push($arra,$newArr);
                 }
 
-
+                
           }
           // echo "<pre>";print_r($newArr);exit();
-          return $newArr;
+          return $arra;
       }
 }
