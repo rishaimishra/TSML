@@ -72,13 +72,15 @@ class PoDetailsController extends Controller
             
         }
           
-        // dd($result);
+
+        $newArr  = $this->createPoPdfArr($result);
+        // dd($newArr);
 
         $data['po_no'] = $id;
     	$data['po_date'] = $po_dt;
     	$data['user_name'] = $quote[0]->uname;
 
-        $pdf = PDF::loadView('user.po_sales_download',['result'=>$result,'data'=>$data]);
+        $pdf = PDF::loadView('user.po_sales_download',['result'=>$newArr,'data'=>$data]);
     
     	return $pdf->download('po_sales_report.pdf');
            
@@ -396,5 +398,32 @@ class PoDetailsController extends Controller
           }
 
           return $quote_sches;
+      }
+
+
+
+      public function createPoPdfArr($result)
+      {
+          $newArr = array();
+          foreach ($result as $key => $value) {
+              
+                $product = $value['product_name'];
+                $cat = $value['cat_name'];
+                foreach ($value['schedule'] as $k => $v) {
+                    
+                    $newArr[$k]['product_name'] = $product;
+                    $newArr[$k]['cat_name'] = $cat;
+                    $newArr[$k]['pro_size'] = $v['pro_size'];
+                    $newArr[$k]['qty'] = $v['quantity'];
+                    $newArr[$k]['ship_to'] = $v['ship_to']; 
+                    $newArr[$k]['kam_price'] = $v['kam_price'];
+                    $newArr[$k]['to_dt'] = $v['to_date'];
+                    $newArr[$k]['from_dt'] = $v['from_date']; 
+                }
+
+
+          }
+          // echo "<pre>";print_r($newArr);exit();
+          return $newArr;
       }
 }
