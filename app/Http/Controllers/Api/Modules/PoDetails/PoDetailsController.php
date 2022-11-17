@@ -71,7 +71,7 @@ class PoDetailsController extends Controller
             $result[$key]['schedule'] = $this->getPoSchedules($value->qid); 
             
         }
-        // return $result;
+       // dd($result);
         
         $newArr  = $this->createPoPdfArr($result);
         // dd($newArr);
@@ -83,7 +83,7 @@ class PoDetailsController extends Controller
         	$getsum+=$value['kam_price'];
         }
 
-         
+        $data['product_name'] = $quote[0]->product_name;
         $data['total_price'] = $getsum;
         $data['po_no'] = $id;
     	  $data['po_date'] = $po_dt;
@@ -355,7 +355,7 @@ class PoDetailsController extends Controller
             $result[$key]['schedule'] = $this->getPoSchedules($value->qid); 
             
         }
-        // return $result;
+        // dd($result);
         
         $newArr  = $this->createPoPdfArr($result);
         // dd($newArr);
@@ -367,7 +367,7 @@ class PoDetailsController extends Controller
           $getsum+=$value['kam_price'];
         }
 
-         
+        
         $datas['total_price'] = $getsum;
         $datas['po_no'] = $id;
         $datas['po_date'] = $po_dt;
@@ -424,7 +424,8 @@ class PoDetailsController extends Controller
              $quote_sches[$key]['kamsRemarks'] = $value->kamsRemarks;
              $quote_sches[$key]['delivery'] = $value->delivery;
              $quote_sches[$key]['valid_till'] = $value->valid_till;
-             $quote_sches[$key]['quote_status'] = $value->quote_status; 
+             $quote_sches[$key]['quote_status'] = $value->quote_status;
+             $quote_sches[$key]['confirm_date'] = $value->confirm_date; 
 
           }
 
@@ -450,8 +451,10 @@ class PoDetailsController extends Controller
                     $newArr['qty'] = $v['quantity'];
                     $newArr['ship_to'] = $v['ship_to']; 
                     $newArr['kam_price'] = $v['kam_price'];
-                    $newArr['to_dt'] = $v['to_date'];
-                    $newArr['from_dt'] = $v['from_date']; 
+                    $date =  date_create($v['confirm_date']);
+                    $newArr['tentative_delivey_date'] = date_format($date,"d-m-Y");
+                    //$newArr['tentative_delivey_date'] = date(format)$v['confirm_date'];
+                    // $newArr['from_dt'] = $v['from_date']; 
 
                     array_push($arra,$newArr);
                 }

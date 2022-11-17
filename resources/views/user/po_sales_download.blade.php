@@ -6,7 +6,7 @@
 <body>
 
 <div style="font-family: 'Roboto', sans-serif; width: 100%;">
-	<div style="font-weight: bold; font-size: 18px; width: 100%;">
+	<div style="font-weight: bold; font-size: 18px; width: 100%; text-align:center;border-bottom:1px solid #ccc; padding-bottom:15px; margin-bottom:15px;">
 		Purchass Order
 	</div>
 	<div style="width: 100%;">
@@ -22,7 +22,7 @@
 						</tr>
 					</table>
 				</td>
-				<td>
+				<td colspan="2">
 					<table style="width: 100%;">
 						<tr>
 							<td>Customer</td>
@@ -35,6 +35,13 @@
 			</tr>
 
 			<tr>
+				<td>
+					<table style="width: 100%;">
+						<tr>
+							<td style="border: 1px solid black; border-collapse: collapse; padding: 5px;">Product : {{$data['product_name']}}</td>
+						</tr>
+					</table>
+				</td>
 				<td>
 					<table style="width: 100%;">
 						<tr>
@@ -52,10 +59,10 @@
 			</tr>
 
 			<tr>
-				<td colspan="2">
+				<td colspan="3">
 					<table style="width: 100%; border-collapse: collapse;">
 						<tr>
-							<th style="border: 1px solid black; border-collapse: collapse; padding: 5px; border-collapse: collapse; text-align: left;">Product</th>
+							<!-- <th style="border: 1px solid black; border-collapse: collapse; padding: 5px; border-collapse: collapse; text-align: left;">Product</th> -->
 							<th style="border: 1px solid black; border-collapse: collapse; padding: 5px; border-collapse: collapse; text-align: left; ">Category</th>
 							<th style="border: 1px solid black; border-collapse: collapse; padding: 5px; border-collapse: collapse; text-align: left; white-space: nowrap;">Size</th>
 							<th style="border: 1px solid black; border-collapse: collapse; padding: 5px; border-collapse: collapse; text-align: left; white-space: nowrap;">Quantity</th>
@@ -66,17 +73,17 @@
 						 
 						@foreach($result as $show)
 						<tr>
-							<td style="border: 1px solid black; border-collapse: collapse; padding: 5px; border-collapse: collapse;">{{@$show['product_name']}}</td>
+							<!-- <td style="border: 1px solid black; border-collapse: collapse; padding: 5px; border-collapse: collapse;">{{@$show['product_name']}}</td> -->
 							<td style="border: 1px solid black; border-collapse: collapse; padding: 5px; border-collapse: collapse;">{{@$show['cat_name']}}</td>
 							<td style="border: 1px solid black; border-collapse: collapse; padding: 5px; border-collapse: collapse; white-space: nowrap;">{{@$show['pro_size']}}</td>
 							<td style="border: 1px solid black; border-collapse: collapse; padding: 5px; border-collapse: collapse;">{{@$show['qty']}}</td>
 							<td style="border: 1px solid black; border-collapse: collapse; padding: 5px; border-collapse: collapse;">{{@$show['ship_to']}}</td>
-							<td style="border: 1px solid black; border-collapse: collapse; padding: 5px; border-collapse: collapse;">{{@$show['to_dt']}}</td>
+							<td style="border: 1px solid black; border-collapse: collapse; padding: 5px; border-collapse: collapse;">{{@$show['tentative_delivey_date']}}</td>
 							<td align="right" style="border: 1px solid black; border-collapse: collapse; padding: 5px; border-collapse: collapse;">{{@$show['kam_price']}}</td>
 						</tr>
 						@endforeach
 						<tr>
-							<th colspan="6" align="right" style="border: 1px solid black; border-collapse: collapse; padding: 5px; border-collapse: collapse;">Total</th>
+							<th colspan="5" align="right" style="border: 1px solid black; border-collapse: collapse; padding: 5px; border-collapse: collapse;">Total</th>
 							<th align="right" style="border: 1px solid black; border-collapse: collapse; padding: 5px; border-collapse: collapse;">{{$data['total_price']}}</th>
 						</tr>
 					</table>
@@ -84,7 +91,7 @@
 			</tr>
 
 			<tr>
-				<td colspan="2" style="vertical-align: top;">
+				<td colspan="3" style="vertical-align: top;">
 					<table style="width: 100%; border-collapse: collapse;">
 						<tr>
 							<td rowspan="2" align="left" style="border: 1px solid black; border-collapse: collapse; padding: 5px; border-collapse: collapse; width: 50%; vertical-align: top;">Special Instructions</td>
