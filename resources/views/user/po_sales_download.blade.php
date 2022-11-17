@@ -68,16 +68,16 @@
 						<tr>
 							<td style="border: 1px solid black; border-collapse: collapse; padding: 5px; border-collapse: collapse;">{{@$show['product_name']}}</td>
 							<td style="border: 1px solid black; border-collapse: collapse; padding: 5px; border-collapse: collapse;">{{@$show['cat_name']}}</td>
-							<td style="border: 1px solid black; border-collapse: collapse; padding: 5px; border-collapse: collapse; white-space: nowrap;">{{@$show['sizes']}}</td>
-							<td style="border: 1px solid black; border-collapse: collapse; padding: 5px; border-collapse: collapse;">150</td>
-							<td style="border: 1px solid black; border-collapse: collapse; padding: 5px; border-collapse: collapse;">CF-345, Salt Lake City, Sector-1, Kolkata-700 064</td>
-							<td style="border: 1px solid black; border-collapse: collapse; padding: 5px; border-collapse: collapse;">16-11-2022</td>
-							<td align="right" style="border: 1px solid black; border-collapse: collapse; padding: 5px; border-collapse: collapse;">107347.5</td>
+							<td style="border: 1px solid black; border-collapse: collapse; padding: 5px; border-collapse: collapse; white-space: nowrap;">{{@$show['pro_size']}}</td>
+							<td style="border: 1px solid black; border-collapse: collapse; padding: 5px; border-collapse: collapse;">{{@$show['qty']}}</td>
+							<td style="border: 1px solid black; border-collapse: collapse; padding: 5px; border-collapse: collapse;">{{@$show['ship_to']}}</td>
+							<td style="border: 1px solid black; border-collapse: collapse; padding: 5px; border-collapse: collapse;">{{@$show['to_dt']}}</td>
+							<td align="right" style="border: 1px solid black; border-collapse: collapse; padding: 5px; border-collapse: collapse;">{{@$show['kam_price']}}</td>
 						</tr>
 						@endforeach
 						<tr>
 							<th colspan="6" align="right" style="border: 1px solid black; border-collapse: collapse; padding: 5px; border-collapse: collapse;">Total</th>
-							<th align="right" style="border: 1px solid black; border-collapse: collapse; padding: 5px; border-collapse: collapse;">322042.5</th>
+							<th align="right" style="border: 1px solid black; border-collapse: collapse; padding: 5px; border-collapse: collapse;">{{$data['total_price']}}</th>
 						</tr>
 					</table>
 				</td>

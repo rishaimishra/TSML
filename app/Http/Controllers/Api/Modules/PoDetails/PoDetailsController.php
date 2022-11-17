@@ -75,7 +75,15 @@ class PoDetailsController extends Controller
 
         $newArr  = $this->createPoPdfArr($result);
         // dd($newArr);
+        $getsum = 0;
+        foreach ($newArr as $key => $value) 
+        {
+        	 
+        	$getsum+=$value['kam_price'];
+        }
 
+         
+        $data['total_price'] = $getsum;
         $data['po_no'] = $id;
     	$data['po_date'] = $po_dt;
     	$data['user_name'] = $quote[0]->uname;
@@ -342,8 +350,7 @@ class PoDetailsController extends Controller
             $date =  date_create($value->po_date);
             $po_dt = date_format($date,"d-m-Y");
             $result[$key]['po_date'] = $po_dt;
-            $result[$key]['schedule'] = $this->getPoSchedules($value->qid);
-            
+            $result[$key]['schedule'] = $this->getPoSchedules($value->qid); 
             
           }
               // echo "<pre>";print_r($result);exit();
