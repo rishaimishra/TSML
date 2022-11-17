@@ -307,7 +307,6 @@ class PoDetailsController extends Controller
 
        try{ 
 
-      		 
 
            $quote = DB::table('orders')
            ->leftjoin('quotes','orders.rfq_no','quotes.rfq_no')
@@ -315,13 +314,14 @@ class PoDetailsController extends Controller
            ->leftjoin('products','quotes.product_id','products.id')
            ->leftjoin('categorys','quotes.cat_id','categorys.id')
            ->leftjoin('sub_categorys','categorys.id','sub_categorys.cat_id')
-           ->select('quotes.rfq_no','quotes.user_id','quotes.id as qid','products.slug','products.status','categorys.*','sub_categorys.*','users.id','products.id as pid','categorys.id as cid','quotes.quantity','orders.letterhead','orders.po_no','orders.po_date','orders.status as po_st','orders.amdnt_no')
+           ->select('quotes.rfq_no','quotes.user_id','quotes.id as qid','products.slug','products.pro_name as product_name','products.status','categorys.*','sub_categorys.*','users.id','users.name as uname','products.id as pid','categorys.id as cid','quotes.quantity','orders.letterhead','orders.po_no','orders.po_date','orders.status as po_st','orders.amdnt_no')
            ->orderBy('quotes.updated_at','desc')
            ->where('orders.po_no',$id)
            ->whereNull('quotes.deleted_at')
            ->get()->toArray();
            // echo "<pre>";print_r($quote);exit();
-          foreach ($quote as $key => $value) {
+        foreach ($quote as $key => $value) 
+        {
             
             $result[$key]['C'] = $value->C;
             $result[$key]['Cr'] = $value->Cr;
@@ -338,6 +338,7 @@ class PoDetailsController extends Controller
             $result[$key]['product_id'] = $value->pid;
             $result[$key]['sizes'] = $value->pro_size;
             $result[$key]['slug'] = $value->slug;
+            $result[$key]['product_name'] = $value->product_name;
             $result[$key]['status'] = $value->status;
             $result[$key]['po_st'] = $value->po_st;
             $result[$key]['amdnt_no'] = $value->amdnt_no;
@@ -353,12 +354,34 @@ class PoDetailsController extends Controller
             $result[$key]['po_date'] = $po_dt;
             $result[$key]['schedule'] = $this->getPoSchedules($value->qid); 
             
-          }
+        }
+        // return $result;
+        
+        $newArr  = $this->createPoPdfArr($result);
+        // dd($newArr);
+        // dd($newArr);
+        $getsum = 0;
+        foreach ($newArr as $key => $value) 
+        {
+           
+          $getsum+=$value['kam_price'];
+        }
+
+         
+        $datas['total_price'] = $getsum;
+        $datas['po_no'] = $id;
+        $datas['po_date'] = $po_dt;
+        $datas['customer_name'] = $quote[0]->uname;
+
+
+
+
+
               // echo "<pre>";print_r($result);exit();
           \DB::commit();
-          if(!empty($result))
+          if(!empty($newArr))
           {
-            return response()->json(['status'=>1,'message' =>'success','result' => $result],config('global.success_status'));
+            return response()->json(['status'=>1,'message' =>'success','result' => $newArr,'data' => $datas],config('global.success_status'));
           }
           else{
 
