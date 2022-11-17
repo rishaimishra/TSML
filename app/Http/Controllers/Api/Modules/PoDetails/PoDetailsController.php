@@ -40,6 +40,8 @@ class PoDetailsController extends Controller
            ->select('quotes.rfq_no','quotes.user_id','quotes.created_at','orders.letterhead','products.pro_name as product_title', 'categorys.cat_name as category_name','orders.po_no','orders.po_date','users.name','orders.status',DB::raw("(sum(quotes.quantity)) as tot_qt"),'orders.amdnt_no')
            ->orderBy('quotes.updated_at','desc')
            ->groupBy('quotes.rfq_no');
+
+           //-------------------------------//
            if(!empty($request->po_no))
            {
               $quote = $quote->where('orders.po_no',$request->po_no);
@@ -56,6 +58,8 @@ class PoDetailsController extends Controller
            {
            		$quote = $quote->where('categorys.cat_name','LIKE',"%{$request->categorys}%"); 
            }
+
+           // --------------------------------//
            if(!empty($request->from_date && $request->to_date))
            {
            		$fromdate = date('Y-m-d',strtotime($request->from_date));
@@ -64,6 +68,116 @@ class PoDetailsController extends Controller
            		->where('orders.po_date','<=', $todate);
               	 
            }
+
+           if(!empty($request->from_date && $request->to_date && $request->po_no))
+           {
+           		$fromdate = date('Y-m-d',strtotime($request->from_date));
+           		$todate = date('Y-m-d',strtotime($request->to_date));  
+           		$quote = $quote->where('orders.po_date','>=', $fromdate)
+           		->where('orders.po_date','<=', $todate)
+           		->where('orders.po_no',$request->po_no);
+              	 
+           }
+
+           if(!empty($request->from_date && $request->to_date && $request->customer_name))
+           	{
+           		$fromdate = date('Y-m-d',strtotime($request->from_date));
+           		$todate = date('Y-m-d',strtotime($request->to_date));  
+           		$quote = $quote->where('orders.po_date','>=', $fromdate)
+           		->where('orders.po_date','<=', $todate)
+           		->where('users.name','LIKE',"%{$request->customer_name}%"); 
+           	}
+
+           if(!empty($request->from_date && $request->to_date && $request->rfq_no))
+           {
+           		$fromdate = date('Y-m-d',strtotime($request->from_date));
+           		$todate = date('Y-m-d',strtotime($request->to_date));  
+           		$quote = $quote->where('orders.po_date','>=', $fromdate)
+           		->where('orders.po_date','<=', $todate)
+           		->where('orders.rfq_no',$request->rfq_no);
+              	 
+           } 
+
+           if(!empty($request->from_date && $request->to_date && $request->categorys))
+           	{
+           		$fromdate = date('Y-m-d',strtotime($request->from_date));
+           		$todate = date('Y-m-d',strtotime($request->to_date));  
+           		$quote = $quote->where('orders.po_date','>=', $fromdate)
+           		->where('orders.po_date','<=', $todate)
+           		->where('categorys.cat_name','LIKE',"%{$request->categorys}%");
+              	 
+           	}
+
+           	//-------------------------//
+
+           	if(!empty($request->from_date && $request->to_date && $request->po_no && $request->customer_name))
+           	{
+           		$fromdate = date('Y-m-d',strtotime($request->from_date));
+           		$todate = date('Y-m-d',strtotime($request->to_date));  
+           		$quote = $quote->where('orders.po_date','>=', $fromdate)
+           		->where('orders.po_date','<=', $todate)
+           		->where('orders.po_no',$request->po_no)
+           		->where('users.name','LIKE',"%{$request->customer_name}%"); 
+           	}
+
+           	if(!empty($request->from_date && $request->to_date && $request->po_no && $request->rfq_no))
+           	{
+           		$fromdate = date('Y-m-d',strtotime($request->from_date));
+           		$todate = date('Y-m-d',strtotime($request->to_date));  
+           		$quote = $quote->where('orders.po_date','>=', $fromdate)
+           		->where('orders.po_date','<=', $todate)
+           		->where('orders.po_no',$request->po_no)
+           		->where('orders.rfq_no',$request->rfq_no); 
+           	}
+
+           	if(!empty($request->from_date && $request->to_date && $request->po_no && $request->categorys))
+           	{
+           		$fromdate = date('Y-m-d',strtotime($request->from_date));
+           		$todate = date('Y-m-d',strtotime($request->to_date));  
+           		$quote = $quote->where('orders.po_date','>=', $fromdate)
+           		->where('orders.po_date','<=', $todate)
+           		->where('orders.po_no',$request->po_no)
+           		->where('categorys.cat_name','LIKE',"%{$request->categorys}%"); 
+           	}
+
+           	//---------------------------------//
+
+           	if(!empty($request->from_date && $request->to_date && $request->po_no && $request->customer_name && $request->rfq_no))
+           	{
+           		$fromdate = date('Y-m-d',strtotime($request->from_date));
+           		$todate = date('Y-m-d',strtotime($request->to_date));  
+           		$quote = $quote->where('orders.po_date','>=', $fromdate)
+           		->where('orders.po_date','<=', $todate)
+           		->where('orders.po_no',$request->po_no)
+           		->where('users.name','LIKE',"%{$request->customer_name}%")
+           		->where('orders.rfq_no',$request->rfq_no); 
+           	}
+
+           	if(!empty($request->from_date && $request->to_date && $request->po_no && $request->customer_name && $request->categorys))
+           	{
+           		$fromdate = date('Y-m-d',strtotime($request->from_date));
+           		$todate = date('Y-m-d',strtotime($request->to_date));  
+           		$quote = $quote->where('orders.po_date','>=', $fromdate)
+           		->where('orders.po_date','<=', $todate)
+           		->where('orders.po_no',$request->po_no)
+           		->where('users.name','LIKE',"%{$request->customer_name}%")
+           		->where('categorys.cat_name','LIKE',"%{$request->categorys}%"); 
+           	}
+
+           	//-----------------------------//
+
+           	if(!empty($request->from_date && $request->to_date && $request->po_no && $request->customer_name && $request->rfq_no && $request->categorys))
+           	{
+           		$fromdate = date('Y-m-d',strtotime($request->from_date));
+           		$todate = date('Y-m-d',strtotime($request->to_date));  
+           		$quote = $quote->where('orders.po_date','>=', $fromdate)
+           		->where('orders.po_date','<=', $todate)
+           		->where('orders.po_no',$request->po_no)
+           		->where('users.name','LIKE',"%{$request->customer_name}%")
+           		->where('orders.rfq_no',$request->rfq_no)
+           		->where('categorys.cat_name','LIKE',"%{$request->categorys}%"); 
+           	}
+
            $quote = $quote->whereNull('quotes.deleted_at')
            ->get()->toArray();
             

@@ -214,8 +214,11 @@ Route::group(['prefix' => 'admin','middleware' => ['assign.guard:admins','jwtmid
 		// Product qut upload exl...
 		Route::post('prod-qty-upload-admin','Orders\OrderPlanningController@prodQtyUploadAdmin');
 
-		// PO Details Routes...
-		Route::get('get-po-details-admin','PoDetails\PoDetailsController@getPoDetails')->name('get_po_details_admin'); 
+		// PO Details Routes... 
+
+		// Route::get('get-po-list-admin','PoDetails\PoDetailsController@getPoDetails')->name('get_po_list_admin');
+
+		// Route::get('get-po-details-admin/{id}','PoDetails\PoDetailsController@getPoDetailsId')->name('get_po_details_admin'); 
 		
 	});
 
