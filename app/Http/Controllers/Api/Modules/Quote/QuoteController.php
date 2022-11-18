@@ -488,8 +488,9 @@ class QuoteController extends Controller
           $quoteArr[$key]['sub_cat_name'] = $value->sub_cat_name;
           $quoteArr[$key]['pro_desc'] = $value->pro_desc;
           $quoteArr[$key]['quote_type'] = $value->quote_type;
-          $quoteArr[$key]['status'] = $this->schedule_status($value->kam_status);
+          $quoteArr[$key]['status'] = $this->schedule_status($value->rfq_no);
           $quoteArr[$key]['dash_dt'] = date('jS F, Y',strtotime($value->created_at));
+          $quoteArr[$key]['status_txt'] = $this->schedule_status_old($value->kam_status);
                     // $quoteArr[$key]['schedules'] = $value->schedules;
                     // $quoteArr[$key]['product'] = $value->product;
                     // $size = DB::table('sub_categorys')->where('pro_id',$value['product_id'])->select('pro_size')->first();
@@ -1099,7 +1100,8 @@ class QuoteController extends Controller
           $quoteArr[$key]['sub_cat_name'] = $value->sub_cat_name;
           $quoteArr[$key]['pro_desc'] = $value->pro_desc;
           $quoteArr[$key]['quote_type'] = $value->quote_type;
-          $quoteArr[$key]['status'] = $this->schedule_status($value->kam_status);
+          $quoteArr[$key]['status'] = $this->schedule_status($value->rfq_no);
+          $quoteArr[$key]['status_txt'] = $this->schedule_status_old($value->kam_status);
                     // $quoteArr[$key]['schedules'] = $value->schedules;
                     // $quoteArr[$key]['product'] = $value->product;
                     // $size = DB::table('sub_categorys')->where('pro_id',$value['product_id'])->select('pro_size')->first();
@@ -1139,7 +1141,7 @@ class QuoteController extends Controller
 
 
 /*-------------------------- rfq status text ---------------------------------------------*/
-   public function schedule_status_old($rfq_no)
+   public function schedule_status($rfq_no)
    { 
        $sts = array();
        $resa = DB::table('quotes')
@@ -1171,7 +1173,7 @@ class QuoteController extends Controller
    } 
 
 
-   public function schedule_status($kam_status)
+   public function schedule_status_old($kam_status)
    { 
        
        $res = DB::table('rfq_status_refs')
