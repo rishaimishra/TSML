@@ -59,13 +59,16 @@ class AdminAuthController extends Controller
         $credentials = request(['email', 'password']);
         if (!$token = auth()->guard('admins')->attempt($credentials)) {
  
-            return response()->json(['success' => false,'message' => array('Invalid Email or Password .')]);  
+            return response()->json(['status'=>0,'success' => false,'message' => array('Invalid Email or Password .')]);  
         }
 
         $jwt_token =  $this->respondWithToken($token);
- 
+        
         return response()->json([
+            'status'=>1,
             'success' => true,
+            'name'  => Auth::guard('admins')->user()->name,
+            'id'  => Auth::guard('admins')->id(),
             'token' => $jwt_token,
         ]);
    }
