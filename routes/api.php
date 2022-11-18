@@ -79,7 +79,7 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
    		 Route::post('update_quotes_sche','Quote\QuoteController@updateQuoteSche');
    		 Route::post('submit_requote_id','Quote\QuoteController@submitRequoteId');
    		 Route::get('get_requote_list','Quote\QuoteController@getRequoteList');
-   		 Route::post('update_requote','Quote\QuoteController@updateRequote');
+   		 Route::post('create_rfq_deliveries','Quote\QuoteController@createRfqdeliveries');
    		 Route::post('delete_quote_by_id','Quote\QuoteController@deleteQuoteById');
    		 Route::get('get_quote_sche_by_id/{id}','Quote\QuoteController@getQuoteScheById');
    		 Route::post('delete_quote_sche','Quote\QuoteController@deleteQuoteSche');

@@ -767,11 +767,11 @@ class QuoteController extends Controller
 
     /*
 
-        ----------------------------------  update requote ---------------------------
+        ---------------------------------- create update deliveries ---------------------------
 
     */
 
-        public function updateRequote(Request $request)
+        public function createRfqdeliveries(Request $request)
         {
              // echo "<pre>";print_r($request->all());exit();
 
@@ -781,43 +781,26 @@ class QuoteController extends Controller
           foreach ($request->all() as $key => $value) {
 
             $quoteArr = array();
-            
-            $quote_sche = DB::table('quote_schedules')
-            ->where('schedule_no',$value['sche_no'])
-            ->whereNull('deleted_at')
+
+            $schedule_no = $value['sche_no'];
+
+            $quote_sche = DB::table('quote_deliveries')
+            ->where('quote_sche_no',$value['sche_no'])
             ->first();
 
-            $quoteArr['quote_id'] = $quote_sche->quote_id;
-            $quoteArr['schedule_no'] = $value['sche_no'];
-            $quoteArr['quantity'] = $value['quantity'];
-            $quoteArr['expected_price'] = $value['ex_price'];
-            $quoteArr['kam_price'] = $value['kam_price'];
-            $quoteArr['pro_size'] = $quote_sche->pro_size;
-            $quoteArr['to_date'] = $quote_sche->to_date;
-            $quoteArr['from_date'] = $quote_sche->from_date;
-            $quoteArr['plant'] = $quote_sche->plant;
-            $quoteArr['location'] = $quote_sche->location;
-            $quoteArr['bill_to'] = $quote_sche->bill_to;
-            $quoteArr['ship_to'] = $quote_sche->ship_to;
-            $quoteArr['remarks'] = $quote_sche->remarks;
-            $quoteArr['delivery'] = $quote_sche->delivery;
-            $quoteArr['valid_till'] = $quote_sche->valid_till;
-            $quoteArr['quote_status '] = $quote_sche->quote_status;
-
+            if(!empty($quote_sche))
+            {
+               DB::table('quote_deliveries')->where('quote_sche_no',$value['sche_no'])->delete();
             
+            }
             $schedules = $value['schedules'];
                // echo "<pre>";print_r($quoteArr);exit();
-
-            QuoteSchedule::where('schedule_no',$value['sche_no'])->delete();
-            $quote_sch = QuoteSchedule::create($quoteArr);
-            Quotedelivery::where('quote_sche_no',$value['sche_no'])->delete();
             foreach ($schedules as $key => $val) {
               
               
-              $arr['quote_sche_no'] = $quoteArr['schedule_no'];
+              $arr['quote_sche_no'] = $schedule_no;
               $arr['qty'] = $val['quantity'];
               $arr['to_date'] = $val['to_date'];
-              $arr['from_date'] = $val['from_date'];
 
               
               Quotedelivery::create($arr);
