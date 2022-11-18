@@ -11,6 +11,7 @@ use App\Models\Quotedelivery;
 use App\Models\Requote;
 use App\Models\Order;
 use App\Models\Deleteremark;
+use App\Models\Plant;
 use App\User;
 use Validator;
 use Auth;
@@ -1815,6 +1816,40 @@ class QuoteController extends Controller
                return response()->json(['status'=>1,
                 'message' =>'success',
                 'result' => $user],
+                config('global.success_status'));
+
+
+
+         }catch(\Exception $e){
+
+             return response()->json(['status'=>0,
+              'message' =>'error',
+              'result' => $e->getMessage()],
+              config('global.failed_status'));
+     }
+   }
+
+
+ /*---------------------------- plants by type ---------------------------------------------*/
+   
+   public function getPlantsByType($type)
+   {
+       try{ 
+              
+            $plants = Plant::where('type',$type)
+                  ->select('name')
+                  ->get();
+
+
+            foreach ($plants as $key => $value) {
+               
+                 $arr[$key]['name'] = $value->name;
+            }
+          // echo "<pre>";print_r($plants);exit();
+       
+               return response()->json(['status'=>1,
+                'message' =>'success',
+                'result' => $arr],
                 config('global.success_status'));
 
 
