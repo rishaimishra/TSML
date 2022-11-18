@@ -402,11 +402,11 @@ class PriceManagementController extends Controller
           'cat_id'     => 'required',
           'sub_cat_id'        => 'required', 
           'size'     => 'required', 
-          'BPT_Price'     => 'required',
-          'Price_Premium'        => 'required', 
-          'Misc_Expense'     => 'required', 
+          'bpt_price'     => 'required',
+          'price_premium'        => 'required', 
+          'misc_expense'     => 'required', 
           'Interest_Rate'        => 'required', 
-          'CAM_Discount'     => 'required',  
+          'cam_discount'     => 'required',  
         ]);
 
         if ($validator->fails()) { 
@@ -418,11 +418,11 @@ class PriceManagementController extends Controller
         $input['sub_cat_id'] = $request->sub_cat_id;
         $input['size'] = $request->size; 
         // $input['user_id'] = $request->user_id;
-        $input['BPT_Price'] = $request->BPT_Price;
-        $input['Price_Premium'] = '-'.$request->Price_Premium;
-        $input['Misc_Expense'] = $request->Misc_Expense; 
-        $input['Interest_Rate'] = $request->Interest_Rate;
-        $input['CAM_Discount'] = $request->CAM_Discount;
+        $input['BPT_Price'] = $request->bpt_price;
+        $input['Price_Premium'] = '-'.$request->price_premium;
+        $input['Misc_Expense'] = $request->misc_expense; 
+        $input['interest_rate'] = $request->interest_rate;
+        $input['CAM_Discount'] = $request->cam_discount;
 
           // dd($input);
 
