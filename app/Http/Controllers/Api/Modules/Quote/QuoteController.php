@@ -1057,7 +1057,7 @@ class QuoteController extends Controller
          if(Auth::check())
          {
            $user_id =  Auth::user()->id;
-           $user_state =  Auth::user()->state;
+           $zone =  Auth::user()->zone;
            
          }
 
@@ -1076,7 +1076,7 @@ class QuoteController extends Controller
          ->select('quotes.*','users.name',DB::raw("(sum(quotes.quantity)) as tot_qt"),'products.pro_desc','quotes.rfq_no','categorys.cat_name','sub_categorys.sub_cat_name','categorys.primary_image')
          ->groupBy('quotes.rfq_no')
          ->orderBy('quotes.created_at','desc')
-         ->where('users.state',$user_state)
+         ->where('users.zone',$zone)
          ->whereNull('quotes.deleted_at');
                          // ->toSql();
          $quotes = $quotes->get();
@@ -1537,7 +1537,7 @@ class QuoteController extends Controller
           try{
 
             $user_id =  "";
-            $user_state =  Auth::user()->state;
+            $user_state =  Auth::user()->zone;
 
 
              $result = $this->allPo($user_id,$user_state);
@@ -1584,7 +1584,7 @@ class QuoteController extends Controller
            if(!empty($user_state))
            {
 
-              $quote = $quote->where('users.state',$user_state);
+              $quote = $quote->where('users.zone',$user_state);
            }
            $quote = $quote->whereNull('quotes.deleted_at')->where('quote_schedules.quote_status',1)
            ->get()->toArray();
