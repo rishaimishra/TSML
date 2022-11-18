@@ -405,7 +405,7 @@ class PriceManagementController extends Controller
           'bpt_price'     => 'required',
           'price_premium'        => 'required', 
           'misc_expense'     => 'required', 
-          'Interest_Rate'        => 'required', 
+          'interest_rate'        => 'required', 
           'cam_discount'     => 'required',  
         ]);
 
@@ -421,7 +421,7 @@ class PriceManagementController extends Controller
         $input['BPT_Price'] = $request->bpt_price;
         $input['Price_Premium'] = '-'.$request->price_premium;
         $input['Misc_Expense'] = $request->misc_expense; 
-        $input['interest_rate'] = $request->interest_rate;
+        $input['Interest_Rate'] = $request->interest_rate;
         $input['CAM_Discount'] = $request->cam_discount;
 
           // dd($input);
