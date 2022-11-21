@@ -96,6 +96,7 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
    		 Route::get('get_user_address/{id}','Quote\QuoteController@getUserAddress');
    		 Route::get('get_plants_by_type/{id}','Quote\QuoteController@getPlantsByType');
    		 Route::get('get_quotedel_by_id/{id}','Quote\QuoteController@getQuotedelById');
+   		 Route::get('get_plant_addr/{id}','Quote\QuoteController@getPlantAddr');
 
    		 Route::post('get-store-pro-price','PriceManagement\PriceManagementController@getProPrice')->name('get_store_pro_price');
    		 Route::get('get-threshold-price','PriceManagement\PriceManagementController@getThresholdPrice')->name('get_threshold_price');

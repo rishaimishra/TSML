@@ -1822,12 +1822,13 @@ class QuoteController extends Controller
        try{ 
               
             $plants = Plant::where('type',$type)
-                  ->select('name')
+                  ->select('id','name')
                   ->get();
 
 
             foreach ($plants as $key => $value) {
-               
+                 
+                 $arr[$key]['id'] = $value->id;
                  $arr[$key]['name'] = $value->name;
             }
           // echo "<pre>";print_r($plants);exit();
@@ -1893,5 +1894,54 @@ class QuoteController extends Controller
 
           }
     }
+
+
+
+    /*------------------- location of plants ------------------------------------*/
+
+    public function getPlantAddr($plantId)
+    {
+
+           \DB::beginTransaction();
+          try{
+
+               $addr = DB::table('plants')->where('id',$plantId)->first();
+             
+                   // echo "<pre>";print_r($quote);exit();
+
+                  if(!empty($addr))
+                  {
+                      
+                        $result['addressone'] = $addr->addressone;
+                        $result['addresstwo'] = $addr->addresstwo;
+                        $result['city'] = $addr->city;
+                        $result['pincode'] = $addr->pincode;
+                        $result['state'] = $addr->state;
+                  }
+               
+                else{
+                  $result = [];
+                }
+
+          
+                  return response()->json(['status'=>1,
+                    'message' =>'success',
+                    'result' => $result],
+                    config('global.success_status'));
+                
+           }
+          catch(\Exception $e){
+
+              \DB::rollback();
+
+             return response()->json(['status'=>0,
+              'message' =>'error',
+              'result' => $e->getMessage()],
+              config('global.failed_status'));
+
+          }
+    }
+
+    /*-----------------------------------------------------------------------------*/
 
 }
