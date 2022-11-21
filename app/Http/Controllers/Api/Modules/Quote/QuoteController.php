@@ -1139,7 +1139,7 @@ class QuoteController extends Controller
            array_push($sts,$v->quote_status);
        }
        
-       if (in_array(1, $sts) && !in_array(4, $sts))
+       if (in_array(1, $sts) && !in_array(4, $sts) && !in_array(3, $sts))
         {
            $st = "Accepted";
         }
@@ -1847,5 +1847,51 @@ class QuoteController extends Controller
               config('global.failed_status'));
      }
    }
+
+
+
+    public function getQuotedelById($sche)
+    {
+
+           \DB::beginTransaction();
+          try{
+
+               $quote = DB::table('quote_deliveries')->where('quote_sche_no',$sche)->get()->toArray();
+             
+                   // echo "<pre>";print_r($quote);exit();
+
+                  if(!empty($quote))
+                  {
+                  foreach ($quote as $key => $value) {
+                    
+                    $result[$key]['sche_no'] = $value->quote_sche_no;
+                    $result[$key]['to_date'] = $value->to_date;
+                    $result[$key]['qty'] = $value->qty;
+                    $result[$key]['id'] = $value->id;
+
+                  }
+                }
+                else{
+                  $result = [];
+                }
+
+          
+                  return response()->json(['status'=>1,
+                    'message' =>'success',
+                    'result' => $result],
+                    config('global.success_status'));
+                
+           }
+          catch(\Exception $e){
+
+              \DB::rollback();
+
+             return response()->json(['status'=>0,
+              'message' =>'error',
+              'result' => $e->getMessage()],
+              config('global.failed_status'));
+
+          }
+    }
 
 }
