@@ -79,7 +79,7 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
    		 Route::post('update_quotes_sche','Quote\QuoteController@updateQuoteSche');
    		 Route::post('submit_requote_id','Quote\QuoteController@submitRequoteId');
    		 Route::get('get_requote_list','Quote\QuoteController@getRequoteList');
-   		 Route::post('update_requote','Quote\QuoteController@updateRequote');
+   		 Route::post('create_rfq_deliveries','Quote\QuoteController@createRfqdeliveries');
    		 Route::post('delete_quote_by_id','Quote\QuoteController@deleteQuoteById');
    		 Route::get('get_quote_sche_by_id/{id}','Quote\QuoteController@getQuoteScheById');
    		 Route::post('delete_quote_sche','Quote\QuoteController@deleteQuoteSche');
@@ -95,6 +95,7 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
    		 Route::post('sales_update_rfq','Quote\QuoteController@salesUpdateRfq');
    		 Route::get('get_user_address/{id}','Quote\QuoteController@getUserAddress');
    		 Route::get('get_plants_by_type/{id}','Quote\QuoteController@getPlantsByType');
+   		 Route::get('get_quotedel_by_id/{id}','Quote\QuoteController@getQuotedelById');
 
    		 Route::post('get-store-pro-price','PriceManagement\PriceManagementController@getProPrice')->name('get_store_pro_price');
    		 Route::get('get-threshold-price','PriceManagement\PriceManagementController@getThresholdPrice')->name('get_threshold_price');
