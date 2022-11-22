@@ -345,6 +345,9 @@ class OrderPlanningController extends Controller
        	    $category = Product::where('pro_name',$category)->first();
        	    $subcategory = Category::where('cat_name',$subcategory)->first();
        	    // return $subcategory->id;
+
+            if(!empty($subcategory))
+            {
        	    $res = DB::table('quotes')->leftJoin('quote_schedules','quotes.id','quote_schedules.quote_id')
        	    ->where('quotes.product_id',$category->id)->where('quotes.cat_id',$subcategory->id)
        	    ->where('quote_schedules.plant',$plant)->select('quote_schedules.quantity')
@@ -361,8 +364,10 @@ class OrderPlanningController extends Controller
        	    	 
                  $sum += $value->quantity;
        	    }
+          }else{
 
        	    return $sum;
+          }
        }
 
 
