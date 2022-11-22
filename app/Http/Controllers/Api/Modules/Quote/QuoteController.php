@@ -242,7 +242,8 @@ class QuoteController extends Controller
           $sche['schedule_no'] = $value['schedule_no'];
           $sche['kamsRemarks'] = $value['kamsRemarks'];
           $sche['confirm_date'] = $value['confirm_date'];
-          ;
+          $sche['pickup_type'] = $value['pickup_type'];
+          
           
           // echo "<pre>";print_r($sche);exit();
 
@@ -1662,6 +1663,7 @@ class QuoteController extends Controller
              $quote_sches[$key]['valid_till'] = $value->valid_till;
              $quote_sches[$key]['quote_status'] = $value->quote_status;
              $quote_sches[$key]['confirm_date'] = $value->confirm_date;
+             $quote_sches[$key]['pickup_type'] = $value->pickup_type;
         
              
 
