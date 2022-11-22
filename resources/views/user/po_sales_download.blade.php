@@ -65,7 +65,7 @@
 							<!-- <th style="border: 1px solid black; border-collapse: collapse; padding: 5px; border-collapse: collapse; text-align: left;">Product</th> -->
 							<th style="border: 1px solid black; border-collapse: collapse; padding: 5px; border-collapse: collapse; text-align: left; ">Category</th>
 							<th style="border: 1px solid black; border-collapse: collapse; padding: 5px; border-collapse: collapse; text-align: left; white-space: nowrap;">Size</th>
-							<th style="border: 1px solid black; border-collapse: collapse; padding: 5px; border-collapse: collapse; text-align: left; white-space: nowrap;">Quantity</th>
+							<th style="border: 1px solid black; border-collapse: collapse; padding: 5px; border-collapse: collapse; text-align: left; white-space: nowrap;">Quantity(MT)</th>
 							<th style="border: 1px solid black; border-collapse: collapse; padding: 5px; border-collapse: collapse; text-align: left;">Ship To</th>
 							<th style="border: 1px solid black; border-collapse: collapse; padding: 5px; border-collapse: collapse; text-align: left; white-space: nowrap;">Shipping Date</th>
 							<th style="border: 1px solid black; border-collapse: collapse; padding: 5px; border-collapse: collapse; text-align: left; white-space: nowrap;">Amount</th>

@@ -485,7 +485,7 @@ class PriceManagementController extends Controller
     {
         try{ 
             // $priceData = PriceCalculation::where('user_id',$request->user_id)->where('pro_id',$request->pro_id)->where('cat_id',$request->cat_id)->where('sub_cat_id',$request->sub_cat_id)->where('size',$request->size)->first();
-
+            // dd($request->pro_id,$request->cat_id,$request->size);
             $priceData = PriceCalculation::where('pro_id',$request->pro_id)->where('cat_id',$request->cat_id)->where('size',$request->size)->first();
             // dd($priceData);
             $getdeliverycost = Freights::where('pickup_from',$request->pickup_from)->where('location',$request->location)->where('destation_location',$request->destation_location)->first(); 
