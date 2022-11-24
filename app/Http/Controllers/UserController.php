@@ -637,4 +637,61 @@ class UserController extends Controller
             return Response::json($response);
            } 
     }
+
+
+
+    public function getUserById($id)
+    {
+        try{
+            $user = array();
+            $search_user=User::where('id',$id)->first();
+            if($search_user){
+
+                // foreach ($variable as $key => $value) {
+                     
+                     $user['id'] = $search_user->id;
+                     $user['name'] = $search_user->name;
+                     $user['email'] = $search_user->email;
+                     $user['phone'] = $search_user->phone;
+                     $user['email_verified_at'] = $search_user->email_verified_at;
+                     $user['gstin'] = $search_user->gstin;
+                     $user['org_panorg_name'] = $search_user->org_panorg_name;
+                     $user['org_name'] = $search_user->org_name;
+                     $user['org_address'] = $search_user->org_address;
+                     $user['pref_product'] = $search_user->pref_product;
+                     $user['pref_product_size'] = $search_user->pref_product_size;
+                     $user['company_gst'] = $search_user->company_gst;
+                     $user['company_pan'] = $search_user->company_pan;
+                     $user['company_name'] = $search_user->company_name;
+                     $user['business_nature'] = $search_user->business_nature;
+                     $user['first_name'] = $search_user->first_name;
+                     $user['last_name'] = $search_user->last_name;
+                     $user['addressone'] = $search_user->addressone;
+                     $user['addresstwo'] = $search_user->addresstwo;
+                     $user['city'] = $search_user->city;
+                     $user['state'] = $search_user->state;
+                     $user['pincode'] = $search_user->pincode;
+                     $user['address_proof_file'] = asset('storage/app/public/user/'.$search_user->address_proof_file);
+                     $user['cancel_cheque_file'] = asset('storage/app/public/user/'.$search_user->cancel_cheque_file);
+                     $user['pan_card_file'] = asset('storage/app/public/user/'.$search_user->pan_card_file);
+                     $user['gst_certificate'] = asset('storage/app/public/user/'.$search_user->gst_certificate);
+                     $user['turnover_declare'] = asset('storage/app/public/user/'.$search_user->turnover_declare);
+                     $user['itr_last_yr'] = asset('storage/app/public/user/'.$search_user->itr_last_yr);
+                     $user['form_d'] = asset('storage/app/public/user/'.$search_user->form_d);
+                     $user['registration_certificate'] = asset('storage/app/public/user/'.$search_user->registration_certificate);
+                     $user['tcs'] = asset('storage/app/public/user/'.$search_user->tcs);
+
+                // }
+                
+                return response()->json(['status'=>1,'message' =>'Successful','result' => $user],200);
+            }else{
+                 $user = [];
+                return response()->json(['status'=>1,'message' =>'Not found','result' =>$user],200);
+            }
+            
+           } catch (\Throwable $th) {
+            $error = $th->getMessage();
+            return response()->json(['status'=>0,'message' =>'error','result' => $error],200);
+           } 
+    }
 }

@@ -25,6 +25,7 @@ Route::post('send-mobile-otp', 'UserController@sendOtpToMobile')->name('send_mob
 Route::post('verify-mobile-otp', 'UserController@verifyMobileOtp')->name('verify_mobile_otp');
 Route::post('password-email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('user.password.email');
 Route::post('password-update', 'Auth\ResetPasswordController@reset')->name('user.password.update');
+Route::get('get_user_by_id/{id}', 'UserController@getUserById');
 
 
 Route::group(['namespace'=>'Api\Modules'],function(){
