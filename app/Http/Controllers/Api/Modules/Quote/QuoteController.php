@@ -12,6 +12,7 @@ use App\Models\Requote;
 use App\Models\Order;
 use App\Models\Deleteremark;
 use App\Models\Plant;
+use App\Models\DeliveryMethod;
 use App\User;
 use Validator;
 use Auth;
@@ -1957,5 +1958,42 @@ class QuoteController extends Controller
     }
 
     /*-----------------------------------------------------------------------------*/
+
+
+
+ /*------------------------get all delivery methods --------------------------------------*/
+
+      public function getAllDeliveries()
+      {
+           \DB::beginTransaction();
+        try{
+
+            $result = DeliveryMethod::get();
+
+            \DB::commit();
+
+                if(!empty($result))
+                {
+                  return response()->json(['status'=>1,
+                    'message' =>'success',
+                    'result' => $result],
+                    config('global.success_status'));
+                }
+        }
+          catch(\Exception $e){
+
+              \DB::rollback();
+
+             return response()->json(['status'=>0,
+              'message' =>'error',
+              'result' => $e->getMessage()],
+              config('global.failed_status'));
+
+          }
+      
+    }
+
+
+   /*------------------------------------------------------------------------------*/
 
 }
