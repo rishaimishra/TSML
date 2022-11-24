@@ -110,13 +110,13 @@
 		                    <tr>
 		                        <td colspan="4">
 		                            <label style="font-size: 14px; white-space: nowrap;">Bill To</label>
-		                            <input style="width: 100%;" type="text" name="" value="{{$showshed['bill_to']}}">
+		                            <input style="width: 100%;" type="text" name="" value="{{$data['bill_to']}}">
 		                        </td>
 		                    </tr>
 		                    <tr>
 		                        <td colspan="4">
 		                            <label style="font-size: 14px; white-space: nowrap;">Ship To</label>
-		                            <input style="width: 100%;" type="text" name="" value="{{$showshed['ship_to']}}">
+		                            <input style="width: 100%;" type="text" name="" value="{{$data['ship_to']}}">
 		                        </td>
 		                    </tr>
 		                    <tr>

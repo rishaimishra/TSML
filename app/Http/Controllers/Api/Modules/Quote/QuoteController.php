@@ -66,11 +66,21 @@ class QuoteController extends Controller
       $result[$key]['schedule'] = $this->getPoSchedules($value->qid);
        
     }
+
+    $useraddr = User::where('id',$result[0]['user_id'])
+                  ->select('addressone','addresstwo','city','state','pincode')
+                  ->first();
+
           // echo "<pre>";print_r($result);exit(); 
+    $fulladdress =  $useraddr->addressone.', '.$useraddr->addresstwo.', '.$useraddr->city.', '.$useraddr->state.', '.$useraddr->pincode;
+     $data['bill_to'] =$fulladdress;
+      $data['ship_to'] = $fulladdress;
     $data['po_no'] = $id;
     $data['po_date'] = $po_dt;
-    $data['user_name'] = $quote[0]->uname;
-    // dd($result,$data);    
+    $data['user_name'] = $quote[0]->uname; 
+ 
+  
+         
     $pdf = PDF::loadView('user.po_download',['result'=>$result,'data'=>$data]);
     
     return $pdf->download('po_report.pdf');
