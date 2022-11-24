@@ -306,7 +306,8 @@ class OrderPlanningController extends Controller
                     $result[$k]['size'] = $value->msize;
                     $result[$k]['offline'] = $value->offline;
                     $result[$k]['tot_qty'] = ($value->open_stk + $value->mnthly_prod)-($value->export + $value->offline);
-                    $result[$k]['on_dom'] = $this->poQtyOrder($value->plant,$value->category,$value->subcategory,$value->start_date,$value->size); 
+                    $result[$k]['on_dom'] = $this->poQtyOrder($value->plant,$value->category,$value->subcategory,$value->start_date,$value->size);
+                    $result[$k]['podateOrder'] = $this->podateOrder($value->plant,$value->category,$value->subcategory,$value->start_date,$value->size); 
                     // echo "<pre>";print_r($result['on_dom']);exit();
                       //-- from po //
                     $result[$k]['bal_qty'] = ($result[$k]['tot_qty'] - $result[$k]['on_dom']);
@@ -364,6 +365,8 @@ class OrderPlanningController extends Controller
                
                  $sum += $value->quantity;
             }
+
+            return $sum;
           }else{
 
             return $sum;
@@ -498,6 +501,7 @@ class OrderPlanningController extends Controller
                     
                     $dis_sum = 0;
                     
+                    $result[$k]['podateOrder'] = 5; 
                     $result[$k]['start_date'] = $value->start_date;
                     $result[$k]['end_date'] = $value->end_date;
                     $result[$k]['plant'] = $value->plant;
@@ -514,6 +518,7 @@ class OrderPlanningController extends Controller
                     $result[$k]['offline'] = $value->offline;
                     $result[$k]['tot_qty'] = ($value->open_stk + $value->mnthly_prod)-($value->export + $value->offline);
                     $result[$k]['on_dom'] = $this->poQtyOrder($value->plant,$value->category,$value->subcategory,$value->start_date,$value->end_date,$value->size); 
+
                     // echo "<pre>";print_r($result['on_dom']);exit();
                       //-- from po //
                     $result[$k]['bal_qty'] = ($result[$k]['tot_qty'] - $result[$k]['on_dom']);
@@ -574,4 +579,41 @@ class OrderPlanningController extends Controller
            return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
          }
         }
+
+
+       public function podateOrder($plant,$category,$subcategory,$start_date,$size)
+       {
+            $sum = array();
+
+            $category = Product::where('pro_name',$category)->first();
+            $subcategory = Category::where('cat_name',$subcategory)->first();
+            // return $subcategory->id;
+            $m = date("m", strtotime($start_date));
+            if(!empty($subcategory))
+            {
+            $res = DB::table('quotes')->leftJoin('quote_schedules','quotes.id','quote_schedules.quote_id')
+            ->where('quotes.product_id',$category->id)->where('quotes.cat_id',$subcategory->id)
+            ->where('quote_schedules.plant',$plant)->select('quote_schedules.quantity','quote_schedules.created_at')
+            ->where('quote_schedules.quote_status',1)
+            ->where('quote_schedules.pro_size',$size)
+            ->whereMonth('quote_schedules.created_at','=',$m)
+            // ->whereDate('quote_schedules.created_at','<=',$end_date)
+            ->whereNull('quote_schedules.deleted_at')
+            ->whereNull('quotes.deleted_at')
+            ->where('quotes.kam_status',4)
+            ->get();
+   
+            foreach ($res as $key => $value) {
+               
+                 $sum[$key]['date'] = $value->created_at;
+                 $sum[$key]['quantity'] = $value->quantity;
+            }
+
+            return $sum;
+          }else{
+
+            return [];
+          }
+       }
+
 }
