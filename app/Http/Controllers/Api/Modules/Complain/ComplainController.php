@@ -336,7 +336,8 @@ class ComplainController extends Controller
             'com_sub_cate_2id'        => 'required',
             'com_sub_cate_3id'        => 'required',
             'po_number'        => 'required',
-            'po_date'        => 'required', 
+            'po_date'        => 'required',
+            'user_id'        => 'required', 
           ]);
 
           if ($validator->fails()) { 
@@ -349,24 +350,30 @@ class ComplainController extends Controller
           $input['com_sub_cate_3id'] = $request->com_sub_cate_3id;
           $input['po_number'] = $request->po_number;
           $input['po_date'] = date("Y-m-d", strtotime($request->po_date));
-          $input['customer_name'] = $request->customer_name; 
+          $input['user_id'] = $request->user_id;
+
+         
           
-          if ($request->hasFile('complain_file'))
-		    {  
-
-		    	$image = $request->complain_file; 
-
-          $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
-          Storage::putFileAs('public/images/complain/', $image, $filename);
-
-          $input['file'] = $filename; 
-		    }
+         
 
         // dd($input);
  
           $complainData = ComplainMain::create($input); 
+
+          if ($request->hasFile('cust_complain_file'))
+          {  
+
+            $image = $request->cust_complain_file; 
+
+            $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+            Storage::putFileAs('public/images/complain/', $image, $filename);
+
+            $remarksinput['cust_com_file'] = $filename; 
+          }
+
           $remarksinput['complain_id'] = $complainData->id;
           $remarksinput['customer_remarks'] = $request->customer_remarks;
+          // dd($remarksinput);
 
           $freightsData = ComplainRemarks::create($remarksinput);
 
@@ -408,14 +415,37 @@ class ComplainController extends Controller
           } 
           
           if ($request->customer_remarks) {
+
           	$input['complain_id'] = $request->complain_id;
           	$input['customer_remarks'] = $request->customer_remarks;
 
+            if ($request->hasFile('cust_complain_file'))
+            {  
+
+              $image = $request->cust_complain_file; 
+
+              $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+              Storage::putFileAs('public/images/complain/', $image, $filename);
+
+              $input['cust_com_file'] = $filename; 
+            }
+            // dd($input);
           	$RemarksData = ComplainRemarks::create($input);
           }
           if ($request->kam_remarks) {
           	$input['complain_id'] = $request->complain_id;
           	$input['kam_remarks'] = $request->kam_remarks;
+
+            if ($request->hasFile('kam_complain_file'))
+            {  
+
+              $image = $request->kam_complain_file; 
+
+              $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+              Storage::putFileAs('public/images/complain/', $image, $filename);
+
+              $input['kam_com_file'] = $filename; 
+            }
 
           	$RemarksData = ComplainRemarks::create($input);
           } 
@@ -451,14 +481,15 @@ class ComplainController extends Controller
 		      ->leftjoin('complain_sub_categorys','complain_main.com_sub_cate_id','complain_sub_categorys.id')
 		      ->leftjoin('complain_sub_categorys2','complain_main.com_sub_cate_2id','complain_sub_categorys2.id')
 		      ->leftjoin('complain_sub_categorys3','complain_main.com_sub_cate_3id','complain_sub_categorys3.id')
+           ->leftjoin('users','complain_main.user_id','users.id')
           ->join('complain_remarks','complain_main.id','complain_remarks.complain_id')
 		     
-		     ->select('complain_main.id','complain_main.customer_name','complain_main.po_number','complain_main.po_date','complain_main.created_at','complain_main.file','complain_categorys.com_cate_name','complain_sub_categorys.com_sub_cate_name','complain_sub_categorys2.com_sub_cate2_name','complain_sub_categorys3.com_sub_cate3_name','complain_remarks.customer_remarks'); 
+		     ->select('complain_main.id','users.name as customer_name','complain_main.po_number','complain_main.po_date','complain_main.created_at','complain_main.file','complain_categorys.com_cate_name','complain_sub_categorys.com_sub_cate_name','complain_sub_categorys2.com_sub_cate2_name','complain_sub_categorys3.com_sub_cate3_name','complain_remarks.customer_remarks'); 
 		      
 		     
-		     if(!empty($request->customer_name))
+		     if(!empty($request->user_id))
 	         {
-	           $ComplainListData = $ComplainListData->where('complain_main.customer_name',$request->customer_name);
+	           $ComplainListData = $ComplainListData->where('complain_main.user_id',$request->user_id);
 	         }
 	          
 	         $ComplainListData = $ComplainListData->orderBy('complain_remarks.created_at','desc')->groupBy('complain_remarks.complain_id')->get();
@@ -481,15 +512,9 @@ class ComplainController extends Controller
             $data['po_date'] = $ComplainList->po_date;
             $data['remarks'] = $ComplainList->customer_remarks;
 
-  	            if ($ComplainList->file) 
-  		   		{
+            $data['com_file_url'] = $this->complainFlain($ComplainList->id);
 
-  		   			$data['file_url'] = asset('storage/app/public/images/complain/'.$ComplainList->file);
-  		   		}
-  		   		else
-  		   		{
-  		   			$data['file_url'] =  null;
-  		   		}
+  	       
 
   		   		$complainlist[] = $data;
 		      }
@@ -509,6 +534,40 @@ class ComplainController extends Controller
           }
 
 
+    }
+
+    public function complainFlain($ComplainList)
+    {
+        $getComplainfile = DB::table('complain_remarks')
+                            ->where('complain_id',$ComplainList)
+                            ->select('complain_remarks.id',
+                                      'complain_remarks.cust_com_file',
+                                      'complain_remarks.kam_com_file')
+                            ->get();
+
+        $cust_com_filearr = [];
+
+        foreach ($getComplainfile as $key => $value) 
+        { 
+            if(!empty($value->cust_com_file)){
+              array_push( $cust_com_filearr, asset('storage/app/public/images/complain/'.$value->cust_com_file));
+            }
+ 
+        }
+        $getComplainfiledata["cust_com_file"][] = $cust_com_filearr;
+
+        $kam_com_filearr = [];
+
+        foreach ($getComplainfile as $key => $value) 
+        { 
+          if(!empty($value->kam_com_file)){
+            array_push( $kam_com_filearr, asset('storage/app/public/images/complain/'.$value->kam_com_file));
+          }
+ 
+        }
+        $getComplainfiledata["kam_com_file"][] = $kam_com_filearr; 
+
+        return $getComplainfiledata;
     }
 
     /**
