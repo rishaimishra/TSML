@@ -15,7 +15,7 @@
     class SubCategoryController extends Controller
     {
     	/**
-         * This is for store new Sub Category.
+         * This is for store new Sub Category for admin.
          *
          * @param  \App\Product  $product
          * @return \Illuminate\Http\Response
@@ -124,7 +124,7 @@
        }
 
         /**
-         * This is for update category. 
+         * This is for update sub category for admin. 
          * @param  \App\Product  $product
          * @return \Illuminate\Http\Response
         */
@@ -182,7 +182,7 @@
         }
 
        /**
-         * This is for show sub category list. 
+         * This is for show sub category list for admin. 
          * @param  \App\Product  $product
          * @return \Illuminate\Http\Response
         */
@@ -220,7 +220,7 @@
         }
 
        	/**
-         * This is for show sub category details before edit.
+         * This is for show sub category details before edit for admin.
          *
          * @param  \App\Product  $product
          * @return \Illuminate\Http\Response
@@ -250,7 +250,7 @@
        	}
 
        	/**
-         * This is for inactive sub category.
+         * This is for inactive sub category for admin.
          *
          * @param  \App\Product  $product
          * @return \Illuminate\Http\Response
@@ -277,7 +277,7 @@
         }
 
         /**
-         * This is for active sub category.
+         * This is for active sub category for admin.
          *
          * @param  \App\Product  $product
          * @return \Illuminate\Http\Response
@@ -304,7 +304,7 @@
         }
 
          /**
-         * This is for delete sub category.
+         * This is for delete sub category for admin.
          *
          * @param  \App\Product  $product
          * @return \Illuminate\Http\Response
