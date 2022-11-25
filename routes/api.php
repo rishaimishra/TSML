@@ -100,6 +100,7 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
    		 Route::get('get_plant_addr/{id}','Quote\QuoteController@getPlantAddr');
    		 Route::get('reject_sche_by_date','Quote\QuoteController@rejectScheByDate');
    		 Route::get('get_all_deliveries','Quote\QuoteController@getAllDeliveries');
+   		 Route::post('update_letterhead','Quote\QuoteController@updateLetterhead');
 
    		 Route::post('get-store-pro-price','PriceManagement\PriceManagementController@getProPrice')->name('get_store_pro_price');
    		 Route::get('get-threshold-price','PriceManagement\PriceManagementController@getThresholdPrice')->name('get_threshold_price');

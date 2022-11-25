@@ -1370,7 +1370,7 @@ class QuoteController extends Controller
             $poArr['rfq_no'] = $request->input('rfq_no');
             $poArr['po_no'] = $request->input('po_no');
             $poArr['amdnt_no'] = $request->input('amdnt_no');
-            $poArr['cus_po_no'] = $request->input('cus_po_no');
+            
 
             $files = $request->file('letterhead');
             if(!empty($files))
@@ -1576,7 +1576,7 @@ class QuoteController extends Controller
            ->leftjoin('quotes','orders.rfq_no','quotes.rfq_no')
            ->leftjoin('quote_schedules','quotes.id','quote_schedules.quote_id')
            ->leftjoin('users','quotes.user_id','users.id')    
-           ->select('quotes.rfq_no','quotes.user_id','orders.letterhead','orders.po_no','orders.po_date','users.name','orders.status',DB::raw("(sum(quote_schedules.quantity)) as tot_qt"),'orders.amdnt_no')
+           ->select('quotes.rfq_no','quotes.user_id','orders.letterhead','orders.po_no','orders.po_date','users.name','orders.status',DB::raw("(sum(quote_schedules.quantity)) as tot_qt"),'orders.amdnt_no','orders.cus_po_no')
            ->orderBy('quotes.updated_at','desc')
            ->groupBy('quotes.rfq_no');
            if(!empty($user_id))
@@ -1597,6 +1597,7 @@ class QuoteController extends Controller
           foreach ($quote as $key => $value) {
             
             $result[$key]['po_no'] = $value->po_no;
+            $result[$key]['cus_po_no'] = $value->cus_po_no;
             $result[$key]['user'] = $value->name;
             $result[$key]['rfq_no'] = $value->rfq_no;
             $result[$key]['quantity'] = $value->tot_qt;
@@ -2045,6 +2046,59 @@ class QuoteController extends Controller
             return response()->json(['status'=>1,
               'message' =>'success',
               'result' => 'Quote status rejected'],
+              config('global.success_status'));
+
+
+
+      }catch(\Exception $e){
+
+              return response()->json(['status'=>0,
+                'message' =>'error',
+                'result' => $e->getMessage()],
+                config('global.failed_status'));
+          }
+      }
+
+    /*-----------------------------------------------------------------------------------*/
+
+
+        /*---------------------------- submit PO -----------------------------------------*/
+      
+      public function updateLetterhead(Request $request)
+      {
+
+         // echo "<pre>";print_r($request->all());exit();
+
+       try{ 
+
+            
+
+            $poArr = array();
+            
+            $po_no = $request->input('po_no');
+
+            $po_data = Order::where('po_no',$po_no)->first()->toArray();
+            // echo "<pre>";print_r($po_data['letterhead']);exit();
+           @unlink(storage_path('app/public/images/letterheads/'.$po_data['letterhead']));
+            $poArr['cus_po_no'] = $request->input('cus_po_no');
+
+            $files = $request->file('letterhead');
+            if(!empty($files))
+            {
+
+              $name = time().$files->getClientOriginalName(); 
+              $files->storeAs("public/images/letterheads",$name);  
+              $poArr['letterhead'] = $name;
+            }
+
+          
+            // echo "<pre>";print_r($poArr);exit();
+         
+            Order::where('po_no',$po_no)->update($poArr);
+
+            return response()->json(['status'=>1,
+              'message' =>'success',
+              'result' => 'P.O updated'],
               config('global.success_status'));
 
 
