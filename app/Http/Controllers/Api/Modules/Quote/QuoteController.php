@@ -1199,7 +1199,7 @@ class QuoteController extends Controller
          
 
          $quote = DB::table('quote_schedules')->whereNotNull('deleted_at')->where('schedule_no',$rfq)
-         ->select('remarks','kamsRemarks','created_at')->get();
+         ->select('remarks','kamsRemarks','salesRemarks','created_at')->get();
               // echo "<pre>";print_r($quote);exit();
 
 
@@ -1207,6 +1207,7 @@ class QuoteController extends Controller
            
            $quoteArr[$key]['remarks'] = $value->remarks;
            $quoteArr[$key]['kamsRemarks'] = $value->kamsRemarks;
+           $quoteArr[$key]['salesRemarks'] = $value->salesRemarks;
            $quoteArr[$key]['created_at'] = $value->created_at;
            
          
