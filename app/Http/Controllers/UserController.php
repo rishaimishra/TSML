@@ -644,7 +644,7 @@ class UserController extends Controller
     {
         try{
             $user = array();
-            $search_user=User::where('id',$id)->first();
+            $search_user= User::where('id',$id)->first();
             if($search_user){
 
                 // foreach ($variable as $key => $value) {
@@ -655,7 +655,7 @@ class UserController extends Controller
                      $user['phone'] = $search_user->phone;
                      $user['email_verified_at'] = $search_user->email_verified_at;
                      $user['gstin'] = $search_user->gstin;
-                     $user['org_panorg_name'] = $search_user->org_panorg_name;
+                     $user['org_pan'] = $search_user->org_pan;
                      $user['org_name'] = $search_user->org_name;
                      $user['org_address'] = $search_user->org_address;
                      $user['pref_product'] = $search_user->pref_product;
@@ -680,6 +680,7 @@ class UserController extends Controller
                      $user['form_d'] = asset('storage/app/public/user/'.$search_user->form_d);
                      $user['registration_certificate'] = asset('storage/app/public/user/'.$search_user->registration_certificate);
                      $user['tcs'] = asset('storage/app/public/user/'.$search_user->tcs);
+                     $user['kam_details'] = $this->kam_details($search_user->id,$search_user->zone);
 
                 // }
                 
@@ -693,5 +694,11 @@ class UserController extends Controller
             $error = $th->getMessage();
             return response()->json(['status'=>0,'message' =>'error','result' => $error],200);
            } 
+    }
+
+    public function kam_details($id,$zone)
+    {
+         $kam_details = User::where('zone',$zone)->where('id','!=',$id)->first();
+         return $kam_details;
     }
 }

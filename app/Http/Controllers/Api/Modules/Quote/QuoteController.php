@@ -254,6 +254,8 @@ class QuoteController extends Controller
           $sche['kamsRemarks'] = $value['kamsRemarks'];
           $sche['confirm_date'] = $value['confirm_date'];
           $sche['pickup_type'] = $value['pickup_type'];
+          $sche['salesRemarks'] = $value['salesRemarks'];
+          $sche['sub_cat_id'] = $value['sub_cat_id'];
           
           
           // echo "<pre>";print_r($sche);exit();
@@ -586,7 +588,7 @@ class QuoteController extends Controller
             $result[$key]['status'] = $value['product']['status'];
             $result[$key]['quotest'] = $value['kam_status'];
             $result[$key]['primary_image_url'] = asset('storage/app/public/images/product/'.$value['category']['primary_image']);
-            $result[$key]['schedule'] = $value['schedules'];
+            $result[$key]['schedule'] = $this->getSubcatname($value['schedules']);
             $result[$key]['quote_id'] = $value['id'];
             $result[$key]['user_id'] = $value['user_id'];
             $result[$key]['rfq_no'] = $value['rfq_no'];
@@ -1652,7 +1654,10 @@ class QuoteController extends Controller
       {
           $quote_sches = array();
 
-          $res = DB::table('quote_schedules')->where('quote_id',$qid)->where('quote_status',1)->whereNull('deleted_at')->get();
+          $res = DB::table('quote_schedules')
+          ->leftjoin('sub_categorys','quote_schedules.sub_cat_id','sub_categorys.id')
+          ->select('quote_schedules.*','sub_categorys.sub_cat_name')
+          ->where('quote_id',$qid)->where('quote_status',1)->whereNull('deleted_at')->get();
 
           foreach ($res as $key => $value) {
              
@@ -1675,6 +1680,8 @@ class QuoteController extends Controller
              $quote_sches[$key]['quote_status'] = $value->quote_status;
              $quote_sches[$key]['confirm_date'] = $value->confirm_date;
              $quote_sches[$key]['pickup_type'] = $value->pickup_type;
+             $quote_sches[$key]['sub_cat_id'] = $value->sub_cat_id;
+             $quote_sches[$key]['sub_cat_name'] = $value->sub_cat_name;
         
              
 
@@ -1995,5 +2002,21 @@ class QuoteController extends Controller
 
 
    /*------------------------------------------------------------------------------*/
+
+   public function getSubcatname($schedules)
+   {
+      foreach ($schedules as $key => $value) {
+          
+           $sub_cat_id = $value['sub_cat_id'];
+
+           $sub_cat = DB::table('sub_categorys')->where('id',$sub_cat_id)->select('sub_cat_name')->first();
+
+          $schedules[$key]['sub_cat_name'] = $sub_cat->sub_cat_name;
+      }
+
+        
+
+        return $schedules;
+   }
 
 }
