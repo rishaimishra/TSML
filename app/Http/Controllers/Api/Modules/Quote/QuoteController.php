@@ -1260,8 +1260,8 @@ class QuoteController extends Controller
            ->leftjoin('users','quotes.user_id','users.id')
            ->leftjoin('products','quotes.product_id','products.id')
            ->leftjoin('categorys','quotes.cat_id','categorys.id')
-           ->leftjoin('sub_categorys','categorys.id','sub_categorys.cat_id')
-           ->select('quotes.rfq_no','quotes.user_id','quotes.id as qid','products.slug','products.status','categorys.*','sub_categorys.*','users.id','products.id as pid','categorys.id as cid','quotes.quantity')
+           // ->leftjoin('sub_categorys','categorys.id','sub_categorys.cat_id')
+           ->select('quotes.rfq_no','quotes.user_id','quotes.id as qid','products.slug','products.status','categorys.*','users.id','products.id as pid','categorys.id as cid','quotes.quantity')
            ->orderBy('quotes.updated_at','desc')
            ->where('quotes.rfq_no',$id)
            ->whereNull('quotes.deleted_at')
@@ -1269,11 +1269,11 @@ class QuoteController extends Controller
            // echo "<pre>";print_r($quote);exit();
           foreach ($quote as $key => $value) {
             
-            $result[$key]['C'] = $value->C;
-            $result[$key]['Cr'] = $value->Cr;
-            $result[$key]['Phos'] = $value->Phos;
-            $result[$key]['S'] = $value->S;
-            $result[$key]['Si'] = $value->Si;
+            // $result[$key]['C'] = $value->C;
+            // $result[$key]['Cr'] = $value->Cr;
+            // $result[$key]['Phos'] = $value->Phos;
+            // $result[$key]['S'] = $value->S;
+            // $result[$key]['Si'] = $value->Si;
             $result[$key]['cat_dese'] = $value->cat_dese;
             $result[$key]['cat_id'] = $value->cid;
             $result[$key]['cat_name'] = $value->cat_name;
@@ -1282,7 +1282,7 @@ class QuoteController extends Controller
             $result[$key]['image_4_url'] = $value->image_4;
             $result[$key]['is_populer'] = $value->is_populer;
             $result[$key]['product_id'] = $value->pid;
-            $result[$key]['sizes'] = $value->pro_size;
+            // $result[$key]['sizes'] = $value->pro_size;
             $result[$key]['slug'] = $value->slug;
             $result[$key]['status'] = $value->status;
             $result[$key]['primary_image_url'] = 'https://beas.in/mje-shop/storage/app/public/images/product/'.$value->primary_image;
@@ -1660,7 +1660,7 @@ class QuoteController extends Controller
           $res = DB::table('quote_schedules')
           ->leftjoin('sub_categorys','quote_schedules.sub_cat_id','sub_categorys.id')
           ->select('quote_schedules.*','sub_categorys.sub_cat_name')
-          ->where('quote_id',$qid)->where('quote_status',1)->whereNull('deleted_at')->get();
+          ->where('quote_schedules.quote_id',$qid)->where('quote_schedules.quote_status',1)->whereNull('quote_schedules.deleted_at')->get();
 
           foreach ($res as $key => $value) {
              
