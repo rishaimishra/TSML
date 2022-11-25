@@ -239,7 +239,7 @@ class ProductController extends Controller
    	}
 
     /**
-     * This is for store new product.
+     * This is for store new product from admin.
      *
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
@@ -278,7 +278,7 @@ class ProductController extends Controller
    }
 
    /**
-     * This is for update product.
+     * This is for update product for admin.
      *
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
@@ -326,7 +326,7 @@ class ProductController extends Controller
     }
 
    /**
-     * This is for show product details before edit.
+     * This is for show product details before edit for admin.
      *
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
@@ -351,7 +351,7 @@ class ProductController extends Controller
    	}
 
    	/**
-     * This is for delete product.
+     * This is for delete product for admin.
      *
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
@@ -376,7 +376,7 @@ class ProductController extends Controller
     }
 
     /**
-     * This is for show product list. 
+     * This is for show product list for admin. 
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
     */
@@ -406,7 +406,7 @@ class ProductController extends Controller
     }
 
     /**
-     * This is for active product.
+     * This is for active product for admin.
      *
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
@@ -433,7 +433,7 @@ class ProductController extends Controller
     }
 
     /**
-     * This is for inactive product.
+     * This is for inactive product for admin.
      *
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response

@@ -20,7 +20,7 @@
 	class CategoryController extends Controller
 	{
 	    /**
-	     * This is for store new Category.
+	     * This is for store new Category for admin.
 	     *
 	     * @param  \App\Product  $product
 	     * @return \Illuminate\Http\Response
@@ -108,7 +108,7 @@
 	    }
 
 	    /**
-	     * This is for show category list. 
+	     * This is for show category list for admin. 
 	     * @param  \App\Product  $product
 	     * @return \Illuminate\Http\Response
 	    */
@@ -155,7 +155,7 @@
 	   		
 
 	   	/**
-	     * This is for show category details before edit.
+	     * This is for show category details before edit for admin.
 	     *
 	     * @param  \App\Product  $product
 	     * @return \Illuminate\Http\Response
@@ -221,7 +221,7 @@
 	   	}
 
 	   	/**
-	     * This is for update category.
+	     * This is for update category for admin.
 	     *
 	     * @param  \App\Product  $product
 	     * @return \Illuminate\Http\Response
@@ -326,7 +326,7 @@
 		   }
 
 	   	/**
-	     * This is for inactive category.
+	     * This is for inactive category for admin.
 	     *
 	     * @param  \App\Product  $product
 	     * @return \Illuminate\Http\Response
@@ -360,7 +360,7 @@
 	    }
 
 	    /**
-	     * This is for active category.
+	     * This is for active category for admin.
 	     *
 	     * @param  \App\Product  $product
 	     * @return \Illuminate\Http\Response
