@@ -2074,32 +2074,42 @@ class QuoteController extends Controller
             
 
             $poArr = array();
+
+            if ($request->hasFile('primary_image') && !empty($request->input('cus_po_no')))
+           { 
             
-            $po_no = $request->input('po_no');
+                $po_no = $request->input('po_no');
 
-            $po_data = Order::where('po_no',$po_no)->first()->toArray();
-            // echo "<pre>";print_r($po_data['letterhead']);exit();
-           @unlink(storage_path('app/public/images/letterheads/'.$po_data['letterhead']));
-            $poArr['cus_po_no'] = $request->input('cus_po_no');
+                $po_data = Order::where('po_no',$po_no)->first()->toArray();
+                // echo "<pre>";print_r($po_data['letterhead']);exit();
+               @unlink(storage_path('app/public/images/letterheads/'.$po_data['letterhead']));
+                $poArr['cus_po_no'] = $request->input('cus_po_no');
 
-            $files = $request->file('letterhead');
-            if(!empty($files))
-            {
+                $files = $request->file('letterhead');
+                if(!empty($files))
+                {
 
-              $name = time().$files->getClientOriginalName(); 
-              $files->storeAs("public/images/letterheads",$name);  
-              $poArr['letterhead'] = $name;
-            }
+                  $name = time().$files->getClientOriginalName(); 
+                  $files->storeAs("public/images/letterheads",$name);  
+                  $poArr['letterhead'] = $name;
+                }
 
           
             // echo "<pre>";print_r($poArr);exit();
          
-            Order::where('po_no',$po_no)->update($poArr);
+                Order::where('po_no',$po_no)->update($poArr);
 
-            return response()->json(['status'=>1,
-              'message' =>'success',
-              'result' => 'P.O updated'],
-              config('global.success_status'));
+                return response()->json(['status'=>1,
+                  'message' =>'success',
+                  'result' => 'P.O updated'],
+                  config('global.success_status'));
+              }else{
+
+                return response()->json(['status'=>1,
+                  'message' =>'success',
+                  'result' => 'Data not given'],
+                  config('global.success_status'));
+              }
 
 
 
