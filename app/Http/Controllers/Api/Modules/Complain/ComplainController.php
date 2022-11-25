@@ -554,7 +554,7 @@ class ComplainController extends Controller
             }
  
         }
-        $getComplainfiledata["cust_com_file"][] = $cust_com_filearr;
+        $getComplainfiledata["cust_com_file"]  = $cust_com_filearr;
 
         $kam_com_filearr = [];
 
@@ -565,7 +565,7 @@ class ComplainController extends Controller
           }
  
         }
-        $getComplainfiledata["kam_com_file"][] = $kam_com_filearr; 
+        $getComplainfiledata["kam_com_file"]  = $kam_com_filearr; 
 
         return $getComplainfiledata;
     }
