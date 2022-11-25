@@ -1370,6 +1370,7 @@ class QuoteController extends Controller
             $poArr['rfq_no'] = $request->input('rfq_no');
             $poArr['po_no'] = $request->input('po_no');
             $poArr['amdnt_no'] = $request->input('amdnt_no');
+            $poArr['cus_po_no'] = $request->input('cus_po_no');
 
             $files = $request->file('letterhead');
             if(!empty($files))
@@ -1681,7 +1682,7 @@ class QuoteController extends Controller
              $quote_sches[$key]['confirm_date'] = $value->confirm_date;
              $quote_sches[$key]['pickup_type'] = $value->pickup_type;
              $quote_sches[$key]['sub_cat_id'] = $value->sub_cat_id;
-             $quote_sches[$key]['sub_cat_name'] = $value->sub_cat_name;
+             $quote_sches[$key]['sub_cat_name'] = (!empty($value->sub_cat_name)) ? $value->sub_cat_name : '';
         
              
 
@@ -1934,10 +1935,7 @@ class QuoteController extends Controller
                   if(!empty($addr))
                   {
                       
-                        $result['addressone'] = $addr->addressone;
-                        $result['addresstwo'] = $addr->addresstwo;
-                        $result['city'] = $addr->city;
-                        $result['pincode'] = $addr->pincode;
+                        $result['address'] = $addr->address;
                         $result['state'] = $addr->state;
                   }
                
@@ -2011,12 +2009,55 @@ class QuoteController extends Controller
 
            $sub_cat = DB::table('sub_categorys')->where('id',$sub_cat_id)->select('sub_cat_name')->first();
 
-          $schedules[$key]['sub_cat_name'] = $sub_cat->sub_cat_name;
+           if(!empty($sub_cat))
+           {
+
+               $schedules[$key]['sub_cat_name'] = $sub_cat->sub_cat_name;
+           }
+           else{
+                 $schedules[$key]['sub_cat_name'] = "";
+           }
+
       }
 
         
 
         return $schedules;
    }
+
+
+             /*---------------------------- update PO -----------------------------------------*/
+      
+      public function rejectScheByDate()
+      {
+
+         
+
+       try{ 
+
+            $todaydate = date('y-m-d h:i:s');
+
+            QuoteSchedule::where('valid_till','<',$todaydate)->update(['quote_status'=>2]);
+
+            // echo "<pre>";print_r($todaydate);exit();
+        
+
+            return response()->json(['status'=>1,
+              'message' =>'success',
+              'result' => 'Quote status rejected'],
+              config('global.success_status'));
+
+
+
+      }catch(\Exception $e){
+
+              return response()->json(['status'=>0,
+                'message' =>'error',
+                'result' => $e->getMessage()],
+                config('global.failed_status'));
+          }
+      }
+
+    /*-----------------------------------------------------------------------------------*/
 
 }
