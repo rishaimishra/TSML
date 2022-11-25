@@ -28,7 +28,7 @@ class ProductController extends Controller
      */
     public function productManu(Request $request)
     {
-        $getproduct = Product::where('status','=',1)->get(); //1=>Active product
+        $getproduct = Product::where('status','=',1)->orderBy('id', 'DESC')->get(); //1=>Active product
 
         if (!empty($getproduct)) 
         {
