@@ -1576,7 +1576,7 @@ class QuoteController extends Controller
            ->leftjoin('quotes','orders.rfq_no','quotes.rfq_no')
            ->leftjoin('quote_schedules','quotes.id','quote_schedules.quote_id')
            ->leftjoin('users','quotes.user_id','users.id')    
-           ->select('quotes.rfq_no','quotes.user_id','orders.letterhead','orders.po_no','orders.po_date','users.name','orders.status',DB::raw("(sum(quote_schedules.quantity)) as tot_qt"),'orders.amdnt_no')
+           ->select('quotes.rfq_no','quotes.user_id','orders.letterhead','orders.po_no','orders.po_date','users.name','orders.status',DB::raw("(sum(quote_schedules.quantity)) as tot_qt"),'orders.amdnt_no','orders.cus_po_no')
            ->orderBy('quotes.updated_at','desc')
            ->groupBy('quotes.rfq_no');
            if(!empty($user_id))
@@ -1597,6 +1597,7 @@ class QuoteController extends Controller
           foreach ($quote as $key => $value) {
             
             $result[$key]['po_no'] = $value->po_no;
+            $result[$key]['cus_po_no'] = $value->cus_po_no;
             $result[$key]['user'] = $value->name;
             $result[$key]['rfq_no'] = $value->rfq_no;
             $result[$key]['quantity'] = $value->tot_qt;
