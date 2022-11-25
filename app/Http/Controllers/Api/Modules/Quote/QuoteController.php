@@ -1682,7 +1682,7 @@ class QuoteController extends Controller
              $quote_sches[$key]['confirm_date'] = $value->confirm_date;
              $quote_sches[$key]['pickup_type'] = $value->pickup_type;
              $quote_sches[$key]['sub_cat_id'] = $value->sub_cat_id;
-             $quote_sches[$key]['sub_cat_name'] = $value->sub_cat_name;
+             $quote_sches[$key]['sub_cat_name'] = (!empty($value->sub_cat_name)) ? $value->sub_cat_name : '';
         
              
 
@@ -2009,7 +2009,15 @@ class QuoteController extends Controller
 
            $sub_cat = DB::table('sub_categorys')->where('id',$sub_cat_id)->select('sub_cat_name')->first();
 
-          $schedules[$key]['sub_cat_name'] = $sub_cat->sub_cat_name;
+           if(!empty($sub_cat))
+           {
+
+               $schedules[$key]['sub_cat_name'] = $sub_cat->sub_cat_name;
+           }
+           else{
+                 $schedules[$key]['sub_cat_name'] = "";
+           }
+
       }
 
         
