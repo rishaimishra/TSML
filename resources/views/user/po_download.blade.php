@@ -103,12 +103,29 @@
 		                        </td>
 		                    </tr>
 		                    <tr>
-		                        <td colspan="5">
-		                            <label style="font-size: 14px; white-space: nowrap; width: 100%; float: left;">Delivery Between &</label>
+		                        <td colspan="5">		                        	
+		                            <label style="font-size: 14px; white-space: nowrap; width: 100%; float: left;">Delivery Between</label>
 		                            <div style="clear: both;"></div>
-		                            <input style="width: 50%; float: left;" type="text" name="" value="{{date('d-m-Y', strtotime($showshed['to_date']))}} ">
-		                            <input style="width: 50%; float: right;" type="text" name="" value="{{date('d-m-Y', strtotime($showshed['from_date']))}}">
+		                            <!-- @foreach($showshed['delivery_betweene'] as $showshetd)
+		                        		<p>Quantity : {{$showshetd['qty']}}</p>
+		                        		<p>Date : {{date('d-m-Y', strtotime($showshed['to_date']))}}</p>
+		                        	@endforeach -->
+		                            <!-- <input style="width: 50%; float: left;" type="text" name="" value="{{date('d-m-Y', strtotime($showshed['to_date']))}} ">
+		                            <input style="width: 50%; float: right;" type="text" name="" value="{{date('d-m-Y', strtotime($showshed['from_date']))}}"> -->
 		                            <div style="clear: both;"></div>
+		                            <table style="width:100%; margin-top: 0px; font-size: 14px;" border="1">
+		                            	<tr>
+		                            		<th style="text-align: left; padding: 5px;">Quantity</th>
+		                            		<th style="text-align: left; padding: 5px;">Date</th>
+		                            	</tr>
+		                            	@foreach($showshed['delivery_betweene'] as $showshetd)
+		                            	<tr>
+		                            		
+		                            		<td style="text-align: left; padding: 5px;">{{$showshetd['qty']}}</td>
+		                            		<td style="text-align: left; padding: 5px;">{{date('d-m-Y', strtotime($showshetd['to_date']))}}</td>
+		                            	</tr>
+		                            		@endforeach
+		                            </table>
 		                        </td>
 		                    </tr>
 		                    <tr>
