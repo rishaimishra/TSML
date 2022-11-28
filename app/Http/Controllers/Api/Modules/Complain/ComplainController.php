@@ -37,7 +37,7 @@ class ComplainController extends Controller
     */
     public function storeComplainCategory(Request $request)
     {
-    	\DB::beginTransaction();
+      \DB::beginTransaction();
 
         try{
 
@@ -79,7 +79,7 @@ class ComplainController extends Controller
     */
     public function getComplainCategory(Request $request)
     {
-    	try{ 
+      try{ 
             $ComplainCategoryData = ComplainCategory::get();  
              
             if (count($ComplainCategoryData)>0) {
@@ -107,7 +107,7 @@ class ComplainController extends Controller
     */
     public function storeComplainSubCategory(Request $request)
     {
-    	\DB::beginTransaction();
+      \DB::beginTransaction();
 
         try{
 
@@ -150,7 +150,7 @@ class ComplainController extends Controller
     */
     public function getComplainSubCategory($com_cate_id)
     {
-    	try{ 
+      try{ 
             $ComplainSubCategoryData = ComplainSubCategory::where('com_cate_id',$com_cate_id)->orderBy('id','desc')->get(); 
              
             if (count($ComplainSubCategoryData)>0) {
@@ -179,7 +179,7 @@ class ComplainController extends Controller
     */
     public function storeComplainSubCategory2(Request $request)
     {
-    	\DB::beginTransaction();
+      \DB::beginTransaction();
 
         try{
 
@@ -225,7 +225,7 @@ class ComplainController extends Controller
     */
     public function getComplainSubCategory2($com_sub_cate_id)
     {
-    	try{ 
+      try{ 
             $ComplainSubCategory2Data = ComplainSubCategory2::where('com_sub_cate_id',$com_sub_cate_id)->orderBy('id','desc')->get();   
              
              
@@ -252,7 +252,7 @@ class ComplainController extends Controller
     */
     public function storeComplainSubCategory3(Request $request)
     {
-    	\DB::beginTransaction();
+      \DB::beginTransaction();
 
         try{
 
@@ -300,7 +300,7 @@ class ComplainController extends Controller
     */
     public function getComplainSubCategory3($com_sub_cate_2id)
     {
-    	try{ 
+      try{ 
           $ComplainSubCategory3Data = ComplainSubCategory3::where('com_sub_cate_2id',$com_sub_cate_2id)->orderBy('id','desc')->get();   
              
              
@@ -326,7 +326,7 @@ class ComplainController extends Controller
     public function storeComplainMain(Request $request)
     {
 
-    	\DB::beginTransaction();
+      \DB::beginTransaction();
 
         try{
 
@@ -402,7 +402,7 @@ class ComplainController extends Controller
     */
     public function remarksReplay(Request $request)
     {
-    	\DB::beginTransaction();
+      \DB::beginTransaction();
 
         try{
 
@@ -416,8 +416,8 @@ class ComplainController extends Controller
           
           if ($request->customer_remarks) {
 
-          	$input['complain_id'] = $request->complain_id;
-          	$input['customer_remarks'] = $request->customer_remarks;
+            $input['complain_id'] = $request->complain_id;
+            $input['customer_remarks'] = $request->customer_remarks;
 
             if ($request->hasFile('cust_complain_file'))
             {  
@@ -430,11 +430,11 @@ class ComplainController extends Controller
               $input['cust_com_file'] = $filename; 
             }
             // dd($input);
-          	$RemarksData = ComplainRemarks::create($input);
+            $RemarksData = ComplainRemarks::create($input);
           }
           if ($request->kam_remarks) {
-          	$input['complain_id'] = $request->complain_id;
-          	$input['kam_remarks'] = $request->kam_remarks;
+            $input['complain_id'] = $request->complain_id;
+            $input['kam_remarks'] = $request->kam_remarks;
 
             if ($request->hasFile('kam_complain_file'))
             {  
@@ -447,7 +447,7 @@ class ComplainController extends Controller
               $input['kam_com_file'] = $filename; 
             }
 
-          	$RemarksData = ComplainRemarks::create($input);
+            $RemarksData = ComplainRemarks::create($input);
           } 
 
           \DB::commit();
@@ -475,33 +475,34 @@ class ComplainController extends Controller
     */
     public function getComplainListKam(Request $request)
     {
-    	try{ 
+      try{ 
           $ComplainListData = DB::table('complain_main')
-		      ->leftjoin('complain_categorys','complain_main.com_cate_id','complain_categorys.id')
-		      ->leftjoin('complain_sub_categorys','complain_main.com_sub_cate_id','complain_sub_categorys.id')
-		      ->leftjoin('complain_sub_categorys2','complain_main.com_sub_cate_2id','complain_sub_categorys2.id')
-		      ->leftjoin('complain_sub_categorys3','complain_main.com_sub_cate_3id','complain_sub_categorys3.id')
+          ->leftjoin('complain_categorys','complain_main.com_cate_id','complain_categorys.id')
+          ->leftjoin('complain_sub_categorys','complain_main.com_sub_cate_id','complain_sub_categorys.id')
+          ->leftjoin('complain_sub_categorys2','complain_main.com_sub_cate_2id','complain_sub_categorys2.id')
+          ->leftjoin('complain_sub_categorys3','complain_main.com_sub_cate_3id','complain_sub_categorys3.id')
            ->leftjoin('users','complain_main.user_id','users.id')
+           ->leftjoin('orders','complain_main.po_number','orders.po_no')
           ->join('complain_remarks','complain_main.id','complain_remarks.complain_id')
-		     
-		     ->select('complain_main.id','users.name as customer_name','complain_main.po_number','complain_main.po_date','complain_main.created_at','complain_main.file','complain_categorys.com_cate_name','complain_sub_categorys.com_sub_cate_name','complain_sub_categorys2.com_sub_cate2_name','complain_sub_categorys3.com_sub_cate3_name','complain_remarks.customer_remarks'); 
-		      
-		     
-		     if(!empty($request->user_id))
-	         {
-	           $ComplainListData = $ComplainListData->where('complain_main.user_id',$request->user_id);
-	         }
-	          
-	         $ComplainListData = $ComplainListData->orderBy('complain_remarks.created_at','desc')->groupBy('complain_remarks.complain_id')->get();
+         
+         ->select('complain_main.id','users.name as customer_name','complain_main.po_number','complain_main.po_date','complain_main.created_at','complain_main.file','complain_categorys.com_cate_name','complain_sub_categorys.com_sub_cate_name','complain_sub_categorys2.com_sub_cate2_name','complain_sub_categorys3.com_sub_cate3_name','complain_remarks.customer_remarks','orders.cus_po_no'); 
+          
+         
+         if(!empty($request->user_id))
+           {
+             $ComplainListData = $ComplainListData->where('complain_main.user_id',$request->user_id);
+           }
+            
+           $ComplainListData = $ComplainListData->orderBy('complain_remarks.created_at','desc')->groupBy('complain_remarks.complain_id')->get();
             
 
 
 
-	         $complainlist = [];
-		      
-		      foreach ($ComplainListData as $ComplainList) {
+           $complainlist = [];
+          
+          foreach ($ComplainListData as $ComplainList) {
 
-  		     	$data['complain_id'] = $ComplainList->id;
+            $data['complain_id'] = $ComplainList->id;
             $data['customer_name'] = $ComplainList->customer_name;
             $data['created_at'] = $ComplainList->created_at;
             $data['com_cate_name'] = $ComplainList->com_cate_name;
@@ -509,16 +510,17 @@ class ComplainController extends Controller
             $data['com_sub_cate2_name'] = $ComplainList->com_sub_cate2_name;
             $data['com_sub_cate3_name'] = $ComplainList->com_sub_cate3_name;
             $data['po_number'] = $ComplainList->po_number;
+            $data['cus_po_no'] = $ComplainList->cus_po_no;
             $data['po_date'] = $ComplainList->po_date;
             $data['remarks'] = $ComplainList->customer_remarks;
 
             $data['com_file_url'] = $this->complainFlain($ComplainList->id);
 
-  	       
+           
 
-  		   		$complainlist[] = $data;
-		      }
-		      
+            $complainlist[] = $data;
+          }
+          
           if (count($ComplainListData)>0) {
              return response()->json(['status'=>1,'message' =>'success.','result' => $complainlist],200);
           }

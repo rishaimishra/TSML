@@ -30,8 +30,8 @@ class QuoteController extends Controller
             ->leftjoin('users','quotes.user_id','users.id')
             ->leftjoin('products','quotes.product_id','products.id')
             ->leftjoin('categorys','quotes.cat_id','categorys.id')
-            ->leftjoin('sub_categorys','categorys.id','sub_categorys.cat_id')
-            ->select('quotes.rfq_no','quotes.user_id','quotes.id as qid','products.slug','products.status','categorys.*','sub_categorys.*','users.id','users.name as uname','products.id as pid','categorys.id as cid','quotes.quantity','orders.letterhead','orders.po_no','orders.po_date')
+            // ->leftjoin('sub_categorys','categorys.id','sub_categorys.cat_id')
+            ->select('quotes.rfq_no','quotes.user_id','quotes.id as qid','products.slug','products.status','categorys.*','users.id','users.name as uname','products.id as pid','categorys.id as cid','quotes.quantity','orders.letterhead','orders.po_no','orders.po_date')
             ->orderBy('quotes.updated_at','desc')
             ->where('orders.po_no',$id)
             ->whereNull('quotes.deleted_at')
@@ -39,11 +39,11 @@ class QuoteController extends Controller
            // echo "<pre>";print_r($quote);exit();
     foreach ($quote as $key => $value) {
       
-      $result[$key]['C'] = $value->C;
-      $result[$key]['Cr'] = $value->Cr;
-      $result[$key]['Phos'] = $value->Phos;
-      $result[$key]['S'] = $value->S;
-      $result[$key]['Si'] = $value->Si;
+      // $result[$key]['C'] = $value->C;
+      // $result[$key]['Cr'] = $value->Cr;
+      // $result[$key]['Phos'] = $value->Phos;
+      // $result[$key]['S'] = $value->S;
+      // $result[$key]['Si'] = $value->Si;
       $result[$key]['cat_dese'] = $value->cat_dese;
       $result[$key]['cat_id'] = $value->cid;
       $result[$key]['cat_name'] = $value->cat_name;
@@ -52,7 +52,7 @@ class QuoteController extends Controller
       $result[$key]['image_4_url'] = $value->image_4;
       $result[$key]['is_populer'] = $value->is_populer;
       $result[$key]['product_id'] = $value->pid;
-      $result[$key]['sizes'] = $value->pro_size;
+      // $result[$key]['sizes'] = $value->pro_size;
       $result[$key]['slug'] = $value->slug;
       $result[$key]['status'] = $value->status; 
       $result[$key]['primary_image_url'] = asset('storage/app/public/images/product/'.$value->primary_image); 
@@ -256,6 +256,7 @@ class QuoteController extends Controller
           $sche['pickup_type'] = $value['pickup_type'];
           $sche['salesRemarks'] = $value['salesRemarks'];
           $sche['sub_cat_id'] = $value['sub_cat_id'];
+          $sche['quote_status'] = (!empty($value['quote_status'])) ? $value['quote_status'] : 0;
           
           
           // echo "<pre>";print_r($sche);exit();
@@ -682,8 +683,9 @@ class QuoteController extends Controller
             if(empty($ckh))
             {
               $updated = DB::table('requotes')->insert(['schedule_id' => $sche_id]);
-              DB::table('quote_schedules')->where('schedule_no',$sche_id)->update(['quote_status' => 3]);
+              
             }
+            DB::table('quote_schedules')->where('schedule_no',$sche_id)->update(['quote_status' => 3]);
             
             
           }
@@ -1260,8 +1262,8 @@ class QuoteController extends Controller
            ->leftjoin('users','quotes.user_id','users.id')
            ->leftjoin('products','quotes.product_id','products.id')
            ->leftjoin('categorys','quotes.cat_id','categorys.id')
-           ->leftjoin('sub_categorys','categorys.id','sub_categorys.cat_id')
-           ->select('quotes.rfq_no','quotes.user_id','quotes.id as qid','products.slug','products.status','categorys.*','sub_categorys.*','users.id','products.id as pid','categorys.id as cid','quotes.quantity')
+           // ->leftjoin('sub_categorys','categorys.id','sub_categorys.cat_id')
+           ->select('quotes.rfq_no','quotes.user_id','quotes.id as qid','products.slug','products.status','categorys.*','users.id','products.id as pid','categorys.id as cid','quotes.quantity')
            ->orderBy('quotes.updated_at','desc')
            ->where('quotes.rfq_no',$id)
            ->whereNull('quotes.deleted_at')
@@ -1269,11 +1271,11 @@ class QuoteController extends Controller
            // echo "<pre>";print_r($quote);exit();
           foreach ($quote as $key => $value) {
             
-            $result[$key]['C'] = $value->C;
-            $result[$key]['Cr'] = $value->Cr;
-            $result[$key]['Phos'] = $value->Phos;
-            $result[$key]['S'] = $value->S;
-            $result[$key]['Si'] = $value->Si;
+            // $result[$key]['C'] = $value->C;
+            // $result[$key]['Cr'] = $value->Cr;
+            // $result[$key]['Phos'] = $value->Phos;
+            // $result[$key]['S'] = $value->S;
+            // $result[$key]['Si'] = $value->Si;
             $result[$key]['cat_dese'] = $value->cat_dese;
             $result[$key]['cat_id'] = $value->cid;
             $result[$key]['cat_name'] = $value->cat_name;
@@ -1282,7 +1284,7 @@ class QuoteController extends Controller
             $result[$key]['image_4_url'] = $value->image_4;
             $result[$key]['is_populer'] = $value->is_populer;
             $result[$key]['product_id'] = $value->pid;
-            $result[$key]['sizes'] = $value->pro_size;
+            // $result[$key]['sizes'] = $value->pro_size;
             $result[$key]['slug'] = $value->slug;
             $result[$key]['status'] = $value->status;
             $result[$key]['primary_image_url'] = 'https://beas.in/mje-shop/storage/app/public/images/product/'.$value->primary_image;
@@ -1428,8 +1430,8 @@ class QuoteController extends Controller
            ->leftjoin('users','quotes.user_id','users.id')
            ->leftjoin('products','quotes.product_id','products.id')
            ->leftjoin('categorys','quotes.cat_id','categorys.id')
-           ->leftjoin('sub_categorys','categorys.id','sub_categorys.cat_id')
-           ->select('quotes.rfq_no','quotes.user_id','quotes.id as qid','products.slug','products.status','categorys.*','sub_categorys.*','users.id','products.id as pid','categorys.id as cid','quotes.quantity','orders.letterhead','orders.po_no','orders.po_date','orders.status as po_st','orders.amdnt_no')
+           // ->leftjoin('sub_categorys','categorys.id','sub_categorys.cat_id')
+           ->select('quotes.rfq_no','quotes.user_id','quotes.id as qid','products.slug','products.status','categorys.*','users.id','products.id as pid','categorys.id as cid','quotes.quantity','orders.letterhead','orders.po_no','orders.cus_po_no','orders.po_date','orders.status as po_st','orders.amdnt_no')
            ->orderBy('quotes.updated_at','desc')
            ->where('orders.po_no',$id)
            ->whereNull('quotes.deleted_at')
@@ -1437,11 +1439,11 @@ class QuoteController extends Controller
            // echo "<pre>";print_r($quote);exit();
           foreach ($quote as $key => $value) {
             
-            $result[$key]['C'] = $value->C;
-            $result[$key]['Cr'] = $value->Cr;
-            $result[$key]['Phos'] = $value->Phos;
-            $result[$key]['S'] = $value->S;
-            $result[$key]['Si'] = $value->Si;
+            // $result[$key]['C'] = $value->C;
+            // $result[$key]['Cr'] = $value->Cr;
+            // $result[$key]['Phos'] = $value->Phos;
+            // $result[$key]['S'] = $value->S;
+            // $result[$key]['Si'] = $value->Si;
             $result[$key]['cat_dese'] = $value->cat_dese;
             $result[$key]['cat_id'] = $value->cid;
             $result[$key]['cat_name'] = $value->cat_name;
@@ -1450,7 +1452,7 @@ class QuoteController extends Controller
             $result[$key]['image_4_url'] = $value->image_4;
             $result[$key]['is_populer'] = $value->is_populer;
             $result[$key]['product_id'] = $value->pid;
-            $result[$key]['sizes'] = $value->pro_size;
+            // $result[$key]['sizes'] = $value->pro_size;
             $result[$key]['slug'] = $value->slug;
             $result[$key]['status'] = $value->status;
             $result[$key]['po_st'] = $value->po_st;
@@ -1461,6 +1463,7 @@ class QuoteController extends Controller
             $result[$key]['rfq_no'] = $value->rfq_no;
             $result[$key]['quantity'] = $value->quantity;
             $result[$key]['po_no'] = $value->po_no;
+            $result[$key]['cus_po_no'] = $value->cus_po_no;
             $result[$key]['letterhead'] = asset('storage/app/public/images/letterheads/'.$value->letterhead);
             $date =  date_create($value->po_date);
             $po_dt = date_format($date,"d-m-Y");
@@ -1660,7 +1663,7 @@ class QuoteController extends Controller
           $res = DB::table('quote_schedules')
           ->leftjoin('sub_categorys','quote_schedules.sub_cat_id','sub_categorys.id')
           ->select('quote_schedules.*','sub_categorys.sub_cat_name')
-          ->where('quote_id',$qid)->where('quote_status',1)->whereNull('deleted_at')->get();
+          ->where('quote_schedules.quote_id',$qid)->where('quote_schedules.quote_status',1)->whereNull('quote_schedules.deleted_at')->get();
 
           foreach ($res as $key => $value) {
              
@@ -1678,6 +1681,7 @@ class QuoteController extends Controller
              $quote_sches[$key]['ship_to'] = $value->ship_to;
              $quote_sches[$key]['remarks'] = $value->remarks;
              $quote_sches[$key]['kamsRemarks'] = $value->kamsRemarks;
+             $quote_sches[$key]['salesRemarks'] = $value->salesRemarks;
              $quote_sches[$key]['delivery'] = $value->delivery;
              $quote_sches[$key]['valid_till'] = $value->valid_till;
              $quote_sches[$key]['quote_status'] = $value->quote_status;
@@ -2076,14 +2080,16 @@ class QuoteController extends Controller
 
             $poArr = array();
 
-            if ($request->hasFile('primary_image') && !empty($request->input('cus_po_no')))
-           { 
             
                 $po_no = $request->input('po_no');
-
+                
                 $po_data = Order::where('po_no',$po_no)->first()->toArray();
                 // echo "<pre>";print_r($po_data['letterhead']);exit();
-               @unlink(storage_path('app/public/images/letterheads/'.$po_data['letterhead']));
+                if(!empty($po_data['letterhead']))
+                {
+
+                  @unlink(storage_path('app/public/images/letterheads/'.$po_data['letterhead']));
+                }
                 $poArr['cus_po_no'] = $request->input('cus_po_no');
 
                 $files = $request->file('letterhead');
@@ -2104,13 +2110,7 @@ class QuoteController extends Controller
                   'message' =>'success',
                   'result' => 'P.O updated'],
                   config('global.success_status'));
-              }else{
-
-                return response()->json(['status'=>1,
-                  'message' =>'success',
-                  'result' => 'Data not given'],
-                  config('global.success_status'));
-              }
+              
 
 
 
@@ -2124,5 +2124,37 @@ class QuoteController extends Controller
       }
 
     /*-----------------------------------------------------------------------------------*/
+
+    
+        /*------------------- customer po no. count ------------------------------------*/
+
+    public function countCusPo($cus_po_no)
+    {
+
+           \DB::beginTransaction();
+          try{
+
+               $count = DB::table('orders')->where('cus_po_no',$cus_po_no)->get()->count();
+             
+                   // echo "<pre>";print_r($count);exit();
+
+          
+                  return response()->json(['status'=>1,
+                    'message' =>'success',
+                    'result' => $count],
+                    config('global.success_status'));
+                
+           }
+          catch(\Exception $e){
+
+              \DB::rollback();
+
+             return response()->json(['status'=>0,
+              'message' =>'error',
+              'result' => $e->getMessage()],
+              config('global.failed_status'));
+
+          }
+    }
 
 }
