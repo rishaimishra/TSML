@@ -38,7 +38,7 @@
 	                            </h3>
 	                            <p
 	                                style="font-size: 14px; margin: 0; color: #404040; font-family: 'Roboto', sans-serif; font-weight: normal;">{{@$show['cat_dese']}}</p>
-	                            <p
+	                           <!--  <p
 	                                style="font-size: 14px; margin: 0; color: #404040; font-family: 'Roboto', sans-serif; font-weight: normal;">
 	                                <strong>Chemical Composition: </strong> 
 	                                Cr - {{@$show['Cr']}}, 
@@ -46,7 +46,7 @@
 	                                Phos - {{@$show['Phos']}}, 
 	                                S -{{@$show['S']}}, 
 	                                Si - {{@$show['Si']}}
-	                            </p>
+	                            </p> -->
 	                            </div>
 	                        </th>
 	                    </tr>
@@ -62,7 +62,10 @@
 		                            <hr>
 		                        </td>
 		                    </tr>
-		                    <tr>
+		                    <tr><!-- <td>
+		                            <label style="font-size: 14px; white-space: nowrap;">Sizes Offered</label>
+		                            <input style="width: 100%;" type="text" name="" value="{{$showshed['sub_cat_name']}}">
+		                        </td> -->
 		                        <td>
 		                            <label style="font-size: 14px; white-space: nowrap;">Sizes Offered</label>
 		                            <input style="width: 100%;" type="text" name="" value="{{$showshed['pro_size']}}">
