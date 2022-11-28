@@ -28,7 +28,7 @@ class ProductController extends Controller
      */
     public function productManu(Request $request)
     {
-        $getproduct = Product::where('status','=',1)->orderBy('id', 'DESC')->get(); //1=>Active product
+        $getproduct = Product::where('status','=',1)->get(); //1=>Active product
 
         if (!empty($getproduct)) 
         {
@@ -126,20 +126,20 @@ class ProductController extends Controller
         }
 
     }
-	/**
+    /**
      * This is for display product in index page.
      *
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
      */
-   	public function indexPage($proId)
-   	{
-   		// dd('index page');
+    public function indexPage($proId)
+    {
+        // dd('index page');
         $chkpro = Product::where('id',$proId)->first();
         if (!empty($chkpro)) 
         {
              
-            $data = Category::where('product_id',$proId)->where('status','!=',2)->orderBy('id','desc')->get();
+            $data = Category::where('product_id',$proId)->where('status','!=',2)->orderBy('id','ASC')->get();
             
             if (count($data) > 0) 
             {
@@ -183,12 +183,12 @@ class ProductController extends Controller
             return response()->json(['status'=>0,'message'=>'No product found'],200);
         }
         
-   	}
-   	
+    }
+    
     
     public function popularProduct()
-   	{
-   		// dd('index page');
+    {
+        // dd('index page');
         // $chkpro = Product::where('id',$proId)->first();
         // if (!empty($chkpro)) 
         // {
@@ -236,7 +236,7 @@ class ProductController extends Controller
         //     return response()->json(['status'=>0,'message'=>'No product found'],200);
         // }
         
-   	}
+    }
 
     /**
      * This is for store new product from admin.
@@ -246,13 +246,13 @@ class ProductController extends Controller
      */
    public function storeProduct(Request $request)
    {
-   	  
-   		$validation = \Validator::make($request->all(),[  
+      
+        $validation = \Validator::make($request->all(),[  
             "pro_name" => "required|unique:products|max:200", 
             "pro_desc" => "required|max:200",
                
         ],[  
-        	'pro_name.required'=>'Product name is required.',
+            'pro_name.required'=>'Product name is required.',
             'pro_name.unique'=>'Product name has already been taken.',
             'pro_desc.required'=>'Product description is required.', 
         ]);
@@ -261,20 +261,20 @@ class ProductController extends Controller
             return response()->json(['status'=>0,'errors'=>$validation->errors()],200);
         }
 
-	   	 
-		$input['pro_name'] = $request->pro_name;
-		$input['pro_desc'] = $request->pro_desc; 
-		$input['slug'] = str_slug($request->pro_name);
-		
-		// dd($input);
+         
+        $input['pro_name'] = $request->pro_name;
+        $input['pro_desc'] = $request->pro_desc; 
+        $input['slug'] = str_slug($request->pro_name);
+        
+        // dd($input);
 
-		$productData = Product::create($input); 
+        $productData = Product::create($input); 
 
-	    // $response['success']['message']="New product added successfully.";
-	    //         return Response::json($response);
+        // $response['success']['message']="New product added successfully.";
+        //         return Response::json($response);
 
-		return response()->json(['status'=>1,'message' =>'New product added successfully.','result' => $productData],200);
-	  
+        return response()->json(['status'=>1,'message' =>'New product added successfully.','result' => $productData],200);
+      
    }
 
    /**
@@ -331,26 +331,26 @@ class ProductController extends Controller
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
     */
-   	public function editProduct($proId)
-   	{
-   		 
-   		$getProdct = Product::find($proId); 
-   		 
-   		if (!empty($getProdct)) 
-   		{
-   			$proData['id'] = $getProdct->id; 
-	   		$proData['product_name'] = $getProdct->pro_name;
-	   		$proData['product_desc'] = $getProdct->pro_desc;
-	   		$proData['slug'] = $getProdct->slug; 
-	   		$proData['status'] = $getProdct->status; 
-   			return response()->json(['status'=>1,'message' =>'success','result' => $proData],200);
-   		}
-   		else{
-   			return response()->json(['status'=>0,'message'=>'No data found'],200);
-   		}
-   	}
+    public function editProduct($proId)
+    {
+         
+        $getProdct = Product::find($proId); 
+         
+        if (!empty($getProdct)) 
+        {
+            $proData['id'] = $getProdct->id; 
+            $proData['product_name'] = $getProdct->pro_name;
+            $proData['product_desc'] = $getProdct->pro_desc;
+            $proData['slug'] = $getProdct->slug; 
+            $proData['status'] = $getProdct->status; 
+            return response()->json(['status'=>1,'message' =>'success','result' => $proData],200);
+        }
+        else{
+            return response()->json(['status'=>0,'message'=>'No data found'],200);
+        }
+    }
 
-   	/**
+    /**
      * This is for delete product for admin.
      *
      * @param  \App\Product  $product
@@ -362,7 +362,7 @@ class ProductController extends Controller
 
         if(!empty($product))
         { 
-        	$input['is_delete'] = 1; //1=>Delete. 
+            $input['is_delete'] = 1; //1=>Delete. 
 
             $updateuser = Product::where('id',$product->id)->update($input);
             return response()->json(['status'=>1,'message' =>'Product delete successfully.'],200);
@@ -383,18 +383,18 @@ class ProductController extends Controller
     public function productList(Request $request)
     {    
 
-    	try{         
+        try{         
             $data = Product::orderBy('id','desc')->get();
 
             $prolist = [];
             foreach ($data as $key => $value) 
             {   
-              	$prodata['product_id'] = $value->id;
-	            $prodata['product_title'] = $value->pro_name;
-	            $prodata['product_desc'] = $value->pro_desc;
-	            $prodata['product_status'] = $value->status; 
-	              
-	            $prolist[] = $prodata;
+                $prodata['product_id'] = $value->id;
+                $prodata['product_title'] = $value->pro_name;
+                $prodata['product_desc'] = $value->pro_desc;
+                $prodata['product_status'] = $value->status; 
+                  
+                $prolist[] = $prodata;
             } 
               
              return response()->json(['status'=>1,'message' =>'success.','result' => $prolist],200); 
@@ -417,13 +417,13 @@ class ProductController extends Controller
 
         if(!empty($getProduct))
         { 
-    		$input['status'] = 1; //2=> Inactive/1=>Active. 
+            $input['status'] = 1; //2=> Inactive/1=>Active. 
 
-        	$updateuser = Product::where('id',$getProduct->id)->update($input);
+            $updateuser = Product::where('id',$getProduct->id)->update($input);
 
  
-        	return response()->json(['status'=>1,'message' =>'Product status active successfully.']);
-        	 
+            return response()->json(['status'=>1,'message' =>'Product status active successfully.']);
+             
         }
         else
         {
@@ -444,11 +444,11 @@ class ProductController extends Controller
 
         if(!empty($getProduct))
         { 
-    		$input['status'] = 2; //2=> Inactive/1=>Active. 
+            $input['status'] = 2; //2=> Inactive/1=>Active. 
 
-        	$updateuser = Product::where('id',$getProduct->id)->update($input);
+            $updateuser = Product::where('id',$getProduct->id)->update($input);
  
-        	return response()->json(['status'=>1,'message' =>'Product status inactive successfully.']);        	 
+            return response()->json(['status'=>1,'message' =>'Product status inactive successfully.']);          
         }
         else
         {
@@ -464,7 +464,7 @@ class ProductController extends Controller
         $data = [];
 
 
-        $data['data'] = Category::with('getProductDetails')->where('status',1)->orderBy('id','desc');
+        $data['data'] = Category::with('getProductDetails')->where('status',1)->orderBy('id','asc');
 
 
         if(@$request->product_id)
@@ -559,6 +559,42 @@ class ProductController extends Controller
     public function CategoryDropdown(){
         $data = Category::where('status','!=',2)->select('id','cat_name')->orderBy('id','desc')->get();
         return Response::json($data);
+
+    }
+
+
+    public function sub_cat_details($subId)
+    {
+
+            
+            // $data = Category::where('id',$catId)->where('product_id',$proId)->first();
+            $data = DB::table('sub_categorys')
+            ->where('id',$subId)->first();
+            // return $data->pro_size;exit();
+
+              $str = $data->pro_size;
+              $values = [];
+
+            $prodetail['size'] = (explode(",",$str));
+
+            if($subId == 22)
+            {
+            foreach ($prodetail['size'] as $key => $value) {
+                $prodetails['sizes'][$key]= $value;
+                array_push($values, $prodetails['sizes'][$key]);
+            }
+            }else{
+                foreach ($prodetail['size'] as $key => $value) {
+                    $prodetails['sizes'][$key]='10-' .$value;
+                    array_push($values, $prodetails['sizes'][$key]);
+            }
+        }
+            $prodetails['sizes'] = $values;
+
+
+
+            
+            return response()->json(['status'=>1,'message' =>'success.','result' => $prodetails],200);
 
     }
 

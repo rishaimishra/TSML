@@ -38,6 +38,7 @@ Route::group(['namespace'=>'Api\Modules'],function(){
 	Route::get('product-dropdown', 'Product\ProductController@ProductDropdown')->name('product_list_my');
 
 	Route::get('product-details/{catId}/{proId}', 'Product\ProductController@productDetails')->name('product_details');
+	Route::get('sub_cat_details/{subId}', 'Product\ProductController@sub_cat_details');
 
 	Route::get('get_all_news_all','News\NewsController@getAllNews');//news list for all
 });
@@ -101,6 +102,7 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
    		 Route::get('reject_sche_by_date','Quote\QuoteController@rejectScheByDate');
    		 Route::get('get_all_deliveries','Quote\QuoteController@getAllDeliveries');
    		 Route::post('update_letterhead','Quote\QuoteController@updateLetterhead');
+   		 Route::get('count_cus_po/{cus_po}','Quote\QuoteController@countCusPo');
 
    		 Route::post('get-store-pro-price','PriceManagement\PriceManagementController@getProPrice')->name('get_store_pro_price');
    		 Route::get('get-threshold-price','PriceManagement\PriceManagementController@getThresholdPrice')->name('get_threshold_price');
