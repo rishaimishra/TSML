@@ -55,17 +55,18 @@
 	            </div>
 	             
 	            @foreach($show['schedule'] as $showshed)
-		            <table class="" style="width:100%; margin-top: 0px;">
+		            <table class="" style="width:100%; margin-top: 0px; font-size: 12px">
 		                <tbody>
 		                    <tr>
-		                        <td colspan="4">
+		                        <td colspan="5">
 		                            <hr>
 		                        </td>
 		                    </tr>
-		                    <tr><!-- <td>
-		                            <label style="font-size: 14px; white-space: nowrap;">Sizes Offered</label>
+		                    <tr>
+		                    	<td>
+		                            <label style="font-size: 14px; white-space: nowrap;">Sub-Category Name</label>
 		                            <input style="width: 100%;" type="text" name="" value="{{$showshed['sub_cat_name']}}">
-		                        </td> -->
+		                        </td>
 		                        <td>
 		                            <label style="font-size: 14px; white-space: nowrap;">Sizes Offered</label>
 		                            <input style="width: 100%;" type="text" name="" value="{{$showshed['pro_size']}}">
@@ -88,7 +89,7 @@
 		                            <label style="font-size: 14px; white-space: nowrap;">Pickup From</label>
 		                            <input style="width: 100%;" type="text" name="" value="{{$showshed['plant']}}">
 		                        </td>
-		                        <td>
+		                        <td colspan="2">
 		                            <label style="font-size: 14px; white-space: nowrap;">Location</label>
 		                            <input style="width: 100%;" type="text" name="" value="{{$showshed['location']}}">
 		                        </td>
@@ -102,7 +103,7 @@
 		                        </td>
 		                    </tr>
 		                    <tr>
-		                        <td colspan="4">
+		                        <td colspan="5">
 		                            <label style="font-size: 14px; white-space: nowrap; width: 100%; float: left;">Delivery Between &</label>
 		                            <div style="clear: both;"></div>
 		                            <input style="width: 50%; float: left;" type="text" name="" value="{{date('d-m-Y', strtotime($showshed['to_date']))}} ">
@@ -111,19 +112,19 @@
 		                        </td>
 		                    </tr>
 		                    <tr>
-		                        <td colspan="4">
+		                        <td colspan="5">
 		                            <label style="font-size: 14px; white-space: nowrap;">Bill To</label>
 		                            <input style="width: 100%;" type="text" name="" value="{{$data['bill_to']}}">
 		                        </td>
 		                    </tr>
 		                    <tr>
-		                        <td colspan="4">
+		                        <td colspan="5">
 		                            <label style="font-size: 14px; white-space: nowrap;">Ship To</label>
 		                            <input style="width: 100%;" type="text" name="" value="{{$data['ship_to']}}">
 		                        </td>
 		                    </tr>
 		                    <tr>
-		                        <td colspan="4">
+		                        <td colspan="5">
 		                            <label style="font-size: 14px; white-space: nowrap;">Customer Remarks</label>
 		                            <div style="border: 1.5px solid #ccc; padding: 4px;">{{$showshed['remarks']}}
 		                            </div>
@@ -131,7 +132,7 @@
 		                    </tr>
 
 		                    <tr>
-		                        <td colspan="4">
+		                        <td colspan="5">
 		                            <label style="font-size: 14px; white-space: nowrap;">KAM Remarks</label>
 		                            <div style="border: 1.5px solid #ccc; padding: 4px;">{{$showshed['kamsRemarks']}}
 									</div>
