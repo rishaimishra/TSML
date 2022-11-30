@@ -577,18 +577,13 @@ class ProductController extends Controller
 
             $prodetail['size'] = (explode(",",$str));
 
-            if($subId == 22)
-            {
+            
             foreach ($prodetail['size'] as $key => $value) {
                 $prodetails['sizes'][$key]= $value;
                 array_push($values, $prodetails['sizes'][$key]);
             }
-            }else{
-                foreach ($prodetail['size'] as $key => $value) {
-                    $prodetails['sizes'][$key]='10-' .$value;
-                    array_push($values, $prodetails['sizes'][$key]);
-            }
-        }
+            
+        
             $prodetails['sizes'] = $values;
 
 
