@@ -22,6 +22,8 @@
          */
        public function storeSubCategory(Request $request)
        {
+         
+        
        		$cataId = $request->cat_id;
        		$chkcata = Category::where('id',$cataId)->first();
 
@@ -49,6 +51,7 @@
     	            return response()->json(['status'=>0,'errors'=>$validation->errors()],200);
     	        }
 
+                dd($request->pro_size);
     	   		
     	   		 
     	   		if (!empty($chkcata)) {
@@ -240,7 +243,12 @@
                 $catadetails['category_id'] = $catData->getCategoryDetails->id;
                 $catadetails['category_name'] = $catData->getCategoryDetails->cat_name;
                 $catadetails['product_id'] = $catData->pro_id;
-                $catadetails['product_name'] = $catData->getCategoryDetails->getProductDetails->pro_name;
+                $catadetails['product_name'] = $catData->getCategoryDetails->getProductDetails->pro_name; 
+                $getsize = explode(",",$catData->pro_size);
+                $catadetails['size'] = $getsize;
+                
+
+
 
        			return response()->json(['status'=>1,'message' =>'success','result' => $catadetails],200);
        		}

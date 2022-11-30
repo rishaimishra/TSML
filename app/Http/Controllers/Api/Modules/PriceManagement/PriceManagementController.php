@@ -137,11 +137,12 @@ class PriceManagementController extends Controller
           'cat_id'     => 'required',
           'sub_cat_id'        => 'required', 
           'size'     => 'required', 
-          'BPT_Price'     => 'required',
+          'BPT_Price'     => 'required', 
           'Price_Premium'        => 'required', 
           'Misc_Expense'     => 'required', 
           'Interest_Rate'        => 'required', 
-          'CAM_Discount'     => 'required',  
+          'CAM_Discount'     => 'required',
+          'gst_per'     => 'required',  
         ]);
 
 
@@ -156,10 +157,12 @@ class PriceManagementController extends Controller
         $input['size'] = $request->size; 
         // $input['user_id'] = $request->user_id;
         $input['BPT_Price'] = $request->BPT_Price;
-        $input['Price_Premium'] = '-'.$request->Price_Premium;
+        $input['Price_Premium_sing'] = $request->Price_Premium_sing;
+        $input['Price_Premium'] = $request->Price_Premium;
         $input['Misc_Expense'] = $request->Misc_Expense; 
         $input['Interest_Rate'] = $request->Interest_Rate;
         $input['CAM_Discount'] = $request->CAM_Discount;
+        $input['gst_per'] = $request->gst_per;
 
           // dd($input);
 
@@ -407,7 +410,8 @@ class PriceManagementController extends Controller
           'price_premium'        => 'required', 
           'misc_expense'     => 'required', 
           'interest_rate'        => 'required', 
-          'cam_discount'     => 'required',  
+          'cam_discount'     => 'required',
+          'gst_per'     => 'required', 
         ]);
 
         if ($validator->fails()) { 
@@ -420,10 +424,12 @@ class PriceManagementController extends Controller
         $input['size'] = $request->size; 
         // $input['user_id'] = $request->user_id;
         $input['BPT_Price'] = $request->bpt_price;
+        $input['Price_Premium_sing'] = $request->Price_Premium_sing;
         $input['Price_Premium'] = '-'.$request->price_premium;
         $input['Misc_Expense'] = $request->misc_expense; 
         $input['Interest_Rate'] = $request->interest_rate;
         $input['CAM_Discount'] = $request->cam_discount;
+        $input['gst_per'] = $request->cam_discount;
 
           // dd($input);
 
@@ -600,6 +606,48 @@ class PriceManagementController extends Controller
               foreach ($data as $key => $value) 
               {   
                   $subcatedata['sub_category_id'] = $value->id;
+                $subcatedata['sub_category_name'] = $value->sub_cat_name;
+
+                $proSize = $value->pro_size;
+
+                $subcatedata['product_size'] = explode(",",$proSize);
+
+                $subcatelist[] = $subcatedata;
+              } 
+                
+              return response()->json(['status'=>1,'message' =>'success.','result' => $subcatelist],200);
+
+            }
+            else{
+              return response()->json(['status'=>0,'message' =>'No data found','result' => []],
+              config('global.success_status'));
+            } 
+            
+            }catch(\Exception $e){
+                $response['error'] = $e->getMessage();
+                return response()->json([$response]);
+            } 
+
+    }
+
+    /**
+     * This is for get sub category size by id. 
+     * @param  \App\Product  $subcategory 
+     * @return \Illuminate\Http\Response
+    */
+    public function getSubCategorySizeByid($subcateId)
+    {
+      try{         
+            $data = ProductSubCategory::where('id',$subcateId)->orderBy('id','desc')->get();
+
+            // dd($data);
+
+            if(count($data)>0)
+            {
+              $subcatelist = [];
+              foreach ($data as $key => $value) 
+              {   
+                $subcatedata['sub_category_id'] = $value->id;
                 $subcatedata['sub_category_name'] = $value->sub_cat_name;
 
                 $proSize = $value->pro_size;

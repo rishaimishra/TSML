@@ -196,7 +196,8 @@ Route::group(['prefix' => 'admin','middleware' => ['assign.guard:admins','jwtmid
 		// Price Management Routes....
 		Route::get('get-product-list', 'PriceManagement\PriceManagementController@getProductList')->name('get_product_list');
 		Route::get('get-category-list/{proId}','PriceManagement\PriceManagementController@getCategoryList')->name('get_category_list'); 
-		Route::get('get-sub-category-list/{cateId}','PriceManagement\PriceManagementController@getSubCategoryList')->name('get_sub_category_list'); 
+		Route::get('get-sub-category-list/{cateId}','PriceManagement\PriceManagementController@getSubCategoryList')->name('get_sub_category_list');
+		Route::get('get-subcategory-size-byid/{subcateId}','PriceManagement\PriceManagementController@getSubCategorySizeByid')->name('get_subcategory_size_byid'); 
 		Route::post('store-price','PriceManagement\PriceManagementController@storePrice')->name('store_price');
 		Route::post('store-threshold-price','PriceManagement\PriceManagementController@storeThreshold')->name('store_threshold_price');
 		Route::post('store-pro-price','PriceManagement\PriceManagementController@manageProPrice')->name('store_pro_price'); //For Admin asection
