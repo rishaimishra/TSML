@@ -490,21 +490,35 @@ class PriceManagementController extends Controller
     */
     public function getProPrice(Request $request)
     {
-        try{ 
-            // $priceData = PriceCalculation::where('user_id',$request->user_id)->where('pro_id',$request->pro_id)->where('cat_id',$request->cat_id)->where('sub_cat_id',$request->sub_cat_id)->where('size',$request->size)->first();
-            // dd($request->pro_id,$request->cat_id,$request->size);
-            $priceData = PriceCalculation::where('pro_id',$request->pro_id)->where('cat_id',$request->cat_id)->where('size',$request->size)->first();
-            // dd($priceData);
+        try{
+
+            $validator = Validator::make($request->all(), [
+              
+              'pro_id'        => 'required', 
+              'cat_id'     => 'required',
+              'sub_cat_id'        => 'required', 
+              'size'     => 'required', 
+              'pickup_from'     => 'required',
+              'destation_location'        => 'required',  
+            ]);
+
+            if ($validator->fails()) { 
+                return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $validator->errors()],config('global.failed_status'));
+            }
+            $priceData = PriceCalculation::where('pro_id',$request->pro_id)->where('cat_id',$request->cat_id)->where('sub_cat_id',$request->sub_cat_id)->where('size',$request->size)->first();
+            
             $getdeliverycost = Freights::where('pickup_from',$request->pickup_from)->where('location',$request->location)->where('destation_location',$request->destation_location)->first(); 
-            // dd($getdeliverycost);
-            $data['bpt_price'] = $priceData->BPT_Price;
-            $data['price_premium'] = $priceData->Price_Premium;
-            $data['misc_expense'] = $priceData->Misc_Expense;
-            $data['delivery_cost'] = $getdeliverycost->freight_charges; 
-            $data['interest_rate'] = $priceData->Interest_Rate;
-            $data['cam_discount'] = $priceData->CAM_Discount;
-           
-            if (!empty($getdeliverycost)) {
+             
+            if (!empty($getdeliverycost) && !empty($priceData)) {
+                $data['bpt_price'] = $priceData->BPT_Price;
+                $data['price_premium_sing'] = $priceData->Price_Premium_sing;
+                $data['price_premium'] = $priceData->Price_Premium;
+                $data['misc_expense'] = $priceData->Misc_Expense;
+                $data['delivery_cost'] = $getdeliverycost->freight_charges; 
+                $data['interest_rate'] = $priceData->Interest_Rate;
+                $data['cam_discount'] = $priceData->CAM_Discount;
+                $data['gst_percentage'] = $priceData->gst_per; 
+            
                return response()->json(['status'=>1,'message' =>'success.','result' => $data],200);
             }
             else{
