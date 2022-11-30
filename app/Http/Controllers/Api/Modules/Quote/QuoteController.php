@@ -1094,7 +1094,7 @@ class QuoteController extends Controller
           $quoteArr[$key]['quantity'] = $this->rfqtotQt($value->rfq_no);
           $quoteArr[$key]['kam_status'] = $value->kam_status;
           $quoteArr[$key]['name'] = $value->name;
-          $quoteArr[$key]['created_at'] = date('jS F, Y',strtotime($value->created_at));
+          $quoteArr[$key]['created_at'] = date('d-m-Y',strtotime($value->created_at));
           $quoteArr[$key]['cat_id'] = $value->cat_id;
           $quoteArr[$key]['product_id'] = $value->product_id;
           $quoteArr[$key]['cat_name'] = $value->cat_name;
