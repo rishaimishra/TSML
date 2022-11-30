@@ -352,6 +352,7 @@ class PriceManagementController extends Controller
             ->first();   
             // dd($ThresholdData);
              
+            $data['threshold_id'] = $ThresholdId;
             $data['pro_id'] = $ThresholdData->product_id;
             $data['product_title'] = $ThresholdData->product_title;
             $data['cat_id'] = $ThresholdData->category_id;

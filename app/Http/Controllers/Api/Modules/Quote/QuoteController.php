@@ -64,7 +64,7 @@ class QuoteController extends Controller
       $date =  date_create($value->po_date);
       $po_dt = date_format($date,"d-m-Y");
       $result[$key]['po_date'] = $po_dt;
-      $result[$key]['schedule'] = $this->getPoSchedules($value->qid);
+      $result[$key]['schedule'] = $this->getPoSchedulesPdf($value->qid);
        
     }
 
@@ -74,18 +74,89 @@ class QuoteController extends Controller
 
           // echo "<pre>";print_r($result);exit(); 
     $fulladdress =  $useraddr->addressone.', '.$useraddr->addresstwo.', '.$useraddr->city.', '.$useraddr->state.', '.$useraddr->pincode;
-     $data['bill_to'] =$fulladdress;
-      $data['ship_to'] = $fulladdress;
+    $data['bill_to'] =$fulladdress;
+    $data['ship_to'] = $fulladdress;
     $data['po_no'] = $id;
     $data['po_date'] = $po_dt;
     $data['user_name'] = $quote[0]->uname; 
  
-  
+    // dd($result);
          
     $pdf = PDF::loadView('user.po_download',['result'=>$result,'data'=>$data]);
     
     return $pdf->download('po_report.pdf');
   }
+
+  public function getPoSchedulesPdf($qid)
+      {
+          $quote_sches = array();
+
+          $res = DB::table('quote_schedules')
+          ->leftjoin('sub_categorys','quote_schedules.sub_cat_id','sub_categorys.id')
+          ->select('quote_schedules.*','sub_categorys.sub_cat_name')
+          ->where('quote_schedules.quote_id',$qid)->where('quote_schedules.quote_status',1)->whereNull('quote_schedules.deleted_at')->get();
+
+          foreach ($res as $key => $value) {
+             
+             $quote_sches[$key]['id'] = $value->id;
+             $quote_sches[$key]['schedule_no'] = $value->schedule_no;
+             $quote_sches[$key]['quantity'] = $value->quantity;
+             $quote_sches[$key]['pro_size'] = $value->pro_size;
+             $quote_sches[$key]['to_date'] = $value->to_date;
+             $quote_sches[$key]['from_date'] = $value->from_date;
+             $quote_sches[$key]['kam_price'] = $value->kam_price;
+             $quote_sches[$key]['expected_price'] = $value->expected_price;
+             $quote_sches[$key]['plant'] = $value->plant;
+             $quote_sches[$key]['location'] = $value->location;
+             $quote_sches[$key]['bill_to'] = $value->bill_to;
+             $quote_sches[$key]['ship_to'] = $value->ship_to;
+             $quote_sches[$key]['remarks'] = $value->remarks;
+             $quote_sches[$key]['kamsRemarks'] = $value->kamsRemarks;
+             $quote_sches[$key]['salesRemarks'] = $value->salesRemarks;
+             $quote_sches[$key]['delivery'] = $value->delivery;
+             $quote_sches[$key]['valid_till'] = $value->valid_till;
+             $quote_sches[$key]['quote_status'] = $value->quote_status;
+             $quote_sches[$key]['confirm_date'] = $value->confirm_date;
+             $quote_sches[$key]['pickup_type'] = $value->pickup_type;
+             $quote_sches[$key]['sub_cat_id'] = $value->sub_cat_id;
+             $quote_sches[$key]['sub_cat_name'] = (!empty($value->sub_cat_name)) ? $value->sub_cat_name : '';
+        
+            $quote_sches[$key]['delivery_betweene'] = $this->getQuotedelByIdpdf($value->schedule_no);
+
+          }
+
+          return $quote_sches;
+      }
+
+       public function getQuotedelByIdpdf($sche)
+    {
+
+           
+
+               $quote = DB::table('quote_deliveries')->where('quote_sche_no',$sche)->get()->toArray();
+             
+                   // echo "<pre>";print_r($quote);exit();
+
+                  if(!empty($quote))
+                  {
+                  foreach ($quote as $key => $value) {
+                    
+                    $result[$key]['sche_no'] = $value->quote_sche_no;
+                    $result[$key]['to_date'] = $value->to_date;
+                    $result[$key]['qty'] = $value->qty;
+                    $result[$key]['id'] = $value->id;
+
+                  }
+                }
+                else{
+                  $result = [];
+                }
+
+          
+                  return $result;
+                
+          
+    }
 
   /*
       ---------------- first time quote submission -------------------
