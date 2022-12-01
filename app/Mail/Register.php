@@ -31,12 +31,13 @@ class Register extends Mailable
     {
         // return $this->view('view.name');
         $data['data'] =  $this->data;
-        //dump($this->request);
+        // dump($this->request);
+        // dd(env('APP_NAME'));
         $subject=env('APP_NAME')." - Registration Successfully";
         
         return $this->view('mail.register', $data)
                      ->to($this->data['email'])
                      ->subject($subject)
-                     ->from(env('MAIL_USERNAME'),env('APP_NAME'));
+                     ->from(env('mail_username'),env('APP_NAME'));
     }
 }
