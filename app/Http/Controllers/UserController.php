@@ -12,10 +12,33 @@ use JWTAuth;
 use Validator;
 use Response; 
 use Mail;
+use DB;
 
  
 class UserController extends Controller
 {
+    /**
+    * Display a listing of the resource.
+    *
+    * @return \Illuminate\Http\Response
+    */
+   public function test()
+   {
+        $usersdata = DB::table('users')
+                    ->select('users.state')
+                    ->groupBy('users.state')
+                    ->get();
+                    foreach ($usersdata as $key => $userval) 
+                    {
+                        if (isset($userval->state)) {
+                           $getlocation[] = $userval->state;
+                        }
+                        
+                    }
+
+        echo "<pre>";
+        print_r($getlocation);
+   }
    /**
     * Display a listing of the resource.
     *

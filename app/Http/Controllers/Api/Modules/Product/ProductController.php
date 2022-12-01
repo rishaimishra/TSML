@@ -132,7 +132,7 @@ class ProductController extends Controller
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function indexPage($proId)
+    public function indexPage($proId,$plant_id=null)
     {
         // dd('index page');
         $chkpro = Product::where('id',$proId)->first();
@@ -140,6 +140,7 @@ class ProductController extends Controller
         {
              
             $data = Category::where('product_id',$proId)->where('status','!=',2)->orderBy('id','ASC')->get();
+            // dd($data);
             
             if (count($data) > 0) 
             {

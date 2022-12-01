@@ -27,11 +27,11 @@ Route::post('verify-mobile-otp', 'UserController@verifyMobileOtp')->name('verify
 Route::post('password-email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('user.password.email');
 Route::post('password-update', 'Auth\ResetPasswordController@reset')->name('user.password.update');
 Route::get('get_user_by_id/{id}', 'UserController@getUserById');
-
+Route::get('test', 'UserController@test');
 
 Route::group(['namespace'=>'Api\Modules'],function(){
 	// Index Page Routes ....
-	Route::get('index-page/{proId}', 'Product\ProductController@indexPage')->name('index_page');
+	Route::get('index-page/{proId}/{plant_id?}', 'Product\ProductController@indexPage')->name('index_page');
 	Route::get('popular-product', 'Product\ProductController@popularProduct')->name('popular');
 	Route::get('product-manu', 'Product\ProductController@productManu')->name('product_manu');
 	Route::any('filter-product-menu', 'Product\ProductController@productFilter')->name('product_filter');
