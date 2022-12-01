@@ -39,6 +39,14 @@ class UserController extends Controller
         echo "<pre>";
         print_r($getlocation);
    }
+
+   public function testmail()
+   {     
+    $data['email'] = 'srvmondal88@gmail.com';
+        Mail::send(new Register($data));
+
+     echo "mail sent".$data['email'];
+   }
    /**
     * Display a listing of the resource.
     *

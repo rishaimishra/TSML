@@ -24,13 +24,11 @@
 
             <div style="display:block; overflow:hidden; width:100%;">
 
-                Hello {{$data['first_name']}} {{$data['last_name']}},
+                Hello dear,
                 <p>
                     Thank you for registering in the eSales Portal of Tata Steel Mining. Please select the product and raise and RFQ here.
-                    @if(@$data['type']=='register')
-                    <p>Username : {{$data['email']}}</p>
-                    <p>Password : {{$data['password']}}</p>
-                    @endif
+                  
+                  
                 </p>
 
             </div>

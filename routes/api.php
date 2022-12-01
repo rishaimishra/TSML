@@ -28,6 +28,7 @@ Route::post('password-email', 'Auth\ForgotPasswordController@sendResetLinkEmail'
 Route::post('password-update', 'Auth\ResetPasswordController@reset')->name('user.password.update');
 Route::get('get_user_by_id/{id}', 'UserController@getUserById');
 Route::get('test', 'UserController@test');
+Route::get('test_mail', 'UserController@testmail');
 
 Route::group(['namespace'=>'Api\Modules'],function(){
 	// Index Page Routes ....
