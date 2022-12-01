@@ -26,7 +26,7 @@
 
                 Hello {{$data['first_name']}} {{$data['last_name']}},
                 <p>
-                    Your registration successfully done.
+                    Thank you for registering in the eSales Portal of Tata Steel Mining. Please select the product and raise and RFQ here.
                     @if(@$data['type']=='register')
                     <p>Username : {{$data['email']}}</p>
                     <p>Password : {{$data['password']}}</p>
