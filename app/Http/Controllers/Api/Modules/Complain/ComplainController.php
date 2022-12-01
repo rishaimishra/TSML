@@ -31,7 +31,7 @@ use DB;
 class ComplainController extends Controller
 {
     /**
-     * This is for add storeComplainCategory. 
+     * This is for add storeComplainCategory for admin. 
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
     */
@@ -101,7 +101,7 @@ class ComplainController extends Controller
     }
 
     /**
-     * This is for store complain sub category. 
+     * This is for store complain sub category admin. 
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
     */
@@ -333,8 +333,8 @@ class ComplainController extends Controller
           $validator = Validator::make($request->all(), [              
             'com_cate_id'        => 'required',
             'com_sub_cate_id'        => 'required',
-            'com_sub_cate_2id'        => 'required',
-            'com_sub_cate_3id'        => 'required',
+            // 'com_sub_cate_2id'        => 'required',
+            // 'com_sub_cate_3id'        => 'required',
             'po_number'        => 'required',
             'po_date'        => 'required',
             'user_id'        => 'required', 
@@ -346,8 +346,8 @@ class ComplainController extends Controller
          
           $input['com_cate_id'] = $request->com_cate_id;
           $input['com_sub_cate_id'] = $request->com_sub_cate_id;
-          $input['com_sub_cate_2id'] = $request->com_sub_cate_2id;
-          $input['com_sub_cate_3id'] = $request->com_sub_cate_3id;
+          // $input['com_sub_cate_2id'] = $request->com_sub_cate_2id;
+          // $input['com_sub_cate_3id'] = $request->com_sub_cate_3id;
           $input['po_number'] = $request->po_number;
           $input['po_date'] = date("Y-m-d", strtotime($request->po_date));
           $input['user_id'] = $request->user_id;
