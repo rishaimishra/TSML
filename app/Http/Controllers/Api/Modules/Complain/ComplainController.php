@@ -58,7 +58,7 @@ class ComplainController extends Controller
 
           if($freightsData)
           {
-            return response()->json(['status'=>1,'message' =>'Complain category added successfully','result' => $freightsData],config('global.success_status'));
+            return response()->json(['status'=>1,'message' =>'Complaint category added successfully','result' => $freightsData],config('global.success_status'));
           }
           else
           { 
@@ -129,7 +129,7 @@ class ComplainController extends Controller
 
           if($freightsData)
           {
-            return response()->json(['status'=>1,'message' =>'Complain sub category added successfully','result' => $freightsData],config('global.success_status'));
+            return response()->json(['status'=>1,'message' =>'Complaint sub category added successfully','result' => $freightsData],config('global.success_status'));
           }
           else
           { 
@@ -204,7 +204,7 @@ class ComplainController extends Controller
 
           if($freightsData)
           {
-            return response()->json(['status'=>1,'message' =>'Complain sub category 2 added successfully','result' => $freightsData],config('global.success_status'));
+            return response()->json(['status'=>1,'message' =>'Complaint sub category 2 added successfully','result' => $freightsData],config('global.success_status'));
           }
           else
           { 
@@ -279,7 +279,7 @@ class ComplainController extends Controller
 
           if($freightsData)
           {
-            return response()->json(['status'=>1,'message' =>'Complain sub category 2 added successfully','result' => $freightsData],config('global.success_status'));
+            return response()->json(['status'=>1,'message' =>'Complaint sub category 2 added successfully','result' => $freightsData],config('global.success_status'));
           }
           else
           { 
@@ -381,7 +381,7 @@ class ComplainController extends Controller
 
           if($freightsData)
           {
-            return response()->json(['status'=>1,'message' =>'Complain added successfully','result' => 'success'],config('global.success_status'));
+            return response()->json(['status'=>1,'message' =>'Complaint added successfully','result' => 'success'],config('global.success_status'));
           }
           else
           { 
@@ -703,7 +703,7 @@ class ComplainController extends Controller
 
         $updateComplain = ComplainMain::where('id',$getComplain->id)->update($input);
  
-          return response()->json(['status'=>1,'message' =>'Complain status inactive successfully.']);          
+          return response()->json(['status'=>1,'message' =>'Complaint status inactive successfully.']);          
         }
         else
         {
