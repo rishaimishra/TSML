@@ -196,12 +196,12 @@ class QuoteController extends Controller
 
         }  
 
-             $user = User::where('id',$user_id)->first();
-             $data['message'] =  'Your RFQ has been raised successfully. Our Sales Team will be reverting to your RFQ within 48 hours. We will notify you about any update in your order status through your registered email id. You may also check the order status directly here.';
-             $data['name'] = $user->name;
-             $data['email'] = $user->email;
+             // $user = User::where('id',$user_id)->first();
+             // $data['message'] =  'Your RFQ has been raised successfully. Our Sales Team will be reverting to your RFQ within 48 hours. We will notify you about any update in your order status through your registered email id. You may also check the order status directly here.';
+             // $data['name'] = $user->name;
+             // $data['email'] = $user->email;
 
-                Mail::send(new RfqGeneratedMail($data));
+             //    Mail::send(new RfqGeneratedMail($data));
           
         
           // echo "<pre>";print_r($quotes);exit();

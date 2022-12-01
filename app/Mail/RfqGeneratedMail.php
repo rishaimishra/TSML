@@ -35,6 +35,6 @@ class RfqGeneratedMail extends Mailable
         return $this->view('mail.rfqgeneratedmail', $data)
                     ->to(@$data['data']['email']) 
                     ->subject(env('APP_NAME').'RFQ')
-                    ->from(env('MAIL_FROM_ADDRESS'));
+                    ->from(env('mail_username'));
     }
 }
