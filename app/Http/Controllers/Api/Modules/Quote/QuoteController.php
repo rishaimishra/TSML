@@ -13,11 +13,13 @@ use App\Models\Order;
 use App\Models\Deleteremark;
 use App\Models\Plant;
 use App\Models\DeliveryMethod;
+use App\Mail\RfqGeneratedMail;
 use App\User;
 use Validator;
 use Auth;
 use DB;
 use \PDF;
+use Mail;
 
 class QuoteController extends Controller
 {
@@ -188,12 +190,19 @@ class QuoteController extends Controller
             $request = new Request($array);
               // echo "<pre>";print_r($request);exit();
             $quotes = $this->configureQuotes($request,$rfq_number,$user_id,$quote_id);
+           
+          
           }
 
-        }
+        }  
 
+             $user = User::where('id',$user_id)->first();
+             $data['message'] =  'Your RFQ has been raised successfully. Our Sales Team will be reverting to your RFQ within 48 hours. We will notify you about any update in your order status through your registered email id. You may also check the order status directly here.';
+             $data['name'] = $user->name;
+             $data['email'] = $user->email;
 
-
+                Mail::send(new RfqGeneratedMail($data));
+          
         
           // echo "<pre>";print_r($quotes);exit();
           // if(!empty($quotes))
@@ -263,7 +272,7 @@ class QuoteController extends Controller
          }
        }
           // echo "<pre>";print_r($quotes);exit();
-       
+
        return response()->json(['status'=>1,'message' =>'success','result' => 'Quote updated'],config('global.success_status'));
        
        

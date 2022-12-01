@@ -416,7 +416,7 @@ class UserController extends Controller
                 'last_name'=>$request->last_name,
              ];
 
-            // Mail::send(new Register($data));
+            Mail::send(new Register($data));
 
             $response['success']['message']="User Created";
             return Response::json($response);
