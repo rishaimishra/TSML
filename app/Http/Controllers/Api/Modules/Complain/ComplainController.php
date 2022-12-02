@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Illuminate\Support\Facades\Auth;
+use App\Mail\ComplaintMail;
 use App\User;
 use App\Models\Product;
 use App\Models\Category;
@@ -26,7 +27,7 @@ use File;
 use Storage;
 use Response;
 use DB; 
-
+use Mail;
 
 class ComplainController extends Controller
 {
@@ -353,9 +354,14 @@ class ComplainController extends Controller
           $input['user_id'] = $request->user_id;
 
          
-          
+          $getuser = User::where('id',$request->user_id)->first();
          
+          // dd($getuser);
+          
+           
 
+          
+          
         // dd($input);
  
           $complainData = ComplainMain::create($input); 
@@ -381,6 +387,25 @@ class ComplainController extends Controller
 
           if($freightsData)
           {
+
+            $cc_email = array();
+            $cam = User::where('zone',$getuser->zone)->where('id','!=',$getuser->id)->where('user_type','Kam')->get()->toArray();
+
+            foreach ($cam as $key => $value) {
+             
+              array_push($cc_email,$value['email']);
+            }
+
+            $data['customer_name'] = $getuser['name'];
+            $data['email'] = $getuser['email'];
+            $data['cc'] = $cc_email;
+            $data['po_number'] = $request->po_number;
+            $data['user_type'] = '';
+
+            // dd($data);
+
+            Mail::send(new ComplaintMail($data));
+            
             return response()->json(['status'=>1,'message' =>'Complaint added successfully','result' => 'success'],config('global.success_status'));
           }
           else
@@ -412,7 +437,9 @@ class ComplainController extends Controller
 
           if ($validator->fails()) { 
               return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $validator->errors()],config('global.failed_status'));
-          } 
+          }
+          $complainData = ComplainMain::where('id',$request->complain_id)->first(); 
+          $getuser = User::where('id',$complainData->user_id)->first();
           
           if ($request->customer_remarks) {
 
@@ -431,8 +458,28 @@ class ComplainController extends Controller
             }
             // dd($input);
             $RemarksData = ComplainRemarks::create($input);
+
+            $cc_email = array();
+            $cam = User::where('zone',$getuser->zone)->where('id','!=',$getuser->id)->where('user_type','Kam')->get()->toArray();
+
+            foreach ($cam as $key => $value) {
+             
+              array_push($cc_email,$value['email']);
+            }
+
+            $data['customer_name'] = $getuser['name'];
+            $data['email'] = $getuser['email'];
+            $data['cc'] = $cc_email;
+            $data['po_number'] = $complainData->po_number;
+            $data['user_type'] = '';
+
+            // dd($data);
+
+            Mail::send(new ComplaintMail($data));
           }
           if ($request->kam_remarks) {
+            // dd($request->kam_id);
+            
             $input['complain_id'] = $request->complain_id;
             $input['kam_remarks'] = $request->kam_remarks;
 
@@ -447,6 +494,22 @@ class ComplainController extends Controller
               $input['kam_com_file'] = $filename; 
             }
 
+             $cam = User::where('zone',$getuser->zone)->where('id','!=',$request->kam_id)->where('user_type','Kam')->get()->toArray();
+              $cc_email = array();
+             foreach ($cam as $key => $value) {
+             
+              array_push($cc_email,$value['email']);
+              }
+
+              
+              $data['customer_name'] = $getuser['name'];
+              $data['email'] = $getuser['email'];
+              $data['cc'] = $cc_email;
+              $data['po_number'] = $complainData->po_number;
+              $data['user_type'] = 'Kam';
+            // dd($data);
+
+            Mail::send(new ComplaintMail($data));
             $RemarksData = ComplainRemarks::create($input);
           } 
 
