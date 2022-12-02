@@ -36,7 +36,7 @@ class RfqGeneratedMail extends Mailable
         return $this->view('mail.rfqgeneratedmail', $data)
                     ->to(@$data['data']['email'])
                     ->cc(@$data['data']['cc'])
-                    ->subject(env('APP_NAME').'RFQ')
+                    ->subject('Your RFQ has been raised successfully'.'   '.@$data['data']['rfq_no'])
                     ->from(env('mail_username'));
     }
 }

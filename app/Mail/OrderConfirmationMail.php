@@ -30,10 +30,10 @@ class OrderConfirmationMail extends Mailable
     {
         $data['data'] =  $this->request;
 
-        return $this->view('mail.rfqgeneratedmail', $data)
+        return $this->view('mail.orderconfirmationmail', $data)
                     ->to(@$data['data']['email'])
                     ->cc(@$data['data']['cc'])
-                    ->subject(env('APP_NAME').'RFQ')
+                    ->subject('TSML Order confirmation '.@$data['data']['rfq_no'])
                     ->from(env('mail_username'));
     }
 }

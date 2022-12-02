@@ -7,7 +7,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class AcceptedRfqMail extends Mailable
+class SalesacceptMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -16,6 +16,7 @@ class AcceptedRfqMail extends Mailable
      *
      * @return void
      */
+    public $request;
     public function __construct($request)
     {
         $this->request = $request;
@@ -30,11 +31,11 @@ class AcceptedRfqMail extends Mailable
     {
         $data['data'] =  $this->request;
        
-        
-        return $this->view('mail.priceaceptancemail', $data)
+
+        return $this->view('mail.salesacceptmail', $data)
                     ->to(@$data['data']['email'])
                     ->cc(@$data['data']['cc'])
-                    ->subject('Sales team has accepted the price, volume and delivery timeline  '.@$data['data']['rfq_no'])
+                    ->subject('Your RFQ has been accepted by Sales    '.@$data['data']['rfq_no'])
                     ->from(env('mail_username'));
     }
 }

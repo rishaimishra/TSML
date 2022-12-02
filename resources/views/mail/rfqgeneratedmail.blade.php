@@ -29,8 +29,8 @@
         </tr>
         <tr>
             <td style="padding: 0 15px;">
-                <p style="font-weight: 400; font-size: 15px; line-height: 1.8; color: rgba(0,0,0,.8);">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</p>
-                <p style="font-weight: 400; font-size: 15px; line-height: 1.8; color: rgba(0,0,0,.8);">It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+                <p style="font-weight: 400; font-size: 15px; line-height: 1.8; color: rgba(0,0,0,.8);">Your RFQ has been raised successfully. Our Sales Team will be reverting to your RFQ within 48 hours. We will notify you about any update in your order status through your registered email id. You may also check the order status directly here.</p>
+               
             </td>
         </tr>
         <tr>
@@ -41,7 +41,7 @@
         </tr>
         <tr>
             <td style="padding: 0; border-top: 2px solid #f1f1f1;">
-                <p style="font-weight: 400; font-size: 15px; color: rgba(0,0,0,.9); text-align: center; padding-bottom: 0; margin-bottom: 0;">© 2021 Tata Steel Mining Limited. All Rights Reserved.</p>
+                <p style="font-weight: 400; font-size: 15px; color: #fff; background: #09172F; text-align: center; padding: 10px 0; margin: 0;">© 2021 Tata Steel Mining Limited. All Rights Reserved.</p>
                 <table style="width: 100%;">
                     <tr>
                         <td>
