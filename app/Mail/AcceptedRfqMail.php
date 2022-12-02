@@ -7,7 +7,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class RfqGeneratedMail extends Mailable
+class AcceptedRfqMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -16,7 +16,6 @@ class RfqGeneratedMail extends Mailable
      *
      * @return void
      */
-    public $request;
     public function __construct($request)
     {
         $this->request = $request;
@@ -30,7 +29,6 @@ class RfqGeneratedMail extends Mailable
     public function build()
     {
         $data['data'] =  $this->request;
-       
        
         
         return $this->view('mail.rfqgeneratedmail', $data)
