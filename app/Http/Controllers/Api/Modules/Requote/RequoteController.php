@@ -12,26 +12,30 @@ class RequoteController extends Controller
 	    {
 
 	    	  try{ 
-                     $count = RequoteCount::where('sche_no',$request->input('sche_no'))->get()->toArray();
+                   // echo "<pre>";print_r($request->all());exit();
+	    	  	   foreach ($request->all() as $key => $value) {
+	    	  	   
+                     $count = RequoteCount::where('sche_no',$value['sche_no'])->get()->toArray();
                      // echo "<pre>";print_r($count);exit();
 	                 if(!empty($count))
 	                 {
-	                 	 $countRfq = RequoteCount::where('sche_no',$request->input('sche_no'))->first()->toArray();
+	                 	 $countRfq = RequoteCount::where('sche_no',$value['sche_no'])->first()->toArray();
 
-	                 	 $newcount = $countRfq['counts'] + $request->input('counts');
+	                 	 $newcount = $countRfq['counts'] + $value['counts'];
 	                 	 // echo "<pre>";print_r($newcount);exit();
 
-	                 	 RequoteCount::where('sche_no',$request->input('sche_no'))->update(['counts' => $newcount]);
+	                 	 RequoteCount::where('sche_no',$value['sche_no'])->update(['counts' => $newcount]);
 
 
 	                 }else{
 
-	                 	 $data['sche_no'] = $request->input('sche_no');
-	                 	 $data['counts'] = $request->input('counts');
+	                 	 $data['sche_no'] = $value['sche_no'];
+	                 	 $data['counts'] = $value['counts'];
 	                 	 $data['status'] = 1;
 
 	                 	 RequoteCount::create($data);
 	                 }
+	             }
 
 
 			    	 
