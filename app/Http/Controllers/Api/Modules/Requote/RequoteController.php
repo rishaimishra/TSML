@@ -57,9 +57,17 @@ class RequoteController extends Controller
 
 	    	  try{ 
                    
-                 	 $countRfq = RequoteCount::where('rfq_no',$rfq_no)->first()->toArray();
+                 	 $countRfq = RequoteCount::where('rfq_no',$rfq_no)->first();
+                     
+                     if(!empty($countRfq))
+                     {
 
-                 	 $newcount = $countRfq['counts'];
+                 	   $newcount = $countRfq->counts;
+                     }
+                     else{
+
+                     	$newcount = 0;
+                     }
                  	 // echo "<pre>";print_r($newcount);exit();
 			    	 
 			        return response()->json(['status'=>1,
