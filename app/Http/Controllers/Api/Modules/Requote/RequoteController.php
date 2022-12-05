@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Modules\Requote;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\RequoteCount;
+use DB;
 
 class RequoteController extends Controller
 {
@@ -89,4 +90,60 @@ class RequoteController extends Controller
 	    }
 
 	 // ---------------------------------------------------------------------------
+
+
+   /*
+      ----------------  quote schedule list -------------------
+
+  */
+
+      public function getCountSche($id)
+      {
+
+       \DB::beginTransaction();
+
+       try{ 
+
+          $result = 0;
+          $quoteArr = array();
+
+          $quote_ids = DB::table('quotes')->where('rfq_no',$id)->whereNull('deleted_at')
+          ->select('id','user_id')->get();
+          // echo "<pre>";print_r($quote_ids);exit();
+          foreach ($quote_ids as $key => $value) {
+           
+           array_push($quoteArr,$value->id);
+ 
+         }
+         
+
+         $quote = DB::table('quote_schedules')->whereIn('quote_id',$quoteArr)->get();
+   
+         // echo "<pre>";print_r($quote);exit();
+
+         foreach ($quote as $key => $value) {
+           
+           if($value->quote_status != 3)
+           {
+
+             $result ++;
+           }
+          
+        }
+
+         $data['total'] = count($quote);
+         $data['aac_rej'] = $result;
+              // echo "<pre>";print_r($result);exit();
+        \DB::commit();
+
+          return response()->json(['status'=>1,'message' =>'success','result' => $data],config('global.success_status'));
+
+
+   }catch(\Exception $e){
+
+     \DB::rollback();
+
+     return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
+   }
+ }
 }

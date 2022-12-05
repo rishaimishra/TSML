@@ -110,6 +110,7 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
    		 Route::get('count_cus_po/{cus_po}','Quote\QuoteController@countCusPo');
    		 Route::post('update_count_requote','Requote\RequoteController@updateCountRequote');
    		 Route::get('get_count_requote/{rfq_no}','Requote\RequoteController@getCountRequote');
+   		 Route::get('get_count_sche/{rfq_no}','Requote\RequoteController@getCountSche');
 
    		 Route::post('get-store-pro-price','PriceManagement\PriceManagementController@getProPrice')->name('get_store_pro_price');
    		 Route::get('get-threshold-price','PriceManagement\PriceManagementController@getThresholdPrice')->name('get_threshold_price');
@@ -149,6 +150,9 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
 
    		 Route::post('cam_notification_submit','Notification\NotificationController@camNotificationSubmit');
    		 Route::get('get_cam_notification/{id}','Notification\NotificationController@getCamNotification');
+
+   		 Route::post('cus_notification_submit','Notification\NotificationController@cusNotificationSubmit');
+   		 Route::get('get_cus_notification/{id}','Notification\NotificationController@getCusNotification');
 
      });
    	
