@@ -108,6 +108,8 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
    		 Route::get('get_all_deliveries','Quote\QuoteController@getAllDeliveries');
    		 Route::post('update_letterhead','Quote\QuoteController@updateLetterhead');
    		 Route::get('count_cus_po/{cus_po}','Quote\QuoteController@countCusPo');
+   		 Route::post('update_count_requote','Requote\RequoteController@updateCountRequote');
+   		 Route::get('get_count_requote/{rfq_no}','Requote\RequoteController@getCountRequote');
 
    		 Route::post('get-store-pro-price','PriceManagement\PriceManagementController@getProPrice')->name('get_store_pro_price');
    		 Route::get('get-threshold-price','PriceManagement\PriceManagementController@getThresholdPrice')->name('get_threshold_price');
@@ -141,6 +143,12 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
    		 Route::post('submit_dispatch_plan','Orders\OrderPlanningController@submitDispatchPlan');
    		 Route::get('get_order_planning_by_id/{id}','Orders\OrderPlanningController@getOrderPlanById');
    		 Route::post('monthly_prod_plan_up','Orders\OrderPlanningController@monthlyPlanUpdate');
+
+
+   	// ----------------- quote po notification -------------------------------------------
+
+   		 Route::post('cam_notification_submit','Notification\NotificationController@camNotificationSubmit');
+   		 Route::get('get_cam_notification/{id}','Notification\NotificationController@getCamNotification');
 
      });
    	
