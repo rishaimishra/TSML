@@ -12,21 +12,21 @@ class RequoteController extends Controller
 	    {
 
 	    	  try{ 
-                     $count = RequoteCount::where('rfq_no',$request->input('rfq_no'))->get()->toArray();
+                     $count = RequoteCount::where('sche_no',$request->input('sche_no'))->get()->toArray();
                      // echo "<pre>";print_r($count);exit();
 	                 if(!empty($count))
 	                 {
-	                 	 $countRfq = RequoteCount::where('rfq_no',$request->input('rfq_no'))->first()->toArray();
+	                 	 $countRfq = RequoteCount::where('sche_no',$request->input('sche_no'))->first()->toArray();
 
 	                 	 $newcount = $countRfq['counts'] + $request->input('counts');
 	                 	 // echo "<pre>";print_r($newcount);exit();
 
-	                 	 RequoteCount::where('rfq_no',$request->input('rfq_no'))->update(['counts' => $newcount]);
+	                 	 RequoteCount::where('sche_no',$request->input('sche_no'))->update(['counts' => $newcount]);
 
 
 	                 }else{
 
-	                 	 $data['rfq_no'] = $request->input('rfq_no');
+	                 	 $data['sche_no'] = $request->input('sche_no');
 	                 	 $data['counts'] = $request->input('counts');
 	                 	 $data['status'] = 1;
 
@@ -57,7 +57,7 @@ class RequoteController extends Controller
 
 	    	  try{ 
                    
-                 	 $countRfq = RequoteCount::where('rfq_no',$rfq_no)->first();
+                 	 $countRfq = RequoteCount::where('sche_no',$rfq_no)->first();
                      
                      if(!empty($countRfq))
                      {

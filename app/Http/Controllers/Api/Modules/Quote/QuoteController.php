@@ -2097,6 +2097,10 @@ class QuoteController extends Controller
                  $schedules[$key]['sub_cat_name'] = "";
            }
 
+           $sct = DB::table('requote_counts')->where('sche_no',$value['schedule_no'])->first();
+
+           $schedules[$key]['sche_ct'] = (!empty($sct)) ? $sct->counts : 0;
+
       }
 
         
