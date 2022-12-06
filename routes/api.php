@@ -156,6 +156,9 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
    		 Route::post('cus_notification_submit','Notification\NotificationController@cusNotificationSubmit');
    		 Route::get('get_cus_notification/{id}','Notification\NotificationController@getCusNotification');
 
+   		 Route::post('sales_notification_submit','Notification\NotificationController@salesNotificationSubmit');
+   		 Route::get('get_sales_notification','Notification\NotificationController@getSalesNotification');
+
      });
    	
 });
