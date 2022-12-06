@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Illuminate\Support\Facades\Auth;
 use App\Mail\ComplaintMail;
+use App\Mail\ComplaintMailToRm;
 use App\User;
 use App\Models\Product;
 use App\Models\Category;
@@ -640,7 +641,7 @@ class ComplainController extends Controller
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
     */
-    public function complainDetailsKam($po_number)
+    public function complainDetailsKam($po_number,$kam_id=null)
     {
       try{
             $ComplainListData = DB::table('complain_main')
@@ -675,9 +676,111 @@ class ComplainController extends Controller
           } 
           
           $remarksData = ComplainRemarks::where('complain_id',$ComplainListData->id)->get();
+
+          // This is for get RM mail address....
+          if (isset($kam_id)) {
+            $getkam = User::where('id',$kam_id)->first();
+            $rm_email = array();
+            $cam = User::where('zone',$getkam->zone)->where('id','!=',$getkam->id)->where('user_type','RM')->get()->toArray();
+
+            foreach ($cam as $key => $value) {
              
+              array_push($rm_email,$value['email']);
+            }
+          }
+          else{
+            $rm_email = array();
+          }
+          
+          
+           
+
           if (!empty($ComplainListData)){
-            return response()->json(['status'=>1,'message' =>'success','result' =>$data,'remarksData' =>$remarksData],200);
+            return response()->json(['status'=>1,'message' =>'success','result' =>$data,'remarksData' =>$remarksData,'rm_email'=>$rm_email],200);
+          }
+          else{
+
+           return response()->json(['status'=>1,'message' =>'No data found','result' => []],config('global.success_status'));
+
+          } 
+            
+          }catch(\Exception $e){
+            $response['error'] = $e->getMessage();
+            return response()->json([$response]);
+          }
+    }
+
+    /**
+     * This is for add get Complain Details. 
+     * @param  \App\Product  $product
+     * @return \Illuminate\Http\Response
+    */
+    public function sendComMailRm(Request $request)
+    {
+
+      try{
+            $validator = Validator::make($request->all(), [              
+            'rm_mail'        => 'required|email',
+            'po_number'        => 'required', 
+            'kam_id'        => 'required', 
+            ]);
+
+            if ($validator->fails()) { 
+                return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $validator->errors()],config('global.failed_status'));
+            }
+            
+            $ComplainListData = DB::table('complain_main')
+            ->leftjoin('complain_categorys','complain_main.com_cate_id','complain_categorys.id')
+            ->leftjoin('complain_sub_categorys','complain_main.com_sub_cate_id','complain_sub_categorys.id')
+            ->leftjoin('complain_sub_categorys2','complain_main.com_sub_cate_2id','complain_sub_categorys2.id')
+            ->leftjoin('complain_sub_categorys3','complain_main.com_sub_cate_3id','complain_sub_categorys3.id')
+            ->leftjoin('users','complain_main.user_id','users.id')
+            ->select('complain_main.id','users.name as customer_name','complain_main.po_number','complain_main.po_date','complain_main.created_at','complain_main.file','complain_main.closed_status','complain_categorys.com_cate_name','complain_sub_categorys.com_sub_cate_name','complain_sub_categorys2.com_sub_cate2_name','complain_sub_categorys3.com_sub_cate3_name')
+            ->where('complain_main.po_number',$request->po_number)
+            ->first(); 
+           
+          $data['complain_id'] = $ComplainListData->id;
+          $data['customer_name'] = $ComplainListData->customer_name;
+          $data['created_at'] = $ComplainListData->created_at;
+          $data['complain_status'] = $ComplainListData->closed_status;
+          $data['com_cate_name'] = $ComplainListData->com_cate_name;
+          $data['com_sub_cate_name'] = $ComplainListData->com_sub_cate_name; 
+          $data['com_sub_cate2_name'] = $ComplainListData->com_sub_cate2_name;
+          $data['com_sub_cate3_name'] = $ComplainListData->com_sub_cate3_name;
+          $data['po_number'] = $ComplainListData->po_number;
+          $data['po_date'] = $ComplainListData->po_date;
+
+          if ($ComplainListData->file) 
+          {
+
+            $data['file_url'] = asset('storage/app/public/images/complain/'.$ComplainListData->file);
+          }
+          else
+          {
+            $data['file_url'] =  null;
+          } 
+          
+          $remarksData = ComplainRemarks::where('complain_id',$ComplainListData->id)->get();
+
+          // This is for get RM mail address....
+          if (isset($request->kam_id)) {
+            $getkam = User::where('id',$request->kam_id)->first(); 
+          }
+           
+          $mailData['email'] = $request->rm_mail;
+          $mailData['customer_name'] = $ComplainListData->customer_name;
+          $mailData['com_cate_name'] =  $ComplainListData->com_cate_name;
+          $mailData['com_sub_cate_name'] = $ComplainListData->com_sub_cate_name;          
+          $mailData['po_number'] = $ComplainListData->po_number;
+          $mailData['kam_name'] = $getkam->name;
+          $mailData['remarksData'] = $remarksData;
+
+
+          // Mail::send(new ComplaintMailToRm($data));
+
+          if (!empty($mailData)){
+             Mail::send(new ComplaintMailToRm($mailData));
+            return response()->json(['status'=>1,'message' =>'Complaint mail send to RM successfully.'],200);
           }
           else{
 
