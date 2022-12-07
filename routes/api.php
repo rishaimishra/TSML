@@ -161,11 +161,11 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
    		 Route::get('get_sales_notification','Notification\NotificationController@getSalesNotification');
 
 
-   	// ----------------- sales order -------------------------------------------------------------
+   	// ----------------- sap sales order -------------------------------------------------------------
         
-        Route::get('price_break_fetch/{po_no}','SalesOrder\SalesContractController@priceBreakFetch');
-   		Route::post('sales_cnt_submit','SalesOrder\SalesContractController@salesCntSubmit');
-   		Route::get('get_price_break_by_id/{mat_no}','SalesOrder\SalesContractController@priceBreakById'); 
+        Route::get('price_break_fetch/{po_no}','Sap\SalesOrder\SalesContractController@priceBreakFetch');
+   		Route::post('sales_cnt_submit','Sap\SalesOrder\SalesContractController@salesCntSubmit');
+   		// Route::get('get_price_break_by_id/{mat_no}','Sap\SalesOrder\SalesContractController@priceBreakById'); 
 
      });
    	
