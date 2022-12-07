@@ -127,7 +127,9 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
 
 		Route::get('complain-details/{complainId}', 'Complain\ComplainController@complainDetails')->name('complain_details');
 
-		Route::get('complain-details-kam/{po_number}', 'Complain\ComplainController@complainDetailsKam')->name('complain_details_kam');
+		Route::get('complain-details-kam/{po_number}/{kam_id?}', 'Complain\ComplainController@complainDetailsKam')->name('complain_details_kam');
+
+		Route::post('send-com-mail-rm', 'Complain\ComplainController@sendComMailRm')->name('send_com_mail_rm');
 
 		Route::get('complain-download/{complainId}', 'Complain\ComplainController@complainDownload')->name('complain_download'); 
 
