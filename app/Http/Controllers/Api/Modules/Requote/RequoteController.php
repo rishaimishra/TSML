@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Modules\Requote;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\RequoteCount;
+use App\Models\ScTransaction;
 use DB;
 
 class RequoteController extends Controller
@@ -146,4 +147,52 @@ class RequoteController extends Controller
      return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
    }
  }
+
+
+
+      public function priceBreakSave(Request $request)
+      {
+
+          try{ 
+
+              $data = array();
+                   // echo "<pre>";print_r($request->all());exit();
+               foreach ($request->all() as $key => $value) {
+
+                  $mat_code = DB::table('product_size_mat_no')
+                  ->where('sub_cat_id',$value['sub_cat_id'])->where('product_size',$value['size'])->first();
+                   
+                    foreach ($value['components'] as $k => $v) {
+                        
+                          $data['code'] = $v['comp'];
+                          $data['value'] = $v['value'];
+                          $data['mat_code'] = $mat_code->mat_no;
+                          $data['plant'] = $value['plant'];
+                          $data['schedule'] = $value['schedule'];
+                          $data['rfq_no'] = $value['rfq_no'];
+
+                          ScTransaction::create($data);
+
+                    }
+
+
+
+               }
+
+
+             
+              return response()->json(['status'=>1,
+                'message' =>'success',
+                'result' => 'Requote count updated'],
+                config('global.success_status'));
+
+
+        }catch(\Exception $e){
+
+         return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
+       }
+
+         
+      }
+
 }

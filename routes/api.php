@@ -111,6 +111,7 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
    		 Route::post('update_count_requote','Requote\RequoteController@updateCountRequote');
    		 Route::get('get_count_requote/{rfq_no}','Requote\RequoteController@getCountRequote');
    		 Route::get('get_count_sche/{rfq_no}','Requote\RequoteController@getCountSche');
+   		 Route::post('price_break_save','Requote\RequoteController@priceBreakSave');
 
    		 Route::post('get-store-pro-price','PriceManagement\PriceManagementController@getProPrice')->name('get_store_pro_price');
    		 Route::get('get-threshold-price','PriceManagement\PriceManagementController@getThresholdPrice')->name('get_threshold_price');
@@ -156,6 +157,13 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
 
    		 Route::post('sales_notification_submit','Notification\NotificationController@salesNotificationSubmit');
    		 Route::get('get_sales_notification','Notification\NotificationController@getSalesNotification');
+
+
+   	// ----------------- sales order -------------------------------------------------------------
+        
+        Route::get('price_break_fetch/{po_no}','SalesOrder\SalesContractController@priceBreakFetch');
+   		Route::post('sales_cnt_submit','SalesOrder\SalesContractController@salesCntSubmit');
+   		Route::get('get_price_break_by_id/{mat_no}','SalesOrder\SalesContractController@priceBreakById'); 
 
      });
    	
