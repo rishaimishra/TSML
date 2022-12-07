@@ -15,8 +15,8 @@ class CreateSapFreightTable extends Migration
     {
         Schema::create('sap_freight', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('incoterms_code')->nullable();
-            $table->string('incoterms_dec')->nullable();
+            $table->string('freight_code')->nullable();
+            $table->string('freight_dec')->nullable();
             $table->timestamps();
         });
     }

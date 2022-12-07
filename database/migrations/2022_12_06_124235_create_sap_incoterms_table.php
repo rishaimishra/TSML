@@ -15,6 +15,8 @@ class CreateSapIncotermsTable extends Migration
     {
         Schema::create('sap_incoterms', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('incoterms_code')->nullable();
+            $table->string('incoterms_dec')->nullable();
             $table->timestamps();
         });
     }
