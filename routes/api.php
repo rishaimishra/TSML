@@ -160,6 +160,10 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
    		 Route::post('sales_notification_submit','Notification\NotificationController@salesNotificationSubmit');
    		 Route::get('get_sales_notification','Notification\NotificationController@getSalesNotification');
 
+   		 Route::post('up_cam_noti','Notification\NotificationController@upCamNoti');
+   		 Route::post('up_cus_noti','Notification\NotificationController@upCusNoti');
+   		 Route::post('up_sales_noti','Notification\NotificationController@upSalesNoti');
+
 
    	// ----------------- sap sales order -------------------------------------------------------------
         
