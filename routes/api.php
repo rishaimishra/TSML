@@ -159,6 +159,31 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
    		 Route::post('sales_notification_submit','Notification\NotificationController@salesNotificationSubmit');
    		 Route::get('get_sales_notification','Notification\NotificationController@getSalesNotification');
 
+   		//------------------- Sap Routes --------------------------//
+
+   		// Sap Contract Type Routes....
+   		Route::get('get_sap_contract_type','Sap\SapContractTypeController@getSapContractType')->name('get_sap_contract_type');
+
+   		// Sap Customer Group Routes....
+   		Route::get('get_sap_customer_group','Sap\SapCustomerGroupController@getSapCustomerGroup')->name('get_sap_customer_group');
+
+   		// Sap Delivery Mode Routes....
+   		Route::get('get_sap_delivery_mode','Sap\SapDeliveryModeController@getSapDeliveryMode')->name('get_sap_delivery_mode');
+
+   		// Sap Freight Routes....
+   		Route::get('get_sap_freight','Sap\SapFreightController@getSapFreight')->name('get_sap_freight');
+
+   		// Sap Freight Indication Routes....
+   		Route::get('get_sap_freight_indi','Sap\SapFreightIndicationController@getSapFreightIndi')->name('get_sap_freight_indi');
+
+   		// Sap Incoterms Routes....
+   		Route::get('get_sap_incoterms','Sap\SapIncotermsController@getSapIncoterms')->name('get_sap_incoterms');
+
+   		// Sap Payment Terms Routes....
+   		Route::get('get_sap_sales_group','Sap\SapSalesGroupController@getSapSalesGroup')->name('get_sap_sales_group');
+
+   		//------------------- End of Sap Routes -------------------//
+
      });
    	
 });
