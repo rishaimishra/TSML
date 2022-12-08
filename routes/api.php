@@ -170,6 +170,7 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
         Route::get('price_break_fetch/{po_no}','Sap\SalesOrder\SalesContractController@priceBreakFetch');
    		Route::post('sales_cnt_submit','Sap\SalesOrder\SalesContractController@salesCntSubmit');
    		// Route::get('get_price_break_by_id/{mat_no}','Sap\SalesOrder\SalesContractController@priceBreakById'); 
+   		
    		//------------------- Sap Routes --------------------------//
 
    		// Sap Contract Type Routes....

@@ -22,6 +22,9 @@ use App\Models\ComplainSubCategory2;
 use App\Models\ComplainSubCategory3;
 use App\Models\ComplainRemarks;
 use App\Models\ComplainMain;
+use App\Models\Camnotification;
+use App\Models\CusNotification;
+use App\Models\SalesNotification;
 use JWTAuth;
 use Validator;
 use File; 
@@ -403,6 +406,27 @@ class ComplainController extends Controller
             $data['po_number'] = $request->po_number;
             $data['user_type'] = '';
 
+
+                     
+            $desc_no = DB::table('orders')->where('po_no',$request->po_number)->first();
+                     
+            $resA = DB::table('quotes')->leftjoin('users','quotes.user_id','users.id')
+                ->select('users.zone')
+                ->where('quotes.rfq_no',$desc_no->rfq_no)
+                ->whereNull('quotes.deleted_at')->first();
+                // echo "<pre>";print_r($resA);exit();
+
+            $zone = $resA->zone;
+
+            $datas['desc'] = 'Complaint notifecation send';
+            $datas['desc_no'] = $request->po_number;
+            $datas['user_id'] = $request->user_id;
+            $datas['url_type'] = 'Comp';
+            $datas['status'] = 1;
+            $datas['sender_ids'] = $zone;
+
+            Camnotification::create($datas);
+             
             // dd($data);
 
             Mail::send(new ComplaintMail($data));
@@ -441,7 +465,8 @@ class ComplainController extends Controller
           }
           $complainData = ComplainMain::where('id',$request->complain_id)->first(); 
           $getuser = User::where('id',$complainData->user_id)->first();
-          
+
+          //Customer complaint....
           if ($request->customer_remarks) {
 
             $input['complain_id'] = $request->complain_id;
@@ -476,8 +501,27 @@ class ComplainController extends Controller
 
             // dd($data);
 
+            $desc_no = DB::table('orders')->where('po_no',$complainData->po_number)->first();
+                     
+            $resA = DB::table('quotes')->leftjoin('users','quotes.user_id','users.id')
+                ->select('users.zone')
+                ->where('quotes.rfq_no',$desc_no->rfq_no)
+                ->whereNull('quotes.deleted_at')->first();
+                // echo "<pre>";print_r($resA);exit();
+
+            $zone = $resA->zone;
+
+            $datas['desc'] = 'Complaint notifecation send';
+            $datas['desc_no'] = $complainData->po_number;
+            $datas['user_id'] = $getuser->id;
+            $datas['url_type'] = 'Comp';
+            $datas['status'] = 1;
+            $datas['sender_ids'] = $zone;
+
+            Camnotification::create($datas);
+
             Mail::send(new ComplaintMail($data));
-          }
+          } //End of customer complaint....
           if ($request->kam_remarks) {
             // dd($request->kam_id);
             
@@ -509,6 +553,20 @@ class ComplainController extends Controller
               $data['po_number'] = $complainData->po_number;
               $data['user_type'] = 'Kam';
             // dd($data);
+
+            $cdata = array();
+          
+            
+             
+
+            $cdata['desc'] = 'Complaint replay send';
+            $cdata['desc_no'] = $complainData->po_number;
+            $cdata['user_id'] =  $request->kam_id;
+            $cdata['url_type'] = 'Comp';
+            $cdata['status'] = 1;
+            $cdata['sender_ids'] = $getuser->id;
+
+            CusNotification::create($cdata);
 
             Mail::send(new ComplaintMail($data));
             $RemarksData = ComplainRemarks::create($input);

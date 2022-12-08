@@ -13,7 +13,7 @@ use Response;
 use DB; 
 use Mail;
 
-
+                 
 class SapSalesGroupController extends Controller
 {
     /**

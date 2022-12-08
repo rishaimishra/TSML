@@ -31,6 +31,8 @@ class NotificationController extends Controller
 
                      $zone = $res->zone;
 		         }
+		         
+
 		         else{
                      
                      $desc_no = DB::table('orders')->where('po_no',$request->input('desc_no'))->first();
