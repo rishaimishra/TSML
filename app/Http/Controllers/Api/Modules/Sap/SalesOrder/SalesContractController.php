@@ -36,6 +36,8 @@ class SalesContractController extends Controller
                  	 	 $data[$key]['rfq_no'] = $value->rfq_no;
                  	 	 $data[$key]['price_det'] = $this->priceBreakById($value->mat_code);
                  	 	 $data[$key]['specs'] = $this->subcatspecs($value->mat_code);
+                 	 	 $data[$key]['total'] = $this->totalRfqPrice($value->schedule);
+
            
                  	 }
 			    	 
@@ -71,8 +73,8 @@ class SalesContractController extends Controller
                  	  	  $arr[$key]['des'] = $value->component;
                  	  	  $arr[$key]['amt'] = $value->value;
                  	  }
-                 	 // echo "<pre>";print_r($newcount);exit();
-			    	 
+
+
 			        return $arr;
 
 
@@ -121,5 +123,23 @@ class SalesContractController extends Controller
 
 
 	    	 
+	    }
+
+
+	    public function totalRfqPrice($sche)
+	    {
+	    	      $tot_price = DB::table('quote_schedules')->where('schedule_no',$sche)
+                 	  ->whereNull('deleted_at')->first();
+                 	 // echo "<pre>";print_r($sche);exit();
+                 	  if(!empty($tot_price))
+                 	  {
+
+			    	   $tot_price = $tot_price->quantity * $tot_price->kam_price;
+			    	}else{
+
+			    		 $tot_price = "";
+			    	}
+
+			    	return $tot_price;
 	    }
 }
