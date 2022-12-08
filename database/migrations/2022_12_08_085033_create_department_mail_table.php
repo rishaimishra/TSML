@@ -15,8 +15,8 @@ class CreateDepartmentMailTable extends Migration
     {
         Schema::create('department_mail', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('depa_id')->nullable();
-            $table->string('send_mail')->nullable();
+            $table->unsignedBigInteger('depa_id');
+            $table->string('send_mail')->nullable(); 
             $table->timestamps();
         });
     }

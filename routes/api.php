@@ -140,7 +140,7 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
 
 		Route::get('get-deparment', 'Complain\ComplainDepController@getDeparment')->name('get_deparment');
 		Route::post('get-deparment-mail', 'Complain\ComplainDepController@getDeparmentMail')->name('get_mail_deparment');
-   		  
+   		Route::post('send-com-mail', 'Complain\ComplainManageController@sendComMail')->name('send_com_mail');
 
 
    		 Route::post('monthly_prod_plan_submit','Orders\OrderPlanningController@monthlyPlanSubmit');
