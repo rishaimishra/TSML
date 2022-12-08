@@ -359,15 +359,7 @@ class ComplainController extends Controller
 
          
           $getuser = User::where('id',$request->user_id)->first();
-         
-          // dd($getuser);
           
-           
-
-          
-          
-        // dd($input);
- 
           $complainData = ComplainMain::create($input); 
 
           if ($request->hasFile('cust_complain_file'))
@@ -429,7 +421,7 @@ class ComplainController extends Controller
              
             // dd($data);
 
-            Mail::send(new ComplaintMail($data));
+            // Mail::send(new ComplaintMail($data));
             
             return response()->json(['status'=>1,'message' =>'Complaint added successfully','result' => 'success'],config('global.success_status'));
           }
@@ -568,7 +560,7 @@ class ComplainController extends Controller
 
             CusNotification::create($cdata);
 
-            Mail::send(new ComplaintMail($data));
+            // Mail::send(new ComplaintMail($data));
             $RemarksData = ComplainRemarks::create($input);
           } 
 
