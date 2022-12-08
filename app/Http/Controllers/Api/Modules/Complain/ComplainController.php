@@ -503,7 +503,7 @@ class ComplainController extends Controller
 
             $zone = $resA->zone;
 
-            $datas['desc'] = 'Complaint against';
+            $datas['desc'] = 'Complaint replayed ';
             $datas['desc_no'] = $complainData->po_number;
             $datas['user_id'] = $getuser->id;
             $datas['url_type'] = 'Comp';
@@ -551,7 +551,7 @@ class ComplainController extends Controller
             
              
 
-            $cdata['desc'] = 'Complaint replay against';
+            $cdata['desc'] = 'Complaint replayed';
             $cdata['desc_no'] = $complainData->po_number;
             $cdata['user_id'] =  $request->kam_id;
             $cdata['url_type'] = 'Comp';
