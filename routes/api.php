@@ -138,6 +138,8 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
 
 		Route::get('closed-remarks/{complainId}', 'Complain\ComplainController@closedRemarks')->name('closed_remarks');
 
+		Route::get('get-deparment', 'Complain\ComplainDepController@getDeparment')->name('get_deparment');
+		Route::post('get-deparment-mail', 'Complain\ComplainDepController@getDeparmentMail')->name('get_mail_deparment');
    		  
 
 
