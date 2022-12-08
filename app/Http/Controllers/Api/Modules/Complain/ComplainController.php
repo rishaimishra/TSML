@@ -512,7 +512,7 @@ class ComplainController extends Controller
 
             Camnotification::create($datas);
 
-            Mail::send(new ComplaintMail($data));
+            // Mail::send(new ComplaintMail($data));
           } //End of customer complaint....
           if ($request->kam_remarks) {
             // dd($request->kam_id);
