@@ -261,15 +261,7 @@ class ComplainManageController extends Controller
         		"com_manage_id" => "required",
         		"kam_id" => "required",
         		"complain_id" => "required",
-        		"po_no" => "required", 
-                "interim_report" => "mimes:jpg,jpeg,png",
-                "final_report" => "mimes:jpg,jpeg,png",
-                "capa" => "mimes:jpg,jpeg,png",
-                "financial_set_repo" => "mimes:jpg,jpeg,png",
-                "sales_approval" => "mimes:jpg,jpeg,png",
-                "marketing_head_approval" => "mimes:jpg,jpeg,png",
-                "sr_gm_approval" => "mimes:jpg,jpeg,png",
-                "financial_approval_op" => "mimes:jpg,jpeg,png",
+        		"po_no" => "required" 
             ]);
 
 	        if ($validation->fails()) {
@@ -287,7 +279,7 @@ class ComplainManageController extends Controller
 
 			    	$image = $request->interim_report; 
 
-	                $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+	                $filename = rand(1000,9999).'-'.$image->getClientOriginalName();
 	                Storage::putFileAs('public/images/complaintManage/', $image, $filename);
 
 	                $input['interim_report'] = $filename;
@@ -297,7 +289,7 @@ class ComplainManageController extends Controller
 			    {
 			    	$image = $request->final_report; 
 
-	                $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+	                $filename = rand(1000,9999).'-'.$image->getClientOriginalName();
 	                Storage::putFileAs('public/images/complaintManage/', $image, $filename);
 
 	                $input['final_report'] = $filename;
@@ -308,7 +300,7 @@ class ComplainManageController extends Controller
 			    {
 			    	$image = $request->capa; 
 
-	                $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+	                $filename = rand(1000,9999).'-'.$image->getClientOriginalName();
 	                Storage::putFileAs('public/images/complaintManage/', $image, $filename);
 
 	                $input['capa'] = $filename;
@@ -319,7 +311,7 @@ class ComplainManageController extends Controller
 			    {
 			    	$image = $request->financial_set_repo; 
 
-	                $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+	                $filename = rand(1000,9999).'-'.$image->getClientOriginalName();
 	                Storage::putFileAs('public/images/complaintManage/', $image, $filename);
 
 	                $input['financial_set_repo'] = $filename; 
@@ -330,7 +322,7 @@ class ComplainManageController extends Controller
 			    {
 			    	$image = $request->sales_approval; 
 
-	                $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+	                $filename = rand(1000,9999).'-'.$image->getClientOriginalName();
 	                Storage::putFileAs('public/images/complaintManage/', $image, $filename);
 
 	                $input['sales_approval'] = $filename; 
@@ -341,7 +333,7 @@ class ComplainManageController extends Controller
 			    {
 			    	$image = $request->marketing_head_approval; 
 
-	                $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+	                $filename = rand(1000,9999).'-'.$image->getClientOriginalName();
 	                Storage::putFileAs('public/images/complaintManage/', $image, $filename);
 
 	                $input['marketing_head_approval'] = $filename; 
@@ -352,7 +344,7 @@ class ComplainManageController extends Controller
 			    {
 			    	$image = $request->sr_gm_approval; 
 
-	                $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+	                $filename = rand(1000,9999).'-'.$image->getClientOriginalName();
 	                Storage::putFileAs('public/images/complaintManage/', $image, $filename);
 
 	                $input['sr_gm_approval'] = $filename; 
@@ -363,7 +355,7 @@ class ComplainManageController extends Controller
 			    {
 			    	$image = $request->financial_approval_op; 
 
-	                $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+	                $filename = rand(1000,9999).'-'.$image->getClientOriginalName();
 	                Storage::putFileAs('public/images/complaintManage/', $image, $filename);
 
 	                $input['financial_approval_op'] = $filename; 
