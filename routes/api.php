@@ -138,7 +138,12 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
 
 		Route::get('closed-remarks/{complainId}', 'Complain\ComplainController@closedRemarks')->name('closed_remarks');
 
-   		  
+		Route::get('get-deparment', 'Complain\ComplainDepController@getDeparment')->name('get_deparment');
+		Route::post('get-deparment-mail', 'Complain\ComplainDepController@getDeparmentMail')->name('get_mail_deparment');
+   		Route::post('send-com-mail', 'Complain\ComplainManageController@sendComMail')->name('send_com_mail');
+   		Route::post('com-mail-confirm', 'Complain\ComplainManageController@comMailConfirm')->name('com_mail_confirm');
+   		Route::post('get-com-manage-data', 'Complain\ComplainManageController@getComManageData')->name('get_com_manage_data');
+   		Route::post('store-com-files', 'Complain\ComplainManageController@storeComFiles')->name('store_com_files');
 
 
    		 Route::post('monthly_prod_plan_submit','Orders\OrderPlanningController@monthlyPlanSubmit');

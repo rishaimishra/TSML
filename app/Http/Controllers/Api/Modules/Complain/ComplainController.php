@@ -467,9 +467,12 @@ class ComplainController extends Controller
             if ($request->hasFile('cust_complain_file'))
             {  
 
-              $image = $request->cust_complain_file; 
+              $image = $request->cust_complain_file;
+              // dd($image->getClientOriginalName()); 
 
-              $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+              // $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+              $filename = rand(1000,9999).'-'.$image->getClientOriginalName();
+              
               Storage::putFileAs('public/images/complain/', $image, $filename);
 
               $input['cust_com_file'] = $filename; 
@@ -525,10 +528,21 @@ class ComplainController extends Controller
 
               $image = $request->kam_complain_file; 
 
-              $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+              $filename = rand(1000,9999).'-'.$image->getClientOriginalName();
               Storage::putFileAs('public/images/complain/', $image, $filename);
 
               $input['kam_com_file'] = $filename; 
+            }
+
+            if ($request->hasFile('kam_com_file_2'))
+            {  
+
+              $image = $request->kam_com_file_2; 
+
+              $filename = rand(1000,9999).'-'.$image->getClientOriginalName();
+              Storage::putFileAs('public/images/complain/', $image, $filename);
+
+              $input['kam_com_file_2'] = $filename; 
             }
 
              $cam = User::where('zone',$getuser->zone)->where('id','!=',$request->kam_id)->where('user_type','Kam')->get()->toArray();
@@ -658,7 +672,8 @@ class ComplainController extends Controller
                             ->where('complain_id',$ComplainList)
                             ->select('complain_remarks.id',
                                       'complain_remarks.cust_com_file',
-                                      'complain_remarks.kam_com_file')
+                                      'complain_remarks.kam_com_file',
+                                      'complain_remarks.kam_com_file_2')
                             ->get();
 
         $cust_com_filearr = [];
@@ -678,6 +693,7 @@ class ComplainController extends Controller
         { 
           if(!empty($value->kam_com_file)){
             array_push( $kam_com_filearr, asset('storage/app/public/images/complain/'.$value->kam_com_file));
+            array_push( $kam_com_filearr, asset('storage/app/public/images/complain/'.$value->kam_com_file_2));
           }
  
         }
