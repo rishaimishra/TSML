@@ -195,4 +195,34 @@ class RequoteController extends Controller
          
       }
 
+
+      // ----------------------------- get requote counts -------------------------
+
+     public function getPriceComp()
+      {
+
+          try{ 
+                   
+               $res = DB::table('price_masters')->get();
+
+                   // echo "<pre>";print_r($newcount);exit();
+             
+              return response()->json(['status'=>1,
+                'message' =>'success',
+                'result' => $res],
+                config('global.success_status'));
+
+
+        }catch(\Exception $e){
+
+         return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
+       }
+
+         
+      }
+
+   // ---------------------------------------------------------------------------
+
+
+
 }
