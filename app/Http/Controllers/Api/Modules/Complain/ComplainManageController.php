@@ -48,6 +48,7 @@ class ComplainManageController extends Controller
           	$input['ka_remarks'] = $request->ka_remarks;
           	$input['kam_id'] = $request->kam_id;
             $input['po_no'] = $request->po_no;
+            $input['complain_id'] = $request->complain_id;
           	 
             $freightsData = ComplaintManage::create($input);
           	
@@ -86,4 +87,301 @@ class ComplainManageController extends Controller
             return response()->json([$response]);
           }
     }
+
+    /**
+     * This is for add get Complain Details. 
+     * @param  \App\Product  $product
+     * @return \Illuminate\Http\Response
+    */
+    public function comMailConfirm(Request $request)
+    {
+
+      try{
+            $validator = Validator::make($request->all(), [  
+            'mcom_id'        => 'required',
+            'kam_id'        => 'required',
+            'po_no'        => 'required', 
+            ]);
+
+            if ($validator->fails()) { 
+                return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $validator->errors()],config('global.failed_status'));
+            }
+
+            $chk = ComplaintManage::where('id',$request->mcom_id)->where('kam_id',$request->kam_id)->where('po_no',$request->po_no)->first();
+
+            if (!empty($chk)) {
+             	$upinput['is_mail_resiv'] = 1;
+          	 
+            	$freightsData = ComplaintManage::where('id',$request->mcom_id)->where('kam_id',$request->kam_id)->where('po_no',$request->po_no)->update($upinput);
+          	
+          		return response()->json(['status'=>1,'message' =>'Complaint mail ressive to concerned department successfully.'],200); 
+            }
+            else{
+            	return response()->json(['status'=>1,'message' =>'No data found','result' => []],config('global.success_status'));
+            } 
+            
+            
+          }catch(\Exception $e){
+            $response['error'] = $e->getMessage();
+            return response()->json([$response]);
+          }
+    }
+
+
+    /**
+     * This is for add get Complain Details. 
+     * @param  \App\Product  $product
+     * @return \Illuminate\Http\Response
+    */
+    public function getComManageData(Request $request)
+    {
+
+      try{
+            $validator = Validator::make($request->all(), [  
+            'kam_id'        => 'required',
+            'complain_id'        => 'required',
+            'po_no'        => 'required',
+             
+            ]);
+
+            if ($validator->fails()) { 
+                return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $validator->errors()],config('global.failed_status'));
+            }
+
+            $comManage = ComplaintManage::where('kam_id',$request->kam_id)->where('complain_id',$request->complain_id)->where('po_no',$request->po_no)->first();
+            
+             
+             	 
+             	$data['com_manage_id'] = (!empty($comManage->id)) ? $comManage->id : '';
+             	$data['kam_id'] = (!empty($comManage->kam_id)) ? $comManage->kam_id : '';
+             	$data['complain_id'] = (!empty($comManage->complain_id)) ?  $comManage->complain_id : '';
+             	$data['po_no'] = (!empty($comManage->po_no)) ? $comManage->po_no : '';
+             	$data['deperment_id'] = (!empty($comManage->depa_id)) ? $comManage->depa_id : '';
+             	$data['r_mail'] = (!empty($comManage->r_mail)) ?  $comManage->r_mail : '';
+             	$data['ka_remarks'] = (!empty($comManage->ka_remarks)) ?  $comManage->ka_remarks : '';
+             	$data['is_mail_resiv'] = (!empty($comManage->is_mail_resiv)) ?  $comManage->is_mail_resiv : '';
+
+             	if ($comManage->interim_report) 
+		   		{
+
+		   			$data['interim_report'] = asset('storage/app/public/images/complaintManage/'.$comManage->interim_report);
+		   		}
+		   		else
+		   		{
+		   			$data['interim_report'] =  null;
+		   		}
+		   		
+		   		if($comManage->final_report)
+		   		{
+		   			$data['final_report'] =  asset('storage/app/public/images/complaintManage/'.$comManage->final_report);
+		   		}
+		   		else
+		   		{
+		   			$data['final_report'] =  null;	
+		   		}
+
+		   		if($comManage->capa)
+		   		{
+		   			$data['capa'] =  asset('storage/app/public/images/complaintManage/'.$comManage->capa);
+		   		}
+		   		else
+		   		{
+		   			$data['capa'] =  null;	
+		   		}
+
+		   		if($comManage->financial_set_repo)
+		   		{
+		   			$data['financial_set_repo'] =  asset('storage/app/public/images/complaintManage/'.$comManage->financial_set_repo);
+		   		}
+		   		else
+		   		{
+		   			$data['financial_set_repo'] =  null;	
+		   		}
+
+		   		if($comManage->sales_approval)
+		   		{
+		   			$data['sales_approval'] =  asset('storage/app/public/images/complaintManage/'.$comManage->sales_approval);
+		   		}
+		   		else
+		   		{
+		   			$data['sales_approval'] =  null;	
+		   		}
+
+		   		if($comManage->marketing_head_approval)
+		   		{
+		   			$data['marketing_head_approval'] =  asset('storage/app/public/images/complaintManage/'.$comManage->marketing_head_approval);
+		   		}
+		   		else
+		   		{
+		   			$data['marketing_head_approval'] =  null;	
+		   		}
+
+		   		if($comManage->sr_gm_approval)
+		   		{
+		   			$data['sr_gm_approval'] =  asset('storage/app/public/images/complaintManage/'.$comManage->sr_gm_approval);
+		   		}
+		   		else
+		   		{
+		   			$data['sr_gm_approval'] =  null;	
+		   		}
+
+		   		if($comManage->financial_approval_op)
+		   		{
+		   			$data['financial_approval_op'] =  asset('storage/app/public/images/complaintManage/'.$comManage->financial_approval_op);
+		   		}
+		   		else
+		   		{
+		   			$data['financial_approval_op'] =  null;	
+		   		}
+             	 
+
+          	
+          		return response()->json(['status'=>1,'message' =>'Success','result' => $data],200); 
+              
+            
+            
+          }catch(\Exception $e){
+            $response['error'] = $e->getMessage();
+            return response()->json([$response]);
+          }
+    }
+
+    /**
+	     * This is for store new Category for admin.
+	     *
+	     * @param  \App\Product  $product
+	     * @return \Illuminate\Http\Response
+	     */
+	   	public function storeComFiles(Request $request)
+	   	{ 
+
+	   		 
+	         
+        	$validation = \Validator::make($request->all(),[ 
+        		"com_manage_id" => "required",
+        		"kam_id" => "required",
+        		"complain_id" => "required",
+        		"po_no" => "required", 
+                "interim_report" => "mimes:jpg,jpeg,png",
+                "final_report" => "mimes:jpg,jpeg,png",
+                "capa" => "mimes:jpg,jpeg,png",
+                "financial_set_repo" => "mimes:jpg,jpeg,png",
+                "sales_approval" => "mimes:jpg,jpeg,png",
+                "marketing_head_approval" => "mimes:jpg,jpeg,png",
+                "sr_gm_approval" => "mimes:jpg,jpeg,png",
+                "financial_approval_op" => "mimes:jpg,jpeg,png",
+            ]);
+
+	        if ($validation->fails()) {
+	            return response()->json(['status'=>0,'errors'=>$validation->errors()],200);
+	        }
+
+	        $comManage = ComplaintManage::where('id',$request->com_manage_id)->where('kam_id',$request->kam_id)->where('complain_id',$request->complain_id)->where('po_no',$request->po_no)->first();
+	         
+	        if (!empty($comManage)) 
+	        {
+	        	# code...
+	       
+		        if ($request->hasFile('interim_report'))
+			    {  
+
+			    	$image = $request->interim_report; 
+
+	                $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+	                Storage::putFileAs('public/images/complaintManage/', $image, $filename);
+
+	                $input['interim_report'] = $filename;
+
+			    }
+			    if ($request->hasFile('final_report'))
+			    {
+			    	$image = $request->final_report; 
+
+	                $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+	                Storage::putFileAs('public/images/complaintManage/', $image, $filename);
+
+	                $input['final_report'] = $filename;
+
+			    	 
+			    }
+			    if ($request->hasFile('capa'))
+			    {
+			    	$image = $request->capa; 
+
+	                $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+	                Storage::putFileAs('public/images/complaintManage/', $image, $filename);
+
+	                $input['capa'] = $filename;
+
+			    	 
+			    }
+			    if ($request->hasFile('financial_set_repo'))
+			    {
+			    	$image = $request->financial_set_repo; 
+
+	                $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+	                Storage::putFileAs('public/images/complaintManage/', $image, $filename);
+
+	                $input['financial_set_repo'] = $filename; 
+			    	 
+			    }
+
+			    if ($request->hasFile('sales_approval'))
+			    {
+			    	$image = $request->sales_approval; 
+
+	                $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+	                Storage::putFileAs('public/images/complaintManage/', $image, $filename);
+
+	                $input['sales_approval'] = $filename; 
+			    	 
+			    }
+
+			    if ($request->hasFile('marketing_head_approval'))
+			    {
+			    	$image = $request->marketing_head_approval; 
+
+	                $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+	                Storage::putFileAs('public/images/complaintManage/', $image, $filename);
+
+	                $input['marketing_head_approval'] = $filename; 
+			    	 
+			    }
+
+			    if ($request->hasFile('sr_gm_approval'))
+			    {
+			    	$image = $request->sr_gm_approval; 
+
+	                $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+	                Storage::putFileAs('public/images/complaintManage/', $image, $filename);
+
+	                $input['sr_gm_approval'] = $filename; 
+			    	 
+			    }
+
+			    if ($request->hasFile('financial_approval_op'))
+			    {
+			    	$image = $request->financial_approval_op; 
+
+	                $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+	                Storage::putFileAs('public/images/complaintManage/', $image, $filename);
+
+	                $input['financial_approval_op'] = $filename; 
+			    	 
+			    }
+
+			    // dd($input);
+
+		         
+
+		        $freightsData = ComplaintManage::where('id',$request->com_manage_id)->where('kam_id',$request->kam_id)->where('po_no',$request->po_no)->update($input);
+
+		        // return response()->json(['sucs'=>'New category added successfully.'],200);
+
+		   	  	return response()->json(['status'=>1,'message' =>'Data uploaded succfully.'],200);
+			}
+			else{
+				return response()->json(['status'=>1,'message' =>'Somting went wrong','result' => []],config('global.success_status'));
+			} 
+	    }
 }
