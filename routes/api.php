@@ -201,6 +201,17 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
    		// Sap Payment Terms Routes....
    		Route::get('get_sap_sales_group','Sap\SapSalesGroupController@getSapSalesGroup')->name('get_sap_sales_group');
 
+   		// Sap Sales Organization Controller Routes....
+   		Route::get('get-sap-sales-org','Sap\SalesOrganizationController@getSalesOrgType')->name('get_sap_sales_org');
+
+   		// Sap Sales Office Controller Routes....
+   		Route::get('get-sales-office','Sap\SalesOfficeController@getSalesOffice')->name('get_sales_office');
+
+   		// Sap Division Controller Routes....
+   		Route::get('get-sap-division','Sap\DivisionController@getSapDivision')->name('get_sap_division');
+   		// Sap Distribution Channel Controller Routes....
+   		Route::get('get-distri-channel','Sap\DistributionChannelController@getDistriChannel')->name('get_distri_channel');
+
    		//------------------- End of Sap Routes -------------------//
 
      });
