@@ -4,13 +4,105 @@ namespace App\Http\Controllers\Api\Modules\Sap\SalesOrder;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\SalesContarct;
+use App\Models\SalesContractMaterial;
+use App\Models\SalesContarctSpecs;
+use App\Models\ScPriceDetail;
 use DB;
 
 class SalesContractController extends Controller
 {
     public function salesCntSubmit(Request $request)
-    {
-    	 echo "<pre>";print_r($request->all());exit();
+    {    
+         try{ 
+                 // echo "<pre>";print_r($request->all());exit();
+		    	 $contract['po_no'] = $request->input('po_no');
+		    	 $contract['contract_ty'] = $request->input('contract_ty');
+		    	 $contract['sales_grp'] = $request->input('sales_grp');
+		    	 $contract['qty_cont'] = $request->input('qty_cont');
+		    	 $contract['net_val'] = $request->input('net_val');
+		    	 $contract['sold_to_party'] = $request->input('sold_to_party');
+		    	 $contract['ship_to_party'] = $request->input('ship_to_party');
+		    	 $contract['cus_ref'] = $request->input('cus_ref');
+		    	 $contract['cus_ref_dt'] = $request->input('cus_ref_dt');
+		    	 $contract['shp_cond'] = $request->input('shp_cond');
+		    	 $contract['sales_org'] = $request->input('sales_org');
+		    	 $contract['dis_chnl'] = $request->input('dis_chnl');
+		    	 $contract['div'] = $request->input('div');
+		    	 $contract['sales_ofc'] = $request->input('sales_ofc');
+		    	 $contract['cost_ref'] = $request->input('cost_ref');
+
+		    	 $id = SalesContarct::create($contract);
+
+		    	 $contarctId = $id['id'];
+		    	 // echo "<pre>";print_r($request->input('material'));exit();
+
+		    	 $materials = $request->input('material');
+
+		    	 foreach ($materials as $key => $value) {
+		    	 	 
+		    	 	  $arr['contarct_id'] = $contarctId;
+		    	 	  $arr['mat_code'] = $value['mat_code'];
+		    	 	  $arr['rfq_no'] = $value['rfq_no'];
+		    	 	  $arr['total'] = $value['total'];
+		    	 	  $arr['incoterms'] = $value['incoterms'];
+		    	 	  $arr['pay_terms'] = $value['pay_terms'];
+		    	 	  $arr['freight'] = $value['freight'];
+		    	 	  $arr['cus_grp'] = $value['cus_grp'];
+		    	 	  $arr['fr_ind'] = $value['fr_ind'];
+
+
+		    	 	  $sid = SalesContractMaterial::create($arr);
+                      
+                      foreach ($value['specs'] as $ke => $valu) {
+
+                      	  $specs['mat_id'] = $sid['id'];
+	                      $specs['comp'] = $valu['comp'];
+	                      $specs['max'] = $valu['max'];
+	                      $specs['min'] = $valu['min'];
+	                      $specs['permissible'] = $valu['permissible'];
+	                      $specs['uom'] = $valu['uom'];
+
+	                      SalesContarctSpecs::create($specs);
+                      }
+                      
+
+                       
+                      // echo "<pre>";print_r($value['price_det']);exit();
+
+                      
+
+                      foreach ($value['price_det'] as $k => $v) {
+                      	   
+
+	                      $priceDet['mat_id'] = $sid['id'];
+	                      $priceDet['mat_code'] = $value['mat_code'];
+	                      $priceDet['cnty'] = $v['cnty'];
+	                      $priceDet['des'] = $v['des'];
+	                      $priceDet['amt'] = $v['amt'];
+
+
+	                      ScPriceDetail::create($priceDet);
+	                     
+                      }
+
+
+                       // echo "<pre>";print_r($specs);exit();
+
+		    	 }
+                  
+		    	  return response()->json(['status'=>1,
+					          'message' =>'success',
+					          'result' => $contarctId],
+					          config('global.success_status'));
+
+
+	      }catch(\Exception $e){
+
+			       return response()->json(['status'=>0,
+			       	'message' =>'error',
+			       	'result' => $e->getMessage()],config('global.failed_status'));
+	     }
     }
 
 
@@ -23,13 +115,17 @@ class SalesContractController extends Controller
                    
                  	 $res = DB::table('orders')->leftjoin('sc_transactions','orders.rfq_no','sc_transactions.rfq_no')
                  	 ->leftjoin('plants','sc_transactions.plant','plants.id')
+                 	 ->leftjoin('quotes','orders.rfq_no','quotes.rfq_no')
+                 	 ->leftjoin('users','quotes.user_id','users.id')
                  	 ->groupBy('sc_transactions.mat_code')
-                 	     ->select('sc_transactions.*','plants.code as pcode')->where('orders.po_no',$po_no)->get();
+                 	     ->select('sc_transactions.*','plants.code as pcode','users.name','orders.po_date')->where('orders.po_no',$po_no)->get();
                  	 // echo "<pre>";print_r($newcount);exit();
                  	 foreach ($res as $key => $value) {
                  	 	
                  	 	 $data[$key]['id'] = $value->id;
                  	 	 $data[$key]['code'] = $value->code;
+                 	 	 $data[$key]['cus_name'] = $value->name;
+                 	 	 $data[$key]['po_date'] = $value->po_date;
                  	 	 $data[$key]['value'] = $value->value;
                  	 	 $data[$key]['mat_code'] = $value->mat_code;
                  	 	 $data[$key]['pcode'] = $value->pcode;
@@ -142,4 +238,29 @@ class SalesContractController extends Controller
 
 			    	return $tot_price;
 	    }
+
+        // ---------------------------- contarct no. update ---------------------------
+
+	  	public function updateContarctsNo(Request $request)
+	    {
+
+	    	  try{   
+	    	  	     $date = $request->input('date');
+                     $dt = date("Y-m-d", strtotime($date));
+                 	 SalesContarct::where('id',$request->input('id'))->update(['sc_no' => $request->input('sc_no'),'sc_dt' => $dt]);
+			    	 
+			        return response()->json(['status'=>1,
+			          'message' =>'success',
+			          'result' => 'Contract no. updated'],
+			          config('global.success_status'));
+
+
+	      }catch(\Exception $e){
+
+	       return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
+	     }
+
+	    	 
+	    }
+	    // ----------------------------------------------------------------------------------
 }

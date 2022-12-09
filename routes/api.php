@@ -165,11 +165,13 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
    		 Route::post('up_sales_noti','Notification\NotificationController@upSalesNoti');
 
 
-   	// ----------------- sap sales order -------------------------------------------------------------
+   	// ----------------- sap sales order --------------------------------------------
         
         Route::get('price_break_fetch/{po_no}','Sap\SalesOrder\SalesContractController@priceBreakFetch');
    		Route::post('sales_cnt_submit','Sap\SalesOrder\SalesContractController@salesCntSubmit');
    		// Route::get('get_price_break_by_id/{mat_no}','Sap\SalesOrder\SalesContractController@priceBreakById'); 
+   		Route::post('update_contarcts_no','Sap\SalesOrder\SalesContractController@updateContarctsNo');
+   		
    		
    		//------------------- Sap Routes --------------------------//
 
