@@ -161,7 +161,7 @@ class ComplainManageController extends Controller
              	$data['ka_remarks'] = (!empty($comManage->ka_remarks)) ?  $comManage->ka_remarks : '';
              	$data['is_mail_resiv'] = (!empty($comManage->is_mail_resiv)) ?  $comManage->is_mail_resiv : '';
 
-             	if ($comManage->interim_report) 
+             	if (isset($comManage->interim_report)) 
 		   		{
 
 		   			$data['interim_report'] = asset('storage/app/public/images/complaintManage/'.$comManage->interim_report);
@@ -171,7 +171,7 @@ class ComplainManageController extends Controller
 		   			$data['interim_report'] =  null;
 		   		}
 		   		
-		   		if($comManage->final_report)
+		   		if(isset($comManage->final_report))
 		   		{
 		   			$data['final_report'] =  asset('storage/app/public/images/complaintManage/'.$comManage->final_report);
 		   		}
@@ -180,7 +180,7 @@ class ComplainManageController extends Controller
 		   			$data['final_report'] =  null;	
 		   		}
 
-		   		if($comManage->capa)
+		   		if(isset($comManage->capa))
 		   		{
 		   			$data['capa'] =  asset('storage/app/public/images/complaintManage/'.$comManage->capa);
 		   		}
@@ -189,7 +189,7 @@ class ComplainManageController extends Controller
 		   			$data['capa'] =  null;	
 		   		}
 
-		   		if($comManage->financial_set_repo)
+		   		if(isset($comManage->financial_set_repo))
 		   		{
 		   			$data['financial_set_repo'] =  asset('storage/app/public/images/complaintManage/'.$comManage->financial_set_repo);
 		   		}
@@ -198,7 +198,7 @@ class ComplainManageController extends Controller
 		   			$data['financial_set_repo'] =  null;	
 		   		}
 
-		   		if($comManage->sales_approval)
+		   		if(isset($comManage->sales_approval))
 		   		{
 		   			$data['sales_approval'] =  asset('storage/app/public/images/complaintManage/'.$comManage->sales_approval);
 		   		}
@@ -207,7 +207,7 @@ class ComplainManageController extends Controller
 		   			$data['sales_approval'] =  null;	
 		   		}
 
-		   		if($comManage->marketing_head_approval)
+		   		if(isset($comManage->marketing_head_approval))
 		   		{
 		   			$data['marketing_head_approval'] =  asset('storage/app/public/images/complaintManage/'.$comManage->marketing_head_approval);
 		   		}
@@ -216,7 +216,7 @@ class ComplainManageController extends Controller
 		   			$data['marketing_head_approval'] =  null;	
 		   		}
 
-		   		if($comManage->sr_gm_approval)
+		   		if(isset($comManage->sr_gm_approval))
 		   		{
 		   			$data['sr_gm_approval'] =  asset('storage/app/public/images/complaintManage/'.$comManage->sr_gm_approval);
 		   		}
@@ -225,7 +225,7 @@ class ComplainManageController extends Controller
 		   			$data['sr_gm_approval'] =  null;	
 		   		}
 
-		   		if($comManage->financial_approval_op)
+		   		if(isset($comManage->financial_approval_op))
 		   		{
 		   			$data['financial_approval_op'] =  asset('storage/app/public/images/complaintManage/'.$comManage->financial_approval_op);
 		   		}
