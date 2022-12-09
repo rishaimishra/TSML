@@ -528,7 +528,7 @@ class ComplainController extends Controller
 
               $image = $request->kam_complain_file; 
 
-              $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+              $filename = rand(1000,9999).'-'.$image->getClientOriginalName();
               Storage::putFileAs('public/images/complain/', $image, $filename);
 
               $input['kam_com_file'] = $filename; 
