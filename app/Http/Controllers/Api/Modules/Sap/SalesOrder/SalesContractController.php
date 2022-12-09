@@ -263,4 +263,60 @@ class SalesContractController extends Controller
 	    	 
 	    }
 	    // ----------------------------------------------------------------------------------
+
+
+	    // ---------------------------- prepare so list ---------------------------
+
+	  	public function prepareSoList()
+	    {
+
+	    	  try{   
+	    	  	     $res = DB::table('sales_contracts')->leftjoin('orders','sales_contracts.po_no','orders.po_no')->select('sales_contracts.*','orders.po_date')->get()->toArray();
+			    	 
+			        return response()->json(['status'=>1,
+			          'message' =>'success',
+			          'result' => $res],
+			          config('global.success_status'));
+
+
+	      }catch(\Exception $e){
+
+	       return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
+	     }
+
+	    	 
+	    }
+	    // --------------------------------------------------------------------
+
+
+	 // ----------------------------- submit so -------------------------
+
+     public function so_submit(Request $request)
+      {
+
+          try{ 
+               
+               $transact_id = $request->input('transact_id');   
+               $co_no = $request->input('co_no');
+               $po_no = $request->input('po_no');
+               $pay_proc = $request->input('pay_proc');
+               $fin_doc_no = $request->input('fin_doc_no');
+               
+                   // echo "<pre>";print_r($newcount);exit();
+             
+              return response()->json(['status'=>1,
+                'message' =>'success',
+                'result' => $res],
+                config('global.success_status'));
+
+
+        }catch(\Exception $e){
+
+         return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
+       }
+
+         
+      }
+
+   // ---------------------------------------------------------------------------
 }

@@ -112,6 +112,7 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
    		 Route::get('get_count_requote/{rfq_no}','Requote\RequoteController@getCountRequote');
    		 Route::get('get_count_sche/{rfq_no}','Requote\RequoteController@getCountSche');
    		 Route::post('price_break_save','Requote\RequoteController@priceBreakSave');
+   		 Route::get('get_price_comp','Requote\RequoteController@getPriceComp');
 
    		 Route::post('get-store-pro-price','PriceManagement\PriceManagementController@getProPrice')->name('get_store_pro_price');
    		 Route::get('get-threshold-price','PriceManagement\PriceManagementController@getThresholdPrice')->name('get_threshold_price');
@@ -176,6 +177,9 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
    		Route::post('sales_cnt_submit','Sap\SalesOrder\SalesContractController@salesCntSubmit');
    		// Route::get('get_price_break_by_id/{mat_no}','Sap\SalesOrder\SalesContractController@priceBreakById'); 
    		Route::post('update_contarcts_no','Sap\SalesOrder\SalesContractController@updateContarctsNo');
+
+   		Route::get('prepare_so_list','Sap\SalesOrder\SalesContractController@prepareSoList');
+   		Route::post('so_submit','Sap\SalesOrder\SalesContractController@so_submit');
    		
    		
    		//------------------- Sap Routes --------------------------//
