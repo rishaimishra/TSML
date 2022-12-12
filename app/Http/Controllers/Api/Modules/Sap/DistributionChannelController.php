@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\Modules\Sap;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\SapSalesOffice;
+use App\Models\SapDistributionChannel;
 use JWTAuth;
 use Validator;
 use File; 
@@ -26,7 +26,7 @@ class DistributionChannelController extends Controller
 
         try{ 
 
-          $sapSalesOffice = SapSalesOffice::get();
+          $sapSalesOffice = SapDistributionChannel::get();
 
           \DB::commit();
 

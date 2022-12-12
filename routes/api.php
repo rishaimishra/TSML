@@ -219,7 +219,7 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
    		Route::get('get-sales-office','Sap\SalesOfficeController@getSalesOffice')->name('get_sales_office');
 
    		// Sap Division Controller Routes....
-   		Route::get('get-sap-division','Sap\DivisionController@getSapDivision')->name('get_sap_division');
+   		Route::post('get-sap-division','Sap\DivisionController@getSapDivision')->name('get_sap_division');
    		// Sap Distribution Channel Controller Routes....
    		Route::get('get-distri-channel','Sap\DistributionChannelController@getDistriChannel')->name('get_distri_channel');
        
