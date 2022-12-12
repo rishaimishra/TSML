@@ -322,18 +322,24 @@ class SalesContractController extends Controller
 
    // ----------------------------- plant id -------------------------
 
-     public function getPlantId($p_name)
+     public function getPlantId(Request $request)
       {
 
           try{ 
                
-               $plant = DB::table('plants')->where('name',$p_name)->first();
+               $plant = DB::table('plants')->where('name',$request->input('data'))->first();
                
                    // echo "<pre>";print_r($newcount);exit();
-             
+             if(!empty($plant))
+             {
+             	 $id = $plant->id;
+             }else{
+
+             	$id = "";
+             }
               return response()->json(['status'=>1,
                 'message' =>'success',
-                'result' => $plant->id],
+                'result' => $id],
                 config('global.success_status'));
 
 
