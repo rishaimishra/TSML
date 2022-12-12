@@ -26,7 +26,9 @@ class DivisionController extends Controller
 
         try{ 
 
-          $sapDivision = SapDivision::get();
+           
+
+          $sapDivision = SapDivision::where('distri_chanal_id',$request->distr_chan_code)->get();
 
           \DB::commit();
 

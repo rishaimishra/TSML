@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\Modules\Dorder;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\DeliveryOrders;
-use App\Models\ProductSubCategory;
+ use App\Models\ProductSubCategory;
 use JWTAuth;
 use Validator;
 use File; 
