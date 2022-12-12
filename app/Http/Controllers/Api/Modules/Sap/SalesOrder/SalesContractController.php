@@ -119,12 +119,13 @@ class SalesContractController extends Controller
                  	 ->leftjoin('quotes','orders.rfq_no','quotes.rfq_no')
                  	 ->leftjoin('users','quotes.user_id','users.id')
                  	 ->groupBy('sc_transactions.mat_code')
-                 	     ->select('sc_transactions.*','plants.code as pcode','users.name','orders.po_date','orders.cus_po_no','orders.po_date','users.user_code','users.addressone','users.addresstwo','users.city','users.state','users.pincode')->where('orders.po_no',$po_no)->get();
+                 	     ->select('sc_transactions.*','plants.code as pcode','users.name','orders.po_date','orders.cus_po_no','orders.po_date','users.user_code','users.addressone','users.addresstwo','users.city','users.state','users.pincode','users.id as uid')->where('orders.po_no',$po_no)->get();
                  	 // echo "<pre>";print_,'orders.po_date')->where('orders.po_no',$po_no)->get();
                  	 // echo "<pre>";print_r($newcount);exit();
                  	 foreach ($res as $key => $value) {
                  	 	
                  	 	 $data[$key]['id'] = $value->id;
+                     $data[$key]['user_id'] = $value->uid;
                  	 	 $data[$key]['code'] = $value->code;
                  	 	 $data[$key]['cus_name'] = $value->name;
                  	 	 $data[$key]['po_date'] = $value->po_date;
