@@ -8,4 +8,10 @@ class DeliveryOrders extends Model
 {
     protected $table = 'delivery_orders';
     protected $guarded = [];
+
+
+    public function subCategory()
+    {
+        return $this->hasOne('App\Models\ProductSubCategory','id','material_grade');
+    }
 }

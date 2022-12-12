@@ -135,7 +135,7 @@ class DoController extends Controller
                 return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $validator->errors()],config('global.failed_status'));
             }
 
-            $doData = DeliveryOrders::where('id',$request->do_id)->first();
+            $doData = DeliveryOrders::where('id',$request->do_id)->with('subCategory')->first();
             
               
             if (!empty($doData)) {
@@ -148,6 +148,7 @@ class DoController extends Controller
                 $data['invoice_date'] = date('d-m-Y H:i:s',strtotime($doData->invoice_date));
                 
                 $data['material_grade'] = (!empty($doData->material_grade)) ?  $doData->material_grade : '';
+                $data['grade_name'] = (!empty($doData['subCategory']->sub_cat_name)) ?  $doData['subCategory']->sub_cat_name : '';
                 $data['do_quantity'] = (!empty($doData->do_quantity)) ?  $doData->do_quantity : '';
                 $data['despatch_date'] = date('d-m-Y H:i:s',strtotime($doData->despatch_date));
                 $data['truck_no'] = (!empty($doData->truck_no)) ?  $doData->truck_no : '';

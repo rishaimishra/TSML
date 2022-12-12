@@ -119,12 +119,13 @@ class SalesContractController extends Controller
                  	 ->leftjoin('quotes','orders.rfq_no','quotes.rfq_no')
                  	 ->leftjoin('users','quotes.user_id','users.id')
                  	 ->groupBy('sc_transactions.mat_code')
-                 	     ->select('sc_transactions.*','plants.code as pcode','users.name','orders.po_date','orders.cus_po_no','orders.po_date')->where('orders.po_no',$po_no)->get();
+                 	     ->select('sc_transactions.*','plants.code as pcode','users.name','orders.po_date','orders.cus_po_no','orders.po_date','users.user_code','users.addressone','users.addresstwo','users.city','users.state','users.pincode','users.id as uid')->where('orders.po_no',$po_no)->get();
                  	 // echo "<pre>";print_,'orders.po_date')->where('orders.po_no',$po_no)->get();
                  	 // echo "<pre>";print_r($newcount);exit();
                  	 foreach ($res as $key => $value) {
                  	 	
                  	 	 $data[$key]['id'] = $value->id;
+                     $data[$key]['user_id'] = $value->uid;
                  	 	 $data[$key]['code'] = $value->code;
                  	 	 $data[$key]['cus_name'] = $value->name;
                  	 	 $data[$key]['po_date'] = $value->po_date;
@@ -134,6 +135,12 @@ class SalesContractController extends Controller
                  	 	 $data[$key]['rfq_no'] = $value->rfq_no;
                  	 	 $data[$key]['cus_po_no'] = $value->cus_po_no;
                  	 	 $data[$key]['po_date'] = $value->po_date;
+                 	 	 $data[$key]['user_code'] = $value->user_code;
+                 	 	 $data[$key]['addressone'] = $value->addressone;
+                 	 	 $data[$key]['addresstwo'] = $value->addresstwo;
+                 	 	 $data[$key]['city'] = $value->city;
+                 	 	 $data[$key]['state'] = $value->state;
+                 	 	 $data[$key]['pincode'] = $value->pincode;
                  	 	 $data[$key]['net_value'] = $this->scNetValue($po_no);
                  	 	 $data[$key]['qty_ct'] = $this->qty_ct($po_no);
                  	 	 $data[$key]['price_det'] = $this->priceBreakById($value->mat_code);
@@ -406,7 +413,7 @@ class SalesContractController extends Controller
            ->leftjoin('quotes','orders.rfq_no','quotes.rfq_no')
            ->leftjoin('quote_schedules','quotes.id','quote_schedules.quote_id')
            ->leftjoin('users','quotes.user_id','users.id')    
-           ->select('quotes.rfq_no','quotes.user_id','orders.letterhead','orders.po_no','orders.po_date','users.name','orders.status',DB::raw("(sum(quote_schedules.quantity)) as tot_qt"),'orders.amdnt_no','orders.cus_po_no')
+           ->select('quotes.rfq_no','quotes.user_id','orders.letterhead','orders.po_no','orders.po_date','users.name','orders.status',DB::raw("(sum(quote_schedules.quantity)) as tot_qt"),'orders.amdnt_no','orders.cus_po_no','quotes.created_at')
            ->orderBy('quotes.updated_at','desc')
            ->groupBy('quotes.rfq_no');
 
@@ -427,6 +434,7 @@ class SalesContractController extends Controller
             $date =  date_create($value->po_date);
             $po_dt = date_format($date,"d/m/Y");
             $result[$key]['po_date'] = $po_dt;
+            $result[$key]['rfq_date'] = date('m-d-y',strtotime($value->created_at));
 
          
 
