@@ -412,8 +412,9 @@ class SalesContractController extends Controller
             $quote = DB::table('orders')
            ->leftjoin('quotes','orders.rfq_no','quotes.rfq_no')
            ->leftjoin('quote_schedules','quotes.id','quote_schedules.quote_id')
-           ->leftjoin('users','quotes.user_id','users.id')    
-           ->select('quotes.rfq_no','quotes.user_id','orders.letterhead','orders.po_no','orders.po_date','users.name','orders.status',DB::raw("(sum(quote_schedules.quantity)) as tot_qt"),'orders.amdnt_no','orders.cus_po_no','quotes.created_at')
+           ->leftjoin('users','quotes.user_id','users.id')
+           ->leftjoin('sales_contracts','orders.po_no','sales_contracts.po_no')    
+           ->select('quotes.rfq_no','quotes.user_id','orders.letterhead','orders.po_no','orders.po_date','users.name','orders.status',DB::raw("(sum(quote_schedules.quantity)) as tot_qt"),'orders.amdnt_no','orders.cus_po_no','quotes.created_at','sales_contracts.sc_no','sales_contracts.created_at as sc_dt')
            ->orderBy('quotes.updated_at','desc')
            ->groupBy('quotes.rfq_no');
 
@@ -435,6 +436,8 @@ class SalesContractController extends Controller
             $po_dt = date_format($date,"d/m/Y");
             $result[$key]['po_date'] = $po_dt;
             $result[$key]['rfq_date'] = date('m-d-y',strtotime($value->created_at));
+            $result[$key]['sc_no'] = $value->sc_no;
+            $result[$key]['sc_date'] = date('m-d-y',strtotime($value->sc_dt));
 
          
 
