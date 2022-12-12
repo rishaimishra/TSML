@@ -175,7 +175,7 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
 
    	// ----------------- sap sales order --------------------------------------------
         
-        Route::get('get_plant_id/{p_name}','Sap\SalesOrder\SalesContractController@getPlantId');
+        Route::post('get_plant_id','Sap\SalesOrder\SalesContractController@getPlantId');
 
         Route::get('price_break_fetch/{po_no}','Sap\SalesOrder\SalesContractController@priceBreakFetch');
    		Route::post('sales_cnt_submit','Sap\SalesOrder\SalesContractController@salesCntSubmit');
@@ -184,6 +184,9 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
 
    		Route::get('prepare_so_list','Sap\SalesOrder\SalesContractController@prepareSoList');
    		Route::post('so_submit','Sap\SalesOrder\SalesContractController@so_submit');
+
+
+   		Route::get('get_all_sc_po','Sap\SalesOrder\SalesContractController@getAllScPo');
    		
    		
    		//------------------- Sap Routes --------------------------//
@@ -219,6 +222,7 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
    		Route::get('get-sap-division','Sap\DivisionController@getSapDivision')->name('get_sap_division');
    		// Sap Distribution Channel Controller Routes....
    		Route::get('get-distri-channel','Sap\DistributionChannelController@getDistriChannel')->name('get_distri_channel');
+       
 
    		//------------------- End of Sap Routes -------------------//
 
@@ -226,6 +230,8 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
 
    		Route::post('store-do','Dorder\DoController@storeDo')->name('store_do');
    		Route::post('get-do-details','Dorder\DoController@getDoDetails')->name('get_do-details');
+   		 Route::get('get_do_sub_cats/{po_no}','Dorder\DoController@getDoSubCats');
+   		Route::get('get_all_do','Dorder\DoController@getAllDo');
    		//------------------- End of Dorder Routes --------------------------//
      });
    	

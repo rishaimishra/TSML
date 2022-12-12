@@ -8,6 +8,7 @@ use App\Models\SalesContarct;
 use App\Models\SalesContractMaterial;
 use App\Models\SalesContarctSpecs;
 use App\Models\ScPriceDetail;
+use App\Models\SalesOrder;
 use DB;
 
 class SalesContractController extends Controller
@@ -118,7 +119,8 @@ class SalesContractController extends Controller
                  	 ->leftjoin('quotes','orders.rfq_no','quotes.rfq_no')
                  	 ->leftjoin('users','quotes.user_id','users.id')
                  	 ->groupBy('sc_transactions.mat_code')
-                 	     ->select('sc_transactions.*','plants.code as pcode','users.name','orders.po_date')->where('orders.po_no',$po_no)->get();
+                 	     ->select('sc_transactions.*','plants.code as pcode','users.name','orders.po_date','orders.cus_po_no','orders.po_date')->where('orders.po_no',$po_no)->get();
+                 	 // echo "<pre>";print_,'orders.po_date')->where('orders.po_no',$po_no)->get();
                  	 // echo "<pre>";print_r($newcount);exit();
                  	 foreach ($res as $key => $value) {
                  	 	
@@ -130,6 +132,10 @@ class SalesContractController extends Controller
                  	 	 $data[$key]['mat_code'] = $value->mat_code;
                  	 	 $data[$key]['pcode'] = $value->pcode;
                  	 	 $data[$key]['rfq_no'] = $value->rfq_no;
+                 	 	 $data[$key]['cus_po_no'] = $value->cus_po_no;
+                 	 	 $data[$key]['po_date'] = $value->po_date;
+                 	 	 $data[$key]['net_value'] = $this->scNetValue($po_no);
+                 	 	 $data[$key]['qty_ct'] = $this->qty_ct($po_no);
                  	 	 $data[$key]['price_det'] = $this->priceBreakById($value->mat_code);
                  	 	 $data[$key]['specs'] = $this->subcatspecs($value->mat_code);
                  	 	 $data[$key]['total'] = $this->totalRfqPrice($value->schedule);
@@ -296,17 +302,17 @@ class SalesContractController extends Controller
 
           try{ 
                
-               $transact_id = $request->input('transact_id');   
-               $co_no = $request->input('co_no');
-               $po_no = $request->input('po_no');
-               $pay_proc = $request->input('pay_proc');
-               $fin_doc_no = $request->input('fin_doc_no');
+               $data['transact_id'] = $request->input('transact_id');   
+               $data['co_no'] = $request->input('co_no');
+               $data['po_no'] = $request->input('po_no');
+               $data['pay_proc'] = $request->input('pay_proc');
+               $data['fin_doc_no'] = $request->input('fin_doc_no');
                
                    // echo "<pre>";print_r($newcount);exit();
-             
+             SalesOrder::create($data);
               return response()->json(['status'=>1,
                 'message' =>'success',
-                'result' => $res],
+                'result' => 'Submitted'],
                 config('global.success_status'));
 
 
@@ -322,18 +328,115 @@ class SalesContractController extends Controller
 
    // ----------------------------- plant id -------------------------
 
-     public function getPlantId($p_name)
+     public function getPlantId(Request $request)
       {
 
           try{ 
                
-               $plant = DB::table('plants')->where('name',$p_name)->first();
+               $plant = DB::table('plants')->where('name',$request->input('data'))->first();
                
                    // echo "<pre>";print_r($newcount);exit();
-             
+             if(!empty($plant))
+             {
+             	 $id = $plant->id;
+             }else{
+
+             	$id = "";
+             }
               return response()->json(['status'=>1,
                 'message' =>'success',
-                'result' => $plant->id],
+                'result' => $id],
+                config('global.success_status'));
+
+
+        }catch(\Exception $e){
+
+         return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
+       }
+
+         
+      }
+
+   // ---------------------------------------------------------------------------
+
+
+      public function scNetValue($po_no)
+      {
+      	 $sum = 0;
+
+      	 $res = DB::table('orders')->leftjoin('quotes','orders.rfq_no','quotes.rfq_no')
+      	 ->leftjoin('quote_schedules','quotes.id','quote_schedules.quote_id')
+      	 ->whereNull('quotes.deleted_at')->whereNull('quote_schedules.deleted_at')
+      	 ->where('orders.po_no',$po_no)->select('quote_schedules.kam_price')->get();
+
+         foreach ($res as $key => $value) {
+         	
+            $sum += $value->kam_price;
+         }
+
+         return $sum;
+      }
+
+      public function qty_ct($po_no)
+      {
+      	 $sum = 0;
+
+      	 $res = DB::table('orders')->leftjoin('quotes','orders.rfq_no','quotes.rfq_no')
+      	 ->leftjoin('quote_schedules','quotes.id','quote_schedules.quote_id')
+      	 ->whereNull('quotes.deleted_at')->whereNull('quote_schedules.deleted_at')
+      	 ->where('orders.po_no',$po_no)->select('quote_schedules.quantity')->get();
+
+         foreach ($res as $key => $value) {
+         	
+            $sum += $value->quantity;
+         }
+
+         return $sum;
+      }
+
+
+   // ----------------------------- sc all po-------------------------
+
+     public function getAllScPo()
+      {
+
+          try{ 
+               
+            $quote = DB::table('orders')
+           ->leftjoin('quotes','orders.rfq_no','quotes.rfq_no')
+           ->leftjoin('quote_schedules','quotes.id','quote_schedules.quote_id')
+           ->leftjoin('users','quotes.user_id','users.id')    
+           ->select('quotes.rfq_no','quotes.user_id','orders.letterhead','orders.po_no','orders.po_date','users.name','orders.status',DB::raw("(sum(quote_schedules.quantity)) as tot_qt"),'orders.amdnt_no','orders.cus_po_no')
+           ->orderBy('quotes.updated_at','desc')
+           ->groupBy('quotes.rfq_no');
+
+           $quote = $quote->whereNull('quotes.deleted_at')->where('quote_schedules.quote_status',1)
+           ->get()->toArray();
+           // echo "<pre>";print_r($quote);exit();
+
+          if(!empty($quote))
+          {
+          foreach ($quote as $key => $value) {
+            
+            $result[$key]['po_no'] = $value->po_no;
+            $result[$key]['cus_po_no'] = $value->cus_po_no;
+            $result[$key]['user'] = $value->name;
+            $result[$key]['rfq_no'] = $value->rfq_no;
+            $result[$key]['quantity'] = $value->tot_qt;
+            $result[$key]['amdnt_no'] = $value->amdnt_no;
+            $date =  date_create($value->po_date);
+            $po_dt = date_format($date,"d/m/Y");
+            $result[$key]['po_date'] = $po_dt;
+
+         
+
+          }
+        }
+        
+        
+              return response()->json(['status'=>1,
+                'message' =>'success',
+                'result' => $result],
                 config('global.success_status'));
 
 
