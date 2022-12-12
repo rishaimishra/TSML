@@ -11,6 +11,9 @@ use App\User;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Reader\Csv;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
+use App\Models\SapSalesOrganization;
+use App\Models\SapIncoterms;
+use App\Models\SapPaymentTerms;
 use Response;
 use Hash;
 class BulkController extends Controller
@@ -49,6 +52,49 @@ class BulkController extends Controller
 
             $response['success'] = true;
             $response['message'] = 'User Uploaded Successfully';
+            return Response::json($response);
+
+         }else{
+            $response['success'] = false;
+            $response['message'] = 'No Excel File Found';
+            return Response::json($response);
+         }   
+         
+
+         
+        
+        }catch(\Exception $e){
+            $response['error'] = $e->getMessage();
+            return Response::json($response);
+        }
+    }
+
+    public function storExceleData(Request $request)
+    {
+        // dd('store-excel-data');
+        $response = [];
+        try{
+         if ($request->hasFile('excel'))
+         {
+            $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+            $spreadsheet = $reader->load($request->excel);
+            $sheetData = $spreadsheet->getActiveSheet()->toArray();
+            // return $sheetData;
+            $removed = array_shift($sheetData);
+            $data = json_encode($sheetData);
+            // dd($data);
+            foreach($sheetData as $val)
+            {
+                 
+                    $user = new SapPaymentTerms;
+                    $user->payment_terms_code = $val[0];
+                    $user->payment_terms_dec = $val[1];                    
+                    $user->save();
+                
+            }
+
+            $response['success'] = true;
+            $response['message'] = 'Excel uploaded successfully';
             return Response::json($response);
 
          }else{

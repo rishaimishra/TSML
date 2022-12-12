@@ -15,6 +15,8 @@ use Illuminate\Http\Request;
 
 // Route::post('get-po-list-admin','Api\Modules\PoDetails\PoDetailsController@getPoDetails')->name('get_po_list_admin');
 
+Route::post('store-excel-data','Api\Modules\Bulk\BulkController@storExceleData');
+
 Route::get('download-po-details-pdf/{id}','Api\Modules\PoDetails\PoDetailsController@downloadPoPdf')->name('download_po_details_pdf');
 Route::get('gst_details_dummy','Api\Modules\Stub\StubbingController@gstDetailsDummy');
 
