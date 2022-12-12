@@ -220,6 +220,11 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
 
    		//------------------- End of Sap Routes -------------------//
 
+   		//------------------- Dorder Routes --------------------------//
+
+   		Route::post('store-do','Dorder\DoController@storeDo')->name('store_do');
+   		Route::post('get-do-details','Dorder\DoController@getDoDetails')->name('get_do-details');
+   		//------------------- End of Dorder Routes --------------------------//
      });
    	
 });
