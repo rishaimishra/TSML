@@ -1,0 +1,217 @@
+<?php
+
+namespace App\Http\Controllers\Api\Modules\Dorder;
+
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Models\DeliveryOrders;
+ use App\Models\ProductSubCategory;
+use JWTAuth;
+use Validator;
+use File; 
+use Storage;
+use Response;
+use DB; 
+use Mail;
+
+
+class DoController extends Controller
+{
+    /**
+     * This is for store do.
+     *
+     * @param  \App\Product  $product
+     * @return \Illuminate\Http\Response
+     */
+   	public function storeDo(Request $request)
+   	{ 
+
+   		// dd($request->all());
+         
+    	$validation = \Validator::make($request->all(),[ 
+    		"user_id" => "required|numeric",
+            "so_no" => "required|numeric",
+            "invoice_no" => "required",
+            "material_grade" => "required", 
+        ]);
+
+        if ($validation->fails()) {
+            return response()->json(['status'=>0,'errors'=>$validation->errors()],200);
+        }
+
+        $input['user_id'] = $request->user_id;
+        $input['so_no'] = $request->so_no;
+        $input['do_no'] = $request->do_no;
+        $input['invoice_no'] = $request->invoice_no; 
+        $input['invoice_date'] = date("Y-m-d H:i:s", strtotime($request->invoice_date));
+        $input['material_grade'] = $request->material_grade;
+        $input['do_quantity'] = $request->do_quantity;
+        $input['despatch_date'] = date("Y-m-d H:i:s", strtotime($request->despatch_date));
+        $input['truck_no'] = $request->truck_no;
+        $input['driver_no'] = $request->driver_no;
+        $input['premarks'] = $request->premarks;
+
+        if ($request->hasFile('lr_file'))
+	    {  
+
+	    	$image = $request->lr_file; 
+
+            $filename = rand(1000,9999).'-'.$image->getClientOriginalName();
+                    Storage::putFileAs('public/images/do/', $image, $filename);
+
+            $input['lr_file'] = $filename;
+
+	    }
+
+	    if ($request->hasFile('e_waybill_file'))
+        {  
+
+            $image = $request->e_waybill_file; 
+
+            $filename = rand(1000,9999).'-'.$image->getClientOriginalName();
+                    Storage::putFileAs('public/images/do/', $image, $filename);
+
+            $input['e_waybill_file'] = $filename;
+
+        }
+	    if ($request->hasFile('test_certificate_file'))
+	    {
+	    	$image = $request->test_certificate_file; 
+
+            $filename = rand(1000,9999).'-'.$image->getClientOriginalName();
+                    Storage::putFileAs('public/images/do/', $image, $filename);
+
+            $input['test_certificate_file'] = $filename;
+
+	    	 
+	    }
+	    if ($request->hasFile('e_invoice_file'))
+	    {
+	    	$image = $request->e_invoice_file; 
+
+            $filename = rand(1000,9999).'-'.$image->getClientOriginalName();
+                    Storage::putFileAs('public/images/do/', $image, $filename);
+
+            $input['e_invoice_file'] = $filename; 
+	    	 
+	    }
+
+        if ($request->hasFile('misc_doc_file'))
+        {
+            $image = $request->misc_doc_file; 
+
+            $filename = rand(1000,9999).'-'.$image->getClientOriginalName();
+                    Storage::putFileAs('public/images/do/', $image, $filename);
+
+            $input['misc_doc_file'] = $filename; 
+             
+        }
+
+	    // dd($input);
+
+        $doData = DeliveryOrders::create($input); 
+
+        // return response()->json(['sucs'=>'New category added successfully.'],200);
+
+   	  	return response()->json(['status'=>1,'message' =>'Delivery orders added successfully.','result' => $doData],200);
+		 
+    }
+
+    /**
+     * This is get do details. 
+     * @param  \App\Product  $product
+     * @return \Illuminate\Http\Response
+    */
+    public function getDoDetails(Request $request)
+    {
+
+      try{
+            $validator = Validator::make($request->all(), [  
+            'do_id'        => 'required', 
+             
+            ]);
+
+            if ($validator->fails()) { 
+                return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $validator->errors()],config('global.failed_status'));
+            }
+
+            $doData = DeliveryOrders::where('id',$request->do_id)->first();
+            
+              
+            if (!empty($doData)) {
+                    # code...
+                   
+                $data['do_id'] = (!empty($doData->id)) ? $doData->id : '';
+                $data['so_no'] = (!empty($doData->so_no)) ? $doData->so_no : '';
+                $data['do_no'] = (!empty($doData->do_no)) ?  $doData->do_no : '';
+                $data['invoice_no'] = (!empty($doData->invoice_no)) ?  $doData->invoice_no : '';
+                $data['invoice_date'] = date('d-m-Y H:i:s',strtotime($doData->invoice_date));
+                
+                $data['material_grade'] = (!empty($doData->material_grade)) ?  $doData->material_grade : '';
+                $data['do_quantity'] = (!empty($doData->do_quantity)) ?  $doData->do_quantity : '';
+                $data['despatch_date'] = date('d-m-Y H:i:s',strtotime($doData->despatch_date));
+                $data['truck_no'] = (!empty($doData->truck_no)) ?  $doData->truck_no : '';
+                $data['driver_no'] = (!empty($doData->driver_no)) ?  $doData->driver_no : '';
+                $data['premarks'] = (!empty($doData->premarks)) ?  $doData->premarks : '';
+                 
+
+                if (isset($doData->lr_file)) 
+                {
+
+                    $data['lr_file'] = asset('storage/app/public/images/do/'.$doData->lr_file);
+                }
+                else
+                {
+                    $data['lr_file'] =  null;
+                }
+                
+                if(isset($doData->e_waybill_file))
+                {
+                    $data['e_waybill_file'] =  asset('storage/app/public/images/do/'.$doData->e_waybill_file);
+                }
+                else
+                {
+                    $data['e_waybill_file'] =  null;  
+                }
+
+                if(isset($doData->test_certificate_file))
+                {
+                    $data['test_certificate_file'] =  asset('storage/app/public/images/do/'.$doData->test_certificate_file);
+                }
+                else
+                {
+                    $data['test_certificate_file'] =  null;  
+                }
+
+                if(isset($doData->e_invoice_file))
+                {
+                    $data['e_invoice_file'] =  asset('storage/app/public/images/do/'.$doData->e_invoice_file);
+                }
+                else
+                {
+                    $data['e_invoice_file'] =  null;    
+                }
+
+                if(isset($doData->misc_doc_file))
+                {
+                    $data['misc_doc_file'] =  asset('storage/app/public/images/do/'.$doData->misc_doc_file);
+                }
+                else
+                {
+                    $data['misc_doc_file'] =  null;    
+                } 
+
+            
+                return response()->json(['status'=>1,'message' =>'Success','result' => $data],200); 
+            }
+            else{
+                return response()->json(['status'=>1,'message' =>'No data found','result' => []],config('global.success_status'));
+            }
+            
+            
+          }catch(\Exception $e){
+            $response['error'] = $e->getMessage();
+            return response()->json([$response]);
+          }
+    }
+}
