@@ -214,4 +214,80 @@ class DoController extends Controller
             return response()->json([$response]);
           }
     }
+
+
+
+   // ----------------------------- get do sub category id -------------------------
+
+     public function getDoSubCats($po_no)
+      {
+
+          try{ 
+               
+            $res = DB::table('orders')->leftjoin('quotes','orders.rfq_no','quotes.rfq_no')
+               ->leftjoin('quote_schedules','quotes.id','quote_schedules.quote_id')
+               ->leftjoin('sub_categorys','quote_schedules.sub_cat_id','sub_categorys.id')
+               ->where('orders.po_no',$po_no)->whereNull('quotes.deleted_at')->whereNull('quote_schedules.deleted_at')
+               ->select('sub_categorys.id','sub_categorys.sub_cat_name')->get();
+               
+                   // echo "<pre>";print_r($newcount);exit();
+             
+              return response()->json(['status'=>1,
+                'message' =>'success',
+                'result' => $res],
+                config('global.success_status'));
+
+
+        }catch(\Exception $e){
+
+         return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
+       }
+
+         
+      }
+
+   // ---------------------------------------------------------------------------
+
+    // ----------------------------- get do sub category id -------------------------
+
+     public function getAllDo()
+      {
+
+          try{ 
+               
+            $res = DB::table('sales_orders')->leftjoin('delivery_orders','sales_orders.so_no','delivery_orders.so_no')
+               // ->leftjoin('quote_schedules','quotes.id','quote_schedules.quote_id')
+               // ->leftjoin('sub_categorys','quote_schedules.sub_cat_id','sub_categorys.id')
+               // ->where('orders.po_no',$po_no)->whereNull('quotes.deleted_at')->whereNull('quote_schedules.deleted_at')
+               ->select('sales_orders.so_no','sales_orders.created_at','delivery_orders.do_no','delivery_orders.do_quantity','delivery_orders.created_at as do_date')
+               ->get();
+
+               foreach ($res as $key => $value) {
+
+                  $arra['so_no'] = $value->so_no;
+                  $arra['do_no'] = $value->do_no;
+                  $arra['do_quantity'] = $value->do_quantity;
+                  $arra['so_date'] = date('d-m-Y',strtotime($value->created_at));
+                  $arra['do_date'] = date('d-m-Y',strtotime($value->do_date));
+                  // $arra['so_no'] = $valu->so_no;
+                  
+               }
+               
+                   // echo "<pre>";print_r($newcount);exit();
+             
+              return response()->json(['status'=>1,
+                'message' =>'success',
+                'result' => $arra],
+                config('global.success_status'));
+
+
+        }catch(\Exception $e){
+
+         return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
+       }
+
+         
+      }
+
+   // ---------------------------------------------------------------------------
 }
