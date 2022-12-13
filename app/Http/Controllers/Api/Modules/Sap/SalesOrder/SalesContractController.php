@@ -471,7 +471,14 @@ class SalesContractController extends Controller
          ->leftjoin('quote_schedules','quotes.id','quote_schedules.quote_id')
          ->where('orders.po_no',$po_no)->whereNull('quotes.deleted_at')->whereNull('quote_schedules.deleted_at')->where('quote_schedules.sub_cat_id',$sub_cat->sub_cat_id)->first();
 
+         if(!empty($res))
+         {
+            $qty = $res->quantity;
+         }
+         else{
 
-         return $res->quantity;
+            $qty = "";
+         }
+         return $qty;
       }
 }
