@@ -14,6 +14,7 @@ use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use App\Models\SapSalesOrganization;
 use App\Models\SapIncoterms;
 use App\Models\SapPaymentTerms;
+use App\Models\SapOrderType;
 use Response;
 use Hash;
 class BulkController extends Controller
@@ -86,9 +87,9 @@ class BulkController extends Controller
             foreach($sheetData as $val)
             {
                  
-                    $user = new SapPaymentTerms;
-                    $user->payment_terms_code = $val[0];
-                    $user->payment_terms_dec = $val[1];                    
+                    $user = new SapOrderType;
+                    $user->order_type_code = $val[0];
+                    $user->order_type_dec = $val[1];                    
                     $user->save();
                 
             }
