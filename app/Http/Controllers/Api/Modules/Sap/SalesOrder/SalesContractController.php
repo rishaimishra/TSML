@@ -138,6 +138,7 @@ class SalesContractController extends Controller
                  	 	 $data[$key]['user_code'] = $value->user_code;
                  	 	 $data[$key]['addressone'] = $value->addressone;
                  	 	 $data[$key]['addresstwo'] = $value->addresstwo;
+                     $data[$key]['odr_qty'] = $this->orderQty($value->mat_code,$po_no);
                  	 	 $data[$key]['city'] = $value->city;
                  	 	 $data[$key]['state'] = $value->state;
                  	 	 $data[$key]['pincode'] = $value->pincode;
@@ -460,4 +461,17 @@ class SalesContractController extends Controller
       }
 
    // ---------------------------------------------------------------------------
+
+      public function orderQty($mat_code,$po_no)
+      { 
+        $sub_cat = DB::table('product_size_mat_no')->where('mat_no',$mat_code)->first();
+        
+        $res = DB::table('orders')
+         ->leftjoin('quotes','orders.rfq_no','quotes.rfq_no')
+         ->leftjoin('quote_schedules','quotes.id','quote_schedules.quote_id')
+         ->where('orders.po_no',$po_no)->whereNull('quotes.deleted_at')->whereNull('quote_schedules.deleted_at')->where('quote_schedules.sub_cat_id',$sub_cat->sub_cat_id)->first();
+
+
+         return $res->quantity;
+      }
 }
