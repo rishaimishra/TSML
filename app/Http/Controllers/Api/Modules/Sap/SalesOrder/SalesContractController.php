@@ -9,6 +9,7 @@ use App\Models\SalesContractMaterial;
 use App\Models\SalesContarctSpecs;
 use App\Models\ScPriceDetail;
 use App\Models\SalesOrder;
+use App\Models\ScPermissible;
 use DB;
 
 class SalesContractController extends Controller
@@ -17,59 +18,74 @@ class SalesContractController extends Controller
     {    
          try{ 
                  // echo "<pre>";print_r($request->all());exit();
-		    	 $contract['po_no'] = $request->input('po_no');
-		    	 $contract['contract_ty'] = $request->input('contract_ty');
-		    	 $contract['sales_grp'] = $request->input('sales_grp');
-		    	 $contract['qty_cont'] = $request->input('qty_cont');
-		    	 $contract['net_val'] = $request->input('net_val');
-		    	 $contract['sold_to_party'] = $request->input('sold_to_party');
-		    	 $contract['ship_to_party'] = $request->input('ship_to_party');
-		    	 $contract['cus_ref'] = $request->input('cus_ref');
-		    	 $contract['cus_ref_dt'] = $request->input('cus_ref_dt');
-		    	 $contract['shp_cond'] = $request->input('shp_cond');
-		    	 $contract['sales_org'] = $request->input('sales_org');
-		    	 $contract['dis_chnl'] = $request->input('dis_chnl');
-		    	 $contract['div'] = $request->input('div');
-		    	 $contract['sales_ofc'] = $request->input('sales_ofc');
-		    	 $contract['cost_ref'] = $request->input('cost_ref');
+          // foreach ($request->all() as $key => $value) {
+            
+		    	 $po_details = $request->input('po_details');
 
+
+		    	 $contract['contract_ty'] = $po_details['contract_ty'];
+		    	 $contract['sales_grp'] = $po_details['sales_grp'];
+		    	 $contract['qty_cont'] = $po_details['qty_cont'];
+		    	 $contract['net_val'] = $po_details['net_val'];
+		    	 $contract['sold_to_party'] = $po_details['sold_to_party'];
+		    	 $contract['ship_to_party'] = $po_details['ship_to_party'];
+		    	 $contract['cus_ref'] = $po_details['cus_ref'];
+		    	 $contract['cus_ref_dt'] = $po_details['cus_ref_dt'];
+		    	 $contract['shp_cond'] = $po_details['shp_cond'];
+		    	 $contract['sales_org'] = $po_details['sales_org'];
+		    	 $contract['dis_chnl'] = $po_details['dis_chnl'];
+		    	 $contract['div'] = $po_details['div'];
+		    	 $contract['sales_ofc'] = $po_details['sales_ofc'];
+		    	 $contract['cost_ref'] = $po_details['cost_ref'];
+          
+          // echo "<pre>";print_r($contract);exit();
 		    	 $id = SalesContarct::create($contract);
 
 		    	 $contarctId = $id['id'];
-		    	 // echo "<pre>";print_r($request->input('material'));exit();
+		    	 
 
 		    	 $materials = $request->input('material');
+
 
 		    	 foreach ($materials as $key => $value) {
 		    	 	 
 		    	 	  $arr['contarct_id'] = $contarctId;
 		    	 	  $arr['mat_code'] = $value['mat_code'];
+              $arr['pcode'] = $value['pcode'];
 		    	 	  $arr['rfq_no'] = $value['rfq_no'];
 		    	 	  $arr['total'] = $value['total'];
-		    	 	  $arr['incoterms'] = $value['incoterms'];
-		    	 	  $arr['pay_terms'] = $value['pay_terms'];
-		    	 	  $arr['freight'] = $value['freight'];
-		    	 	  $arr['cus_grp'] = $value['cus_grp'];
-		    	 	  $arr['fr_ind'] = $value['fr_ind'];
+		    	 	  $arr['incoterms'] = $value['inco_form']['incoterms'];
+		    	 	  $arr['pay_terms'] = $value['inco_form']['pay_terms'];
+		    	 	  $arr['freight'] = $value['inco_form']['freight'];
+		    	 	  $arr['cus_grp'] = $value['inco_form']['cus_grp'];
+		    	 	  $arr['fr_ind'] = $value['inco_form']['fr_ind'];
 
-
+              // echo "<pre>";print_r($value['specs']);exit();
 		    	 	  $sid = SalesContractMaterial::create($arr);
                       
-                      foreach ($value['specs'] as $ke => $valu) {
+              foreach ($value['specs'] as $ke => $valu) {
 
-                      	  $specs['mat_id'] = $sid['id'];
+                      	$specs['mat_id'] = $sid['id'];
 	                      $specs['comp'] = $valu['comp'];
 	                      $specs['max'] = $valu['max'];
 	                      $specs['min'] = $valu['min'];
-	                      $specs['permissible'] = $valu['permissible'];
-	                      $specs['uom'] = $valu['uom'];
+	                      
 
 	                      SalesContarctSpecs::create($specs);
                       }
                       
 
-                       
-                      // echo "<pre>";print_r($value['price_det']);exit();
+                      // foreach ($value['per_percent'] as $kes => $va) {
+
+                        $spe['mat_id'] = $sid['id'];
+                        $spe['mat_code'] = $value['per_percent']['mat_code'];
+                        $spe['perm_percent'] = $value['per_percent']['perm_percent'];
+                        $spe['umo'] = $value['per_percent']['umo'];
+                        
+
+                        ScPermissible::create($spe);
+                      // }
+                      // echo "<pre>";print_r($spe);exit();
 
                       
 
@@ -91,6 +107,7 @@ class SalesContractController extends Controller
                        // echo "<pre>";print_r($specs);exit();
 
 		    	 }
+          // }
                   
 		    	  return response()->json(['status'=>1,
 					          'message' =>'success',
