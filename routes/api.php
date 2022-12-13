@@ -222,6 +222,15 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
    		Route::post('get-sap-division','Sap\DivisionController@getSapDivision')->name('get_sap_division');
    		// Sap Distribution Channel Controller Routes....
    		Route::get('get-distri-channel','Sap\DistributionChannelController@getDistriChannel')->name('get_distri_channel');
+
+   		// Sap Order Type Controller Routes....
+   		Route::get('get-order-type','Sap\SapOrderTypeController@getOrderType')->name('get_order_type');
+
+   		// Sap Payment Terms Controller Routes....
+   		Route::get('get-sap-payment-terms','Sap\SapPaymentTermsController@getPaymentTerms')->name('get_sap_payment_terms');
+
+   		// Sap Payment Gurantee Procedure Controller Routes....
+   		Route::get('get-pay-gurantee-pos','Sap\SapPaymentGuranteeProcedureController@getPayGuranteePos')->name('get_pay_gurantee_pos');
        
 
    		//------------------- End of Sap Routes -------------------//
