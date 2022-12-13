@@ -22,7 +22,7 @@ class SalesContractController extends Controller
             
 		    	 $po_details = $request->input('po_details');
 
-
+           $contract['po_no'] = $po_details['po_no'];
 		    	 $contract['contract_ty'] = $po_details['contract_ty'];
 		    	 $contract['sales_grp'] = $po_details['sales_grp'];
 		    	 $contract['qty_cont'] = $po_details['qty_cont'];
@@ -516,7 +516,7 @@ class SalesContractController extends Controller
           try{   
                  $res = DB::table('sales_contracts')
                  ->leftjoin('sap_sales_organization','sales_contracts.sales_org','sap_sales_organization.id')
-                 ->leftjoin('sap_distribution_channel','sales_contracts.dis_chnl','sap_distribution_channel.id')
+                 ->leftjoin('sap_distribution_channel','sales_contracts.dis_chnl','sap_distribution_channel.distr_chan_code')
                  ->leftjoin('sap_division','sales_contracts.div','sap_division.id')
                  ->leftjoin('sap_sales_office','sales_contracts.sales_ofc','sap_sales_office.id')
                  ->leftjoin('sap_sales_group','sales_contracts.sales_grp','sap_sales_group.id')
