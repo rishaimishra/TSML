@@ -22,6 +22,13 @@ class CreateSalesOrdersTable extends Migration
             $table->string('pay_proc');
             $table->string('fin_doc_no');
             $table->integer('status');
+            $table->string('user_id');
+            $table->string('order_type');
+            $table->string('sales_org');
+            $table->string('dis_chnl');
+            $table->string('division');
+            $table->string('sales_ofc');
+            $table->string('sales_grp');
             $table->timestamps();
         });
     }

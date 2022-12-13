@@ -332,6 +332,13 @@ class SalesContractController extends Controller
                $data['po_no'] = $request->input('po_no');
                $data['pay_proc'] = $request->input('pay_proc');
                $data['fin_doc_no'] = $request->input('fin_doc_no');
+               $data['user_id'] = $request->input('user_id');
+               $data['order_type'] = $request->input('order_type');   
+               $data['sales_org'] = $request->input('sales_org');
+               $data['dis_chnl'] = $request->input('dis_chnl');
+               $data['division'] = $request->input('division');
+               $data['sales_ofc'] = $request->input('sales_ofc');
+               $data['sales_grp'] = $request->input('sales_grp');
                
                    // echo "<pre>";print_r($newcount);exit();
              SalesOrder::create($data);
@@ -498,4 +505,41 @@ class SalesContractController extends Controller
          }
          return $qty;
       }
+
+
+
+ // ---------------------------- prepare so from sc ---------------------------
+
+      public function getSoSc($so_no)
+      {
+
+          try{   
+                 $res = DB::table('sales_contracts')
+                 ->leftjoin('sap_sales_organization','sales_contracts.sales_org','sap_sales_organization.id')
+                 ->leftjoin('sap_distribution_channel','sales_contracts.dis_chnl','sap_distribution_channel.id')
+                 ->leftjoin('sap_division','sales_contracts.div','sap_division.id')
+                 ->leftjoin('sap_sales_office','sales_contracts.sales_ofc','sap_sales_office.id')
+                 ->leftjoin('sap_sales_group','sales_contracts.sales_grp','sap_sales_group.id')
+                 ->leftjoin('orders','sales_contracts.po_no','orders.po_no')
+                 ->leftjoin('quotes','orders.rfq_no','quotes.rfq_no')
+                 ->leftjoin('users','quotes.user_id','users.id')
+                 ->select('sales_contracts.sc_no','sales_contracts.sc_dt','users.org_name','sap_sales_organization.id','sap_sales_organization.sales_orgerms_dec','sap_distribution_channel.id as disid','sap_distribution_channel.distr_chan_terms_dec','sap_division.id as divid','sap_division.division_dec','sap_sales_office.id as ofcid','sap_sales_office.sales_office_dec','sap_sales_group.id as salesid','sap_sales_group.sales_group_dec','users.id as uid','sales_contracts.id as transactid')
+                 ->where('sales_contracts.sc_no',$so_no)
+                 ->whereNull('quotes.deleted_at')
+                 ->get()->toArray();
+             
+              return response()->json(['status'=>1,
+                'message' =>'success',
+                'result' => $res],
+                config('global.success_status'));
+
+
+        }catch(\Exception $e){
+
+         return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
+       }
+
+         
+      }
+      // --------------------------------------------------------------------
 }

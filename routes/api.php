@@ -187,6 +187,8 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
 
 
    		Route::get('get_all_sc_po','Sap\SalesOrder\SalesContractController@getAllScPo');
+
+   		Route::get('get_so_sc/{sc_no}','Sap\SalesOrder\SalesContractController@getSoSc');
    		
    		
    		//------------------- Sap Routes --------------------------//
