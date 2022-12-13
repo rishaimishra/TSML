@@ -523,7 +523,7 @@ class SalesContractController extends Controller
                  ->leftjoin('orders','sales_contracts.po_no','orders.po_no')
                  ->leftjoin('quotes','orders.rfq_no','quotes.rfq_no')
                  ->leftjoin('users','quotes.user_id','users.id')
-                 ->select('sales_contracts.sc_no','sales_contracts.sc_dt','users.org_name','sap_sales_organization.id','sap_sales_organization.sales_orgerms_dec','sap_distribution_channel.id as disid','sap_distribution_channel.distr_chan_terms_dec','sap_division.id as divid','sap_division.division_dec','sap_sales_office.id as ofcid','sap_sales_office.sales_office_dec','sap_sales_group.id as salesid','sap_sales_group.sales_group_dec','users.id as uid','sales_contracts.id as transactid')
+                 ->select('sales_contracts.sc_no','sales_contracts.sc_dt','users.org_name','sap_sales_organization.id','sap_sales_organization.sales_orgerms_dec','sap_distribution_channel.distr_chan_code as disid','sap_distribution_channel.distr_chan_terms_dec','sap_division.id as divid','sap_division.division_dec','sap_sales_office.id as ofcid','sap_sales_office.sales_office_dec','sap_sales_group.id as salesid','sap_sales_group.sales_group_dec','users.id as uid','sales_contracts.id as transactid')
                  ->where('sales_contracts.sc_no',$so_no)
                  ->whereNull('quotes.deleted_at')
                  ->get()->toArray();
