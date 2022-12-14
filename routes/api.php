@@ -244,6 +244,20 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
    		 Route::get('get_do_sub_cats/{so_no}','Dorder\DoController@getDoSubCats');
    		Route::get('get_all_do','Dorder\DoController@getAllDo');
    		//------------------- End of Dorder Routes --------------------------//
+
+
+
+         //------------------- RFQ Order Status Kam -------------------//
+         Route::post('store-rfq-order-status-kam','RfqOrderStatus\RfqOrderStatusController@StoreRfqOrderStatusKam')->name('store_rfq_order_status_kam');
+         Route::post('get-rfq-order-status-kam','RfqOrderStatus\RfqOrderStatusController@getRfqOrderStatusKam')->name('get_rfq_order_status_kam');
+         //------------------- End of RFQ Order Status Kam -------------------//
+
+
+         //------------------- RFQ Order Status Customer -------------------//
+         Route::post('store-rfq-order-status-cust','RfqOrderStatus\RfqOrderStatusController@StoreRfqOrderStatusCust')->name('store_rfq_order_status_cust');
+         Route::post('get-rfq-order-status-cust','RfqOrderStatus\RfqOrderStatusController@getRfqOrderStatuCust')->name('get_rfq_order_status_cust');
+
+         //------------------- End of RFQ Order Status Customer -------------------//
      });
    	
 });
