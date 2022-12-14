@@ -230,5 +230,36 @@ class RequoteController extends Controller
    // ---------------------------------------------------------------------------
 
 
+ // ----------------------------- get price break -------------------------
+
+     public function getPriceBreak(Request $request)
+      {
+
+          try{ 
+                   
+               $rfq_no = $request->input('rfq_no');
+               $sche_no = $request->input('sche_no');
+               
+               $res = ScTransaction::where('rfq_no',$rfq_no)->where('schedule',$sche_no)
+               ->select('code','value')->get();
+                   // echo "<pre>";print_r($newcount);exit();
+             
+              return response()->json(['status'=>1,
+                'message' =>'success',
+                'result' => $res],
+                config('global.success_status'));
+
+
+        }catch(\Exception $e){
+
+         return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
+       }
+
+         
+      }
+
+   // ---------------------------------------------------------------------------
+
+
 
 }

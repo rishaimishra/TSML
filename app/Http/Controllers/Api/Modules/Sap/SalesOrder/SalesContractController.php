@@ -90,6 +90,7 @@ class SalesContractController extends Controller
                         $spe['mat_code'] = $value['per_percent']['mat_code'];
                         $spe['perm_percent'] = $value['per_percent']['perm_percent'];
                         $spe['umo'] = $value['per_percent']['umo'];
+                        $spe['chartcs'] = $value['per_percent']['character'];
                         
 
                         ScPermissible::create($spe);
