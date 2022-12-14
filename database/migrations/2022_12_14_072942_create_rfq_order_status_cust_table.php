@@ -14,8 +14,7 @@ class CreateRfqOrderStatusCustTable extends Migration
     public function up()
     {
         Schema::create('rfq_order_status_cust', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('user_id');
+            $table->bigIncrements('id'); 
             $table->string('rfq_no');
             $table->string('rfq_submited')->nullable(); 
             $table->string('quoted_by_tsml')->nullable();
