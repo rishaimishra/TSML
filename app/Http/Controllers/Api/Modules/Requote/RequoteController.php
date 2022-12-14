@@ -158,7 +158,13 @@ class RequoteController extends Controller
               $data = array();
                    // echo "<pre>";print_r($request->all());exit();
                foreach ($request->all() as $key => $value) {
-
+                  
+                  // echo "<pre>";print_r($value['schedule']);exit();
+                  $res = ScTransaction::where('rfq_no',$value['rfq_no'])->where('schedule',$value['schedule'])->get();
+                  if(!empty($res))
+                  {
+                      ScTransaction::where('rfq_no',$value['rfq_no'])->where('schedule',$value['schedule'])->delete();
+                  }
                   $mat_code = DB::table('product_size_mat_no')
                   ->where('sub_cat_id',$value['sub_cat_id'])->where('product_size',$value['size'])->first();
                    

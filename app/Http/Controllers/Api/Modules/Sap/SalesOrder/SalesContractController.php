@@ -10,6 +10,7 @@ use App\Models\SalesContarctSpecs;
 use App\Models\ScPriceDetail;
 use App\Models\SalesOrder;
 use App\Models\ScPermissible;
+use App\Models\ScmaterialDescription;
 use DB;
 
 class SalesContractController extends Controller
@@ -29,6 +30,8 @@ class SalesContractController extends Controller
 		    	 $contract['net_val'] = $po_details['net_val'];
 		    	 $contract['sold_to_party'] = $po_details['sold_to_party'];
 		    	 $contract['ship_to_party'] = $po_details['ship_to_party'];
+           $contract['sold_to_addr'] = $po_details['sold_to_addr'];
+           $contract['ship_to_addr'] = $po_details['ship_to_addr'];
 		    	 $contract['cus_ref'] = $po_details['cus_ref'];
 		    	 $contract['cus_ref_dt'] = $po_details['cus_ref_dt'];
 		    	 $contract['shp_cond'] = $po_details['shp_cond'];
@@ -38,30 +41,36 @@ class SalesContractController extends Controller
 		    	 $contract['sales_ofc'] = $po_details['sales_ofc'];
 		    	 $contract['cost_ref'] = $po_details['cost_ref'];
           
-          // echo "<pre>";print_r($contract);exit();
+          // echo "<pre>";print_r();exit();
 		    	 $id = SalesContarct::create($contract);
 
 		    	 $contarctId = $id['id'];
+
+            $inco_form = $request->input('inco_form');
 		    	 
+              $arr['contarct_id'] = $contarctId;
+              $arr['incoterms'] = $inco_form['incoterms'];
+              $arr['pay_terms'] = $inco_form['pay_terms'];
+              $arr['freight'] = $inco_form['freight'];
+              $arr['cus_grp'] = $inco_form['cus_grp'];
+              $arr['fr_ind'] = $inco_form['fr_ind'];
+
+              // echo "<pre>";print_r($arr);exit();
+              $con_mat_id = SalesContractMaterial::create($arr);
+
 
 		    	 $materials = $request->input('material');
 
 
 		    	 foreach ($materials as $key => $value) {
-		    	 	 
-		    	 	  $arr['contarct_id'] = $contarctId;
-		    	 	  $arr['mat_code'] = $value['mat_code'];
-              $arr['pcode'] = $value['pcode'];
-		    	 	  $arr['rfq_no'] = $value['rfq_no'];
-		    	 	  $arr['total'] = $value['total'];
-		    	 	  $arr['incoterms'] = $value['inco_form']['incoterms'];
-		    	 	  $arr['pay_terms'] = $value['inco_form']['pay_terms'];
-		    	 	  $arr['freight'] = $value['inco_form']['freight'];
-		    	 	  $arr['cus_grp'] = $value['inco_form']['cus_grp'];
-		    	 	  $arr['fr_ind'] = $value['inco_form']['fr_ind'];
 
-              // echo "<pre>";print_r($value['specs']);exit();
-		    	 	  $sid = SalesContractMaterial::create($arr);
+              $mat_desc['con_mat_id'] = $con_mat_id['id'];
+              $mat_desc['mat_code'] = $value['mat_code'];
+              $mat_desc['pcode'] = $value['pcode'];
+              $mat_desc['rfq_no'] = $value['rfq_no'];
+              $mat_desc['total'] = $value['total'];
+		    	 	 
+		    	 	  $sid = ScmaterialDescription::create($mat_desc);
                       
               foreach ($value['specs'] as $ke => $valu) {
 
