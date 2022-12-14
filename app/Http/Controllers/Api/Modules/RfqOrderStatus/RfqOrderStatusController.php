@@ -41,10 +41,12 @@ class RfqOrderStatusController extends Controller
           
           $input['rfq_no'] = $request->rfq_no;
           $input['rfq_submited'] = $request->rfq_submited;
-          $input['quoted_by_tsml'] = $request->quoted_by_tsml;
+          $input['approve_pending_from_sales'] = $request->approve_pending_from_sales;
+          $input['reverted_by_sales_plaing'] = $request->reverted_by_sales_plaing;
+          $input['price_approved_awaited'] = $request->price_approved_awaited;
+          $input['requated'] = $request->requated;
           $input['under_negotiation'] = $request->under_negotiation;
-          $input['final_quoted_by_tsml'] = $request->final_quoted_by_tsml;
-          $input['rfq_closed'] = $request->rfq_closed;
+          $input['quote_closed'] = $request->quote_closed;
            
           // dd($input);
           $chk = RfqOrderStatusKam::where('rfq_no',$request->rfq_no)->first();
@@ -53,24 +55,32 @@ class RfqOrderStatusController extends Controller
 
           	if ($request->rfq_submited) {
           		$inputa['rfq_submited'] = $request->rfq_submited;          		
-          		$freightsData = RfqOrderStatusKam::where('user_id',$request->user_id)->where('rfq_no',$request->rfq_no)->update($inputa);
+          		$freightsData = RfqOrderStatusKam::where('rfq_no',$request->rfq_no)->update($inputa);
           	}
-          	if ($request->quoted_by_tsml) {
+          	if ($request->approve_pending_from_sales) {
 
-          		$inputb['quoted_by_tsml'] = $request->quoted_by_tsml;          		
-          		$freightsData = RfqOrderStatusKam::where('user_id',$request->user_id)->where('rfq_no',$request->rfq_no)->update($inputb);
+          		$inputb['approve_pending_from_sales'] = $request->approve_pending_from_sales;          		
+          		$freightsData = RfqOrderStatusKam::where('rfq_no',$request->rfq_no)->update($inputb);
+          	}
+          	if ($request->reverted_by_sales_plaing) {
+          		$inputc['reverted_by_sales_plaing'] = $request->reverted_by_sales_plaing;          		
+          		$freightsData = RfqOrderStatusKam::where('rfq_no',$request->rfq_no)->update($inputc);
+          	}
+          	if ($request->price_approved_awaited) {
+          		$inputd['price_approved_awaited'] = $request->price_approved_awaited;          		
+          		$freightsData = RfqOrderStatusKam::where('rfq_no',$request->rfq_no)->update($inputd);
+          	}
+          	if ($request->requated) {
+          		$inpute['requated'] = $request->requated;          		
+          		$freightsData = RfqOrderStatusKam::where('rfq_no',$request->rfq_no)->update($inpute);
           	}
           	if ($request->under_negotiation) {
-          		$inputc['under_negotiation'] = $request->under_negotiation;          		
-          		$freightsData = RfqOrderStatusKam::where('user_id',$request->user_id)->where('rfq_no',$request->rfq_no)->update($inputc);
-          	}
-          	if ($request->final_quoted_by_tsml) {
-          		$inputd['final_quoted_by_tsml'] = $request->final_quoted_by_tsml;          		
-          		$freightsData = RfqOrderStatusKam::where('user_id',$request->user_id)->where('rfq_no',$request->rfq_no)->update($inputd);
-          	}
-          	if ($request->rfq_closed) {
-          		$inpute['rfq_closed'] = $request->rfq_closed;          		
-          		$freightsData = RfqOrderStatusKam::where('user_id',$request->user_id)->where('rfq_no',$request->rfq_no)->update($inpute);
+          		$inpute['under_negotiation'] = $request->under_negotiation;          		
+          		$freightsData = RfqOrderStatusKam::where('rfq_no',$request->rfq_no)->update($inpute);
+          	} 
+          	if ($request->quote_closed) {
+          		$inpute['quote_closed'] = $request->quote_closed;          		
+          		$freightsData = RfqOrderStatusKam::where('rfq_no',$request->rfq_no)->update($inpute);
           	} 
           	
           }else{

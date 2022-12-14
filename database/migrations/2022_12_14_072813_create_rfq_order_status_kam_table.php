@@ -18,7 +18,8 @@ class CreateRfqOrderStatusKamTable extends Migration
             $table->string('rfq_no');
             $table->string('rfq_submited')->nullable(); 
             $table->string('approve_pending_from_sales')->nullable();
-            $table->string('rebutted_by_sales_plaing')->nullable();
+            $table->string('reverted_by_sales_plaing')->nullable();
+            $table->string('price_approved_awaited')->nullable();
             $table->string('requated')->nullable();
             $table->string('under_negotiation')->nullable();
             $table->string('quote_closed')->nullable();
