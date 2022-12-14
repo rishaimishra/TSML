@@ -175,7 +175,7 @@ class RfqOrderStatusController extends Controller
           	if ($request->quoted_by_tsml) {
           		// dd('ok');
           		$inputb['quoted_by_tsml'] = $request->quoted_by_tsml;          		
-          		RfqOrderStatusCust::where('rfq_no',$request->rfq_no)->update($inputb);
+          		$custData = RfqOrderStatusCust::where('rfq_no',$request->rfq_no)->update($inputb);
           	}
           	if ($request->under_negotiation) {
           		$inputc['under_negotiation'] = $request->under_negotiation;          		
