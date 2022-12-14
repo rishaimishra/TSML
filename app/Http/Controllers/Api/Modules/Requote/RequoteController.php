@@ -158,7 +158,13 @@ class RequoteController extends Controller
               $data = array();
                    // echo "<pre>";print_r($request->all());exit();
                foreach ($request->all() as $key => $value) {
-
+                  
+                  // echo "<pre>";print_r($value['schedule']);exit();
+                  $res = ScTransaction::where('rfq_no',$value['rfq_no'])->where('schedule',$value['schedule'])->get();
+                  if(!empty($res))
+                  {
+                      ScTransaction::where('rfq_no',$value['rfq_no'])->where('schedule',$value['schedule'])->delete();
+                  }
                   $mat_code = DB::table('product_size_mat_no')
                   ->where('sub_cat_id',$value['sub_cat_id'])->where('product_size',$value['size'])->first();
                    
@@ -205,6 +211,37 @@ class RequoteController extends Controller
                    
                $res = DB::table('price_masters')->get();
 
+                   // echo "<pre>";print_r($newcount);exit();
+             
+              return response()->json(['status'=>1,
+                'message' =>'success',
+                'result' => $res],
+                config('global.success_status'));
+
+
+        }catch(\Exception $e){
+
+         return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
+       }
+
+         
+      }
+
+   // ---------------------------------------------------------------------------
+
+
+ // ----------------------------- get price break -------------------------
+
+     public function getPriceBreak(Request $request)
+      {
+
+          try{ 
+                   
+               $rfq_no = $request->input('rfq_no');
+               $sche_no = $request->input('sche_no');
+               
+               $res = ScTransaction::where('rfq_no',$rfq_no)->where('schedule',$sche_no)
+               ->select('code','value')->get();
                    // echo "<pre>";print_r($newcount);exit();
              
               return response()->json(['status'=>1,
