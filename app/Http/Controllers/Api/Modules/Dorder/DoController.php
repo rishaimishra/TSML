@@ -263,11 +263,12 @@ class DoController extends Controller
                // ->leftjoin('sub_categorys','quote_schedules.sub_cat_id','sub_categorys.id')
               ->leftjoin('users','sales_orders.user_id','users.id')
                // ->where('orders.po_no',$po_no)->whereNull('quotes.deleted_at')->whereNull('quote_schedules.deleted_at')
-               ->select('sales_orders.so_no','sales_orders.created_at','delivery_orders.do_no','delivery_orders.do_quantity','delivery_orders.created_at as do_date','users.name','sales_contracts.qty_cont')
+               ->select('sales_orders.so_no','sales_orders.created_at','delivery_orders.do_no','delivery_orders.do_quantity','delivery_orders.created_at as do_date','users.name','sales_contracts.qty_cont','delivery_orders.id as do_id')
                ->get();
 
                foreach ($res as $key => $value) {
-
+                  
+                  $arra['do_id'] = $value->do_id;
                   $arra['so_no'] = $value->so_no;
                   $arra['do_no'] = $value->do_no;
                   $arra['do_quantity'] = $value->do_quantity;
