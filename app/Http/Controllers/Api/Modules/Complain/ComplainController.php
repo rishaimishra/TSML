@@ -367,7 +367,8 @@ class ComplainController extends Controller
 
             $image = $request->cust_complain_file; 
 
-            $filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+            //$filename = time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+            $filename = rand(1000,9999).'-'.$image->getClientOriginalName();
             Storage::putFileAs('public/images/complain/', $image, $filename);
 
             $remarksinput['cust_com_file'] = $filename; 
