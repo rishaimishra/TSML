@@ -715,8 +715,9 @@ class ComplainController extends Controller
             ->leftjoin('complain_sub_categorys','complain_main.com_sub_cate_id','complain_sub_categorys.id')
             ->leftjoin('complain_sub_categorys2','complain_main.com_sub_cate_2id','complain_sub_categorys2.id')
             ->leftjoin('complain_sub_categorys3','complain_main.com_sub_cate_3id','complain_sub_categorys3.id')
+            ->leftjoin('orders','complain_main.po_number','orders.po_no')
             ->leftjoin('users','complain_main.user_id','users.id')
-            ->select('complain_main.id','users.name as customer_name','complain_main.po_number','complain_main.po_date','complain_main.created_at','complain_main.file','complain_main.closed_status','complain_categorys.com_cate_name','complain_sub_categorys.com_sub_cate_name','complain_sub_categorys2.com_sub_cate2_name','complain_sub_categorys3.com_sub_cate3_name')
+            ->select('complain_main.id','users.name as customer_name','complain_main.po_number','complain_main.po_date','complain_main.created_at','complain_main.file','complain_main.closed_status','complain_categorys.com_cate_name','complain_sub_categorys.com_sub_cate_name','complain_sub_categorys2.com_sub_cate2_name','complain_sub_categorys3.com_sub_cate3_name','orders.cus_po_no')
             ->where('complain_main.po_number',$po_number)
             ->first(); 
 
@@ -730,6 +731,7 @@ class ComplainController extends Controller
           $data['com_sub_cate3_name'] = $ComplainListData->com_sub_cate3_name;
           $data['po_number'] = $ComplainListData->po_number;
           $data['po_date'] = $ComplainListData->po_date;
+          $data['cus_po_no'] = $ComplainListData->cus_po_no;
 
           if ($ComplainListData->file) 
           {
