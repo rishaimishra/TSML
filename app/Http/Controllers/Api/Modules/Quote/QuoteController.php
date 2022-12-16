@@ -1276,8 +1276,10 @@ class QuoteController extends Controller
 
          
 
-         $quote = DB::table('quote_schedules')->whereNotNull('deleted_at')->where('schedule_no',$rfq)
-         ->select('remarks','kamsRemarks','salesRemarks','created_at')->get();
+         $quote = DB::table('quote_schedules')->where('schedule_no',$rfq)
+         ->select('remarks','kamsRemarks','salesRemarks','created_at')
+         ->orderBy('id','asc')
+         ->groupBy('remarks')->where('kamsRemarks','!=','')->get();
               // echo "<pre>";print_r($quote);exit();
 
 
