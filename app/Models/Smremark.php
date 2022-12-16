@@ -10,7 +10,7 @@ class Smremark extends Model
 	use SoftDeletes;
 
     protected $table = 'sm_remarks';
-    protected $fillable  = ['user_id','rfq_no','remarks','status'];
+    protected $fillable  = ['user_id','rfq_no','remarks','type','status'];
 
     protected $dates = ['deleted_at'];
 

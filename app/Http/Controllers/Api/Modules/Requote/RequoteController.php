@@ -284,6 +284,7 @@ class RequoteController extends Controller
 
 
                $user_id = $request->input('user_id');
+               $type = $request->input('type');
                $rfq_no = $request->input('rfq_no');
                $remarks = $request->input('remarks');
                
@@ -294,6 +295,7 @@ class RequoteController extends Controller
                }
 
                $arr['user_id'] = $user_id;
+               $arr['type'] = $type;
                $arr['rfq_no'] = $rfq_no;
                $arr['remarks'] = $remarks;
 
