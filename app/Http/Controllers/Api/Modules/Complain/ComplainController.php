@@ -682,7 +682,7 @@ class ComplainController extends Controller
         foreach ($getComplainfile as $key => $value) 
         { 
             if(!empty($value->cust_com_file)){
-              array_push( $cust_com_filearr, asset('storage/app/public/images/complain/'.$value->cust_com_file));
+              array_push( $cust_com_filearr, $value->cust_com_file);
             }
  
         }
@@ -693,8 +693,8 @@ class ComplainController extends Controller
         foreach ($getComplainfile as $key => $value) 
         { 
           if(!empty($value->kam_com_file)){
-            array_push( $kam_com_filearr, asset('storage/app/public/images/complain/'.$value->kam_com_file));
-            array_push( $kam_com_filearr, asset('storage/app/public/images/complain/'.$value->kam_com_file_2));
+            array_push( $kam_com_filearr, $value->kam_com_file);
+            array_push( $kam_com_filearr, $value->kam_com_file_2);
           }
  
         }
