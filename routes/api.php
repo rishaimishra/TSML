@@ -249,8 +249,10 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
 
 
          //------------------- RFQ Order Status Kam -------------------//
-         Route::post('store-rfq-order-status-kam','RfqOrderStatus\RfqOrderStatusController@StoreRfqOrderStatusKam')->name('store_rfq_order_status_kam');
+         
+         Route::post('store-order-status-kam','RfqOrderStatus\RfqOrderStatusController@storeOrderStatusKam')->name('store_rfq_order_status_kam');
          Route::post('get-rfq-order-status-kam','RfqOrderStatus\RfqOrderStatusController@getRfqOrderStatusKam')->name('get_rfq_order_status_kam');
+
          //------------------- End of RFQ Order Status Kam -------------------//
 
 

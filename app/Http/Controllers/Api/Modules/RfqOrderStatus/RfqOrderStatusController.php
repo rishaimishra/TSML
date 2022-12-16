@@ -22,7 +22,7 @@ class RfqOrderStatusController extends Controller
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
     */
-    public function StoreRfqOrderStatusKam(Request $request)
+    public function storeOrderStatusKam(Request $request)
     {
 
       \DB::beginTransaction();
@@ -44,6 +44,8 @@ class RfqOrderStatusController extends Controller
           $input['approve_pending_from_sales'] = $request->approve_pending_from_sales;
           $input['reverted_by_sales_plaing'] = $request->reverted_by_sales_plaing;
           $input['price_approved_awaited'] = $request->price_approved_awaited;
+          $input['price_accepted'] = $request->price_accepted;
+          $input['price_rejected'] = $request->price_rejected;
           $input['requated'] = $request->requated;
           $input['under_negotiation'] = $request->under_negotiation;
           $input['quote_closed'] = $request->quote_closed;
@@ -58,6 +60,7 @@ class RfqOrderStatusController extends Controller
           		$freightsData = RfqOrderStatusKam::where('rfq_no',$request->rfq_no)->update($inputa);
           	}
           	if ($request->approve_pending_from_sales) {
+               
 
           		$inputb['approve_pending_from_sales'] = $request->approve_pending_from_sales;          		
           		$freightsData = RfqOrderStatusKam::where('rfq_no',$request->rfq_no)->update($inputb);
@@ -70,6 +73,14 @@ class RfqOrderStatusController extends Controller
           		$inputd['price_approved_awaited'] = $request->price_approved_awaited;          		
           		$freightsData = RfqOrderStatusKam::where('rfq_no',$request->rfq_no)->update($inputd);
           	}
+            if ($request->price_accepted) {
+              $inputd['price_accepted'] = $request->price_accepted;             
+              $freightsData = RfqOrderStatusKam::where('rfq_no',$request->rfq_no)->update($inputd);
+            }
+            if ($request->price_rejected) {
+              $inputd['price_rejected'] = $request->price_rejected;             
+              $freightsData = RfqOrderStatusKam::where('rfq_no',$request->rfq_no)->update($inputd);
+            }
           	if ($request->requated) {
           		$inpute['requated'] = $request->requated;          		
           		$freightsData = RfqOrderStatusKam::where('rfq_no',$request->rfq_no)->update($inpute);
@@ -90,14 +101,9 @@ class RfqOrderStatusController extends Controller
 
           \DB::commit();
 
-          if($freightsData)
-          {
+           
             return response()->json(['status'=>1,'message' =>'Success'],config('global.success_status'));
-          }
-          else
-          { 
-            return response()->json(['status'=>1,'message' =>'Somthing went wrong','result' => []],config('global.success_status'));
-          } 
+           
            
 
         }catch(\Exception $e){ 
@@ -114,10 +120,10 @@ class RfqOrderStatusController extends Controller
     public function getRfqOrderStatusKam(Request $request)
     {
       try{ 
-            $statusData = RfqOrderStatusKam::where('rfq_no',$request->rfq_no)->first();  
+            $statusData = RfqOrderStatusKam::whereIn('rfq_no',$request->rfq_no)->latest()->get();  
              
             if (!empty($statusData)) {
-               return response()->json(['status'=>1,'message' =>'success.','result' => $statusData],200);
+               return response()->json(['status'=>1,'message' =>'success.','result' =>$statusData],200);
             }
             else{
 
@@ -217,7 +223,8 @@ class RfqOrderStatusController extends Controller
     public function getRfqOrderStatuCust(Request $request)
     {
       try{ 
-            $statusData = RfqOrderStatusCust::where('rfq_no',$request->rfq_no)->first();  
+          // dd($request->rfq_no);
+            $statusData = RfqOrderStatusCust::whereIn('rfq_no',$request->rfq_no)->latest()->get();  
              
             if (!empty($statusData)) {
                return response()->json(['status'=>1,'message' =>'success.','result' => $statusData],200);
