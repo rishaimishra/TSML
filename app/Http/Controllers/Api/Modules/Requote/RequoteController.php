@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\RequoteCount;
 use App\Models\ScTransaction;
+use App\Models\Smremark;
 use DB;
+use Validator;
 
 class RequoteController extends Controller
 {
@@ -259,7 +261,61 @@ class RequoteController extends Controller
       }
 
    // ---------------------------------------------------------------------------
+   
 
+    // ----------------------------- sm remark save -------------------------
+
+     public function smRemarkSave(Request $request)
+      {
+
+          try{ 
+               
+               $validation = \Validator::make($request->all(),[ 
+                    "remarks" => "required",
+                    
+              ],[ 
+                'remarks.required'=>'Remarks is required.',
+                    
+              ]);
+
+               if ($validation->fails()) {
+                  return response()->json(['status'=>0,'errors'=>$validation->errors()],200);
+              }
+
+
+               $user_id = $request->input('user_id');
+               $rfq_no = $request->input('rfq_no');
+               $remarks = $request->input('remarks');
+               
+               $res = Smremark::where('rfq_no',$rfq_no)->get();
+               if(!empty($res))
+               {
+                   Smremark::where('rfq_no',$rfq_no)->delete();
+               }
+
+               $arr['user_id'] = $user_id;
+               $arr['rfq_no'] = $rfq_no;
+               $arr['remarks'] = $remarks;
+
+
+                   // echo "<pre>";print_r($arr);exit();
+               Smremark::create($arr);
+             
+              return response()->json(['status'=>1,
+                'message' =>'success',
+                'result' => 'Remarks updated'],
+                config('global.success_status'));
+
+
+        }catch(\Exception $e){
+
+         return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
+       }
+
+         
+      }
+
+   // ---------------------------------------------------------------------------
 
 
 }

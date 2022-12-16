@@ -116,6 +116,7 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
    		 Route::post('price_break_save','Requote\RequoteController@priceBreakSave');
    		 Route::get('get_price_comp','Requote\RequoteController@getPriceComp');
    		 Route::post('get_price_break','Requote\RequoteController@getPriceBreak');
+   		 Route::post('sm_remark_save','Requote\RequoteController@smRemarkSave');
          
    		 Route::post('get-store-pro-price','PriceManagement\PriceManagementController@getProPrice')->name('get_store_pro_price');
    		 Route::get('get-threshold-price','PriceManagement\PriceManagementController@getThresholdPrice')->name('get_threshold_price');

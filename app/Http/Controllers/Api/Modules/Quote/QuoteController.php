@@ -455,7 +455,7 @@ class QuoteController extends Controller
      ->leftjoin('users','quotes.user_id','users.id')
      ->leftjoin('products','quotes.product_id','products.id')
      ->leftjoin('categorys','quotes.cat_id','categorys.id')
-     ->leftjoin('sub_categorys','categorys.id','sub_categorys.cat_id')
+     ->leftjoin('sub_categorys','quote_schedules.sub_cat_id','sub_categorys.id')
      ->select('quotes.rfq_no','users.name','products.pro_name','products.pro_desc','quote_schedules.*','categorys.cat_name','sub_categorys.sub_cat_name')
      ->orderBy('quote_schedules.schedule_no','asc')
      ->whereNotNull('quotes.deleted_at');
@@ -548,7 +548,7 @@ class QuoteController extends Controller
          ->leftjoin('categorys','quotes.cat_id','categorys.id')
          ->leftjoin('sub_categorys','categorys.id','sub_categorys.cat_id')
          ->select('quotes.*','users.name',DB::raw('SUM(quotes.quantity) as tot_qt'),'products.pro_desc','quotes.rfq_no','categorys.cat_name','sub_categorys.sub_cat_name','categorys.primary_image')
-         ->where('quotes.kam_status','!=',4)
+         // ->where('quotes.kam_status','!=',4)
          ->groupBy('quotes.rfq_no')
          ->orderBy('quotes.created_at','desc')
          ->whereNull('quotes.deleted_at');
@@ -580,6 +580,8 @@ class QuoteController extends Controller
           $quoteArr[$key]['status'] = $this->schedule_status($value->rfq_no);
           $quoteArr[$key]['dash_dt'] = date('jS F, Y',strtotime($value->created_at));
           $quoteArr[$key]['status_txt'] = $this->schedule_status_old($value->kam_status);
+          $quoteArr[$key]['st_txt'] = $this->cusSttxt($value->rfq_no);
+          
                     // $quoteArr[$key]['schedules'] = $value->schedules;
                     // $quoteArr[$key]['product'] = $value->product;
                     // $size = DB::table('sub_categorys')->where('pro_id',$value['product_id'])->select('pro_size')->first();
@@ -1148,7 +1150,7 @@ class QuoteController extends Controller
          ->leftjoin('categorys','quotes.cat_id','categorys.id')
          ->leftjoin('sub_categorys','categorys.id','sub_categorys.cat_id')
          ->select('quotes.*','users.name',DB::raw("(sum(quotes.quantity)) as tot_qt"),'products.pro_desc','quotes.rfq_no','categorys.cat_name','sub_categorys.sub_cat_name','categorys.primary_image')
-         ->where('quotes.kam_status','!=',4)
+         // ->where('quotes.kam_status','!=',4)
          ->groupBy('quotes.rfq_no')
          ->orderBy('quotes.created_at','desc')
          ->where('users.zone',$zone)
@@ -1176,6 +1178,7 @@ class QuoteController extends Controller
           $quoteArr[$key]['quote_type'] = $value->quote_type;
           $quoteArr[$key]['status'] = $this->schedule_status($value->rfq_no);
           $quoteArr[$key]['status_txt'] = $this->schedule_status_old($value->kam_status);
+          $quoteArr[$key]['st_txt'] = $this->st_txt($value->rfq_no);
                     // $quoteArr[$key]['schedules'] = $value->schedules;
                     // $quoteArr[$key]['product'] = $value->product;
                     // $size = DB::table('sub_categorys')->where('pro_id',$value['product_id'])->select('pro_size')->first();
@@ -2232,6 +2235,131 @@ class QuoteController extends Controller
               config('global.failed_status'));
 
           }
+    }
+
+
+    public function st_txt($rfq)
+    {
+        $res = DB::table('rfq_order_status_kam')->where('rfq_no',$rfq)
+        ->select('rfq_submited','approve_pending_from_sales','reverted_by_sales_plaing','price_approved_awaited','requated','under_negotiation','quote_closed','price_accepted','price_rejected')->first();
+      
+         $arr['quote_closed'] = (!empty($res->quote_closed)) ? $res->quote_closed : '';
+         $arr['under_negotiation'] = (!empty($res->under_negotiation)) ? $res->under_negotiation : '';
+         $arr['requated'] = (!empty($res->requated)) ? $res->requated : '';
+         $arr['price_approved_awaited'] = (!empty($res->price_approved_awaited)) ? $res->price_approved_awaited : '';
+         $arr['price_accepted'] = (!empty($res->price_accepted)) ? $res->price_accepted : '';
+         $arr['price_rejected'] = (!empty($res->price_rejected)) ? $res->price_rejected : '';
+         $arr['reverted_by_sales_plaing'] = (!empty($res->reverted_by_sales_plaing)) ? $res->reverted_by_sales_plaing : '';
+         $arr['approve_pending_from_sales'] = (!empty($res->approve_pending_from_sales)) ? $res->approve_pending_from_sales : '';
+         $arr['rfq_submited'] = (!empty($res->rfq_submited)) ? $res->rfq_submited : '';
+         
+         // echo "<pre>";print_r($arr['price_rejected']);exit();
+        // $data = json_decode($res, TRUE);
+        if($arr['quote_closed'] == 1)
+        {
+            $val = "Quote Closed";
+            // exit;
+            return $val;
+        }
+        elseif($arr['under_negotiation'] == 1)
+        {
+            $val = "Under Negotiation";
+            // exit;
+            return $val;
+        }
+        elseif($arr['requated'] == 1)
+        {
+            $val = "Requoted";
+            // exit;
+            return $val;
+        }
+         elseif($arr['price_rejected'] == 1)
+        {
+            $val = "Price Rejected";
+            // exit;
+            return $val;
+        }
+         elseif($arr['price_accepted'] == 1)
+        {
+            $val = "Price Accepted";
+            // exit;
+            return $val;
+        }
+       
+        elseif($arr['price_approved_awaited'] == 1)
+        {
+            $val = "Price Approval Awaited";
+            // exit;
+            return $val;
+        }
+       
+        elseif($arr['reverted_by_sales_plaing'] == 1)
+        {
+            $val = "Reverted By Sales Planning";
+            // exit;
+            return $val;
+        }
+        elseif($arr['approve_pending_from_sales'] == 1)
+        {
+            $val = "Approve pending from Sales";
+            // exit;
+            return $val;
+        }
+        elseif($arr['rfq_submited'] == 1)
+        {
+            $val = "Rfq Submited";
+            // exit;
+            return $val;
+        }
+        
+    }
+
+
+    public function cusSttxt($rfq)
+    {
+        $res = DB::table('rfq_order_status_cust')->where('rfq_no',$rfq)
+        ->select('rfq_submited','quoted_by_tsml','final_quoted_by_tsml','under_negotiation','rfq_closed')->first();
+      
+         $arr['rfq_closed'] = (!empty($res->rfq_closed)) ? $res->rfq_closed : '';
+         $arr['final_quoted_by_tsml'] = (!empty($res->final_quoted_by_tsml)) ? $res->final_quoted_by_tsml : '';
+         $arr['under_negotiation'] = (!empty($res->under_negotiation)) ? $res->under_negotiation : '';
+         $arr['quoted_by_tsml'] = (!empty($res->quoted_by_tsml)) ? $res->quoted_by_tsml : '';
+         $arr['rfq_submited'] = (!empty($res->rfq_submited)) ? $res->rfq_submited : '';
+         
+         
+         // echo "<pre>";print_r($arr);exit();
+        // $data = json_decode($res, TRUE);
+        if($arr['rfq_closed'] == 1)
+        {
+            $val = "RFQ Closed";
+            // exit;
+            return $val;
+        }
+        elseif($arr['final_quoted_by_tsml'] == 1)
+        {
+            $val = "Final Quoted By TSML";
+            // exit;
+            return $val;
+        }
+        elseif($arr['under_negotiation'] == 1)
+        {
+            $val = "Under Negotiation";
+            // exit;
+            return $val;
+        }
+        elseif($arr['quoted_by_tsml'] == 1)
+        {
+            $val = "Quoted By Tsml";
+            // exit;
+            return $val;
+        }
+        elseif($arr['rfq_submited'] == 1)
+        {
+            $val = "Rfq Submited";
+            // exit;
+            return $val;
+        }
+        
     }
 
 }
