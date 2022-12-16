@@ -244,6 +244,7 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
    		Route::post('get-do-details','Dorder\DoController@getDoDetails')->name('get_do-details');
    		 Route::get('get_do_sub_cats/{so_no}','Dorder\DoController@getDoSubCats');
    		Route::get('get_all_do','Dorder\DoController@getAllDo');
+   		Route::get('get_all_do_for_cus/{id}','Dorder\DoController@getAllDoCus');
    		//------------------- End of Dorder Routes --------------------------//
 
 
