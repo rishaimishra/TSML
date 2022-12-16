@@ -156,7 +156,7 @@ class ComplainController extends Controller
     public function getComplainSubCategory($com_cate_id)
     {
       try{ 
-            $ComplainSubCategoryData = ComplainSubCategory::where('com_cate_id',$com_cate_id)->orderBy('id','desc')->get(); 
+            $ComplainSubCategoryData = ComplainSubCategory::where('com_cate_id',$com_cate_id)->orderBy('id','asc')->get(); 
              
             if (count($ComplainSubCategoryData)>0) {
                return response()->json(['status'=>1,'message' =>'success.','result' => $ComplainSubCategoryData],200);
