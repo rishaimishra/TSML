@@ -38,6 +38,7 @@ class DoController extends Controller
         }
 
         $input['user_id'] = $request->user_id;
+        $input['plant_id'] = $request->plant_id;
         $input['so_no'] = $request->so_no;
         $input['do_no'] = $request->do_no;
         $input['invoice_no'] = $request->invoice_no; 
