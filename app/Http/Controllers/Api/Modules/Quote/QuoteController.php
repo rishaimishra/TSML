@@ -518,7 +518,7 @@ class QuoteController extends Controller
       ---------------- quote list  -------------------
 
   */
-      public function getQuotesList(Request $request)
+      public function getQuotesList()
       {  
 
         \DB::beginTransaction();
@@ -535,7 +535,7 @@ class QuoteController extends Controller
            
          }
 
-         $rfq_no = $request->input('rfq_no');
+
                  // $res = $this->getQuoteHistory($user_id,$rfq_no);
          $quoteArr = array();    
 
@@ -1120,12 +1120,13 @@ class QuoteController extends Controller
       ---------------- quote list  -------------------
 
   */
-      public function getKamQuotesList(Request $request)
+      public function getKamQuotesList()
       {  
 
         \DB::beginTransaction();
 
         try{ 
+
 
                 // $user_id = Auth::user()->id;
 
@@ -1135,9 +1136,7 @@ class QuoteController extends Controller
            $zone =  Auth::user()->zone;
            
          }
-          
-          $rfq_no = $request->input('rfq_no');
-          // echo "<pre>";print_r($rfq_no);exit();
+
 
                  // $res = $this->getQuoteHistory($user_id,$rfq_no);
          $quoteArr = array();    
@@ -1149,17 +1148,13 @@ class QuoteController extends Controller
          ->leftjoin('quote_schedules','quotes.id','quote_schedules.quote_id')
          ->leftjoin('products','quotes.product_id','products.id')
          ->leftjoin('categorys','quotes.cat_id','categorys.id')
-         ->leftjoin('sub_categorys','quote_schedules.sub_cat_id','sub_categorys.id')
+         ->leftjoin('sub_categorys','categorys.id','sub_categorys.cat_id')
          ->select('quotes.*','users.name',DB::raw("(sum(quotes.quantity)) as tot_qt"),'products.pro_desc','quotes.rfq_no','categorys.cat_name','sub_categorys.sub_cat_name','categorys.primary_image')
          // ->where('quotes.kam_status','!=',4)
          ->groupBy('quotes.rfq_no')
          ->orderBy('quotes.created_at','desc')
-         ->where('users.zone',$zone);
-         if(!empty($rfq_no))
-         {
-             $quotes = $quotes->where('quotes.rfq_no',$rfq_no);
-         }
-         $quotes = $quotes->whereNull('quotes.deleted_at');
+         ->where('users.zone',$zone)
+         ->whereNull('quotes.deleted_at');
                          // ->toSql();
          $quotes = $quotes->get();
              // echo "<pre>";print_r($quotes);
@@ -2314,7 +2309,7 @@ class QuoteController extends Controller
         }
         elseif($arr['rfq_submited'] == 1)
         {
-            $val = "Rfq Submited";
+            $val = "New Enquiry";
             // exit;
             return $val;
         }
@@ -2344,7 +2339,7 @@ class QuoteController extends Controller
         }
         elseif($arr['final_quoted_by_tsml'] == 1)
         {
-            $val = "Final Quoted By TSML";
+            $val = "Material Confirmed";
             // exit;
             return $val;
         }
@@ -2362,7 +2357,7 @@ class QuoteController extends Controller
         }
         elseif($arr['rfq_submited'] == 1)
         {
-            $val = "Rfq Submited";
+            $val = "New Enquiry";
             // exit;
             return $val;
         }

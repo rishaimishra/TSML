@@ -567,30 +567,35 @@ class ProductController extends Controller
     public function sub_cat_details($subId)
     {
 
-            
+            $sizes = array();
             // $data = Category::where('id',$catId)->where('product_id',$proId)->first();
             $data = DB::table('sub_categorys')
-            ->where('id',$subId)->first();
+            ->where('pro_id',$subId)->select('pro_size')->get();
             // return $data->pro_size;exit();
+            
 
-              $str = $data->pro_size;
-              $values = [];
+            foreach ($data as $key => $value) {
+                
+              
+              $str = $value->pro_size;
+             
 
-            $prodetail['size'] = (explode(",",$str));
+            $size = (explode(",",$str));
+             // echo "<pre>";print_r($size);exit();
 
             
-            foreach ($prodetail['size'] as $key => $value) {
-                $prodetails['sizes'][$key]= $value;
-                array_push($values, $prodetails['sizes'][$key]);
+            foreach ($size as $key => $value) {
+                
+                array_push($sizes, $value);
             }
             
-        
-            $prodetails['sizes'] = $values;
+            }
+            $prodsizes = $sizes;
 
 
 
             
-            return response()->json(['status'=>1,'message' =>'success.','result' => $prodetails],200);
+            return response()->json(['status'=>1,'message' =>'success.','result' => $prodsizes],200);
 
     }
 
