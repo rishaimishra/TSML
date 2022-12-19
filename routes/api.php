@@ -19,6 +19,7 @@ Route::post('store-excel-data','Api\Modules\Bulk\BulkController@storExceleData')
 
 Route::get('download-po-details-pdf/{id}','Api\Modules\PoDetails\PoDetailsController@downloadPoPdf')->name('download_po_details_pdf');
 Route::get('gst_details_dummy','Api\Modules\Stub\StubbingController@gstDetailsDummy');
+Route::get('gst_details_dummy/{gstId}','Api\Modules\Stub\StubbingController@gstDetailsDummy');
 
 // Route::get('get-po-details-admin/{id}','Api\Modules\PoDetails\PoDetailsController@getPoDetailsId')->name('get_po_details_admin');
 
