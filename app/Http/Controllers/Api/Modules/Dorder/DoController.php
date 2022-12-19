@@ -270,14 +270,14 @@ class DoController extends Controller
 
                foreach ($res as $key => $value) {
                   
-                  $arra['do_id'] = $value->do_id;
-                  $arra['so_no'] = $value->so_no;
-                  $arra['do_no'] = $value->do_no;
-                  $arra['do_quantity'] = $value->do_quantity;
-                  $arra['so_date'] = date('d-m-Y',strtotime($value->created_at));
-                  $arra['do_date'] = date('d-m-Y',strtotime($value->do_date));
-                  $arra['qty_cont'] = $value->qty_cont;
-                  $arra['cus_name'] = $value->name;
+                  $arra[$key]['do_id'] = $value->do_id;
+                  $arra[$key]['so_no'] = $value->so_no;
+                  $arra[$key]['do_no'] = $value->do_no;
+                  $arra[$key]['do_quantity'] = $value->do_quantity;
+                  $arra[$key]['so_date'] = date('d-m-Y',strtotime($value->created_at));
+                  $arra[$key]['do_date'] = date('d-m-Y',strtotime($value->do_date));
+                  $arra[$key]['qty_cont'] = $value->qty_cont;
+                  $arra[$key]['cus_name'] = $value->name;
                   
                }
                
@@ -319,14 +319,14 @@ class DoController extends Controller
                {
                foreach ($res as $key => $value) {
                   
-                  $arra['do_id'] = $value->do_id;
-                  $arra['so_no'] = $value->so_no;
-                  $arra['do_no'] = $value->do_no;
-                  $arra['do_quantity'] = $value->do_quantity;
-                  $arra['so_date'] = date('d-m-Y',strtotime($value->created_at));
-                  $arra['do_date'] = date('d-m-Y',strtotime($value->do_date));
-                  $arra['qty_cont'] = $value->qty_cont;
-                  $arra['cus_name'] = $value->name;
+                  $arra[$key]['do_id'] = $value->do_id;
+                  $arra[$key]['so_no'] = $value->so_no;
+                  $arra[$key]['do_no'] = $value->do_no;
+                  $arra[$key]['do_quantity'] = $value->do_quantity;
+                  $arra[$key]['so_date'] = date('d-m-Y',strtotime($value->created_at));
+                  $arra[$key]['do_date'] = date('d-m-Y',strtotime($value->do_date));
+                  $arra[$key]['qty_cont'] = $value->qty_cont;
+                  $arra[$key]['cus_name'] = $value->name;
                   
                }
              }
@@ -367,14 +367,14 @@ class DoController extends Controller
 
                foreach ($res as $key => $value) {
                   
-                  $arra['do_id'] = $value->do_id;
-                  $arra['so_no'] = $value->so_no;
-                  $arra['do_no'] = $value->do_no;
-                  $arra['do_quantity'] = $value->do_quantity;
-                  $arra['so_date'] = date('d-m-Y',strtotime($value->created_at));
-                  $arra['do_date'] = date('d-m-Y',strtotime($value->do_date));
-                  $arra['qty_cont'] = $value->qty_cont;
-                  $arra['cus_name'] = $value->name;
+                  $arra[$key]['do_id'] = $value->do_id;
+                  $arra[$key]['so_no'] = $value->so_no;
+                  $arra[$key]['do_no'] = $value->do_no;
+                  $arra[$key]['do_quantity'] = $value->do_quantity;
+                  $arra[$key]['so_date'] = date('d-m-Y',strtotime($value->created_at));
+                  $arra[$key]['do_date'] = date('d-m-Y',strtotime($value->do_date));
+                  $arra[$key]['qty_cont'] = $value->qty_cont;
+                  $arra[$key]['cus_name'] = $value->name;
                   
                }
                
@@ -417,14 +417,14 @@ class DoController extends Controller
 
                foreach ($res as $key => $value) {
                   
-                  $arra['do_id'] = $value->do_id;
-                  $arra['so_no'] = $value->so_no;
-                  $arra['do_no'] = $value->do_no;
-                  $arra['do_quantity'] = $value->do_quantity;
-                  $arra['so_date'] = date('d-m-Y',strtotime($value->created_at));
-                  $arra['do_date'] = date('d-m-Y',strtotime($value->do_date));
-                  $arra['qty_cont'] = $value->qty_cont;
-                  $arra['cus_name'] = $value->name;
+                  $arra[$key]['do_id'] = $value->do_id;
+                  $arra[$key]['so_no'] = $value->so_no;
+                  $arra[$key]['do_no'] = $value->do_no;
+                  $arra[$key]['do_quantity'] = $value->do_quantity;
+                  $arra[$key]['so_date'] = date('d-m-Y',strtotime($value->created_at));
+                  $arra[$key]['do_date'] = date('d-m-Y',strtotime($value->do_date));
+                  $arra[$key]['qty_cont'] = $value->qty_cont;
+                  $arra[$key]['cus_name'] = $value->name;
                   
                }
                
