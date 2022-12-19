@@ -457,8 +457,8 @@ class DoController extends Controller
                foreach ($res as $key => $value) {
                   
                  
-                  $arra['so_no'] = $value->so_no;
-                  $arra['co_no'] = $value->co_no;
+                  $arra[$key]['so_no'] = $value->so_no;
+                  $arra[$key]['co_no'] = $value->co_no;
       
                   
                }
