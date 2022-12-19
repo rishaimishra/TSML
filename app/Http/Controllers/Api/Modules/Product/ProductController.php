@@ -589,7 +589,7 @@ class ProductController extends Controller
 
 
             
-            return response()->json(['status'=>1,'message' =>'success.','result' => $prodsizes],200);
+            return response()->json(['status'=>1,'message' =>'success.','result' => $prodetails],200);
 
     }
 
