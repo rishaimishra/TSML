@@ -2351,7 +2351,7 @@ class QuoteController extends Controller
         }
         elseif($arr['quoted_by_tsml'] == 1)
         {
-            $val = "Quoted By Tsml";
+            $val = "Quoted By TSML";
             // exit;
             return $val;
         }
