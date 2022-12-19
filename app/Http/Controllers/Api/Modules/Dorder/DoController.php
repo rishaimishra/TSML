@@ -361,7 +361,7 @@ class DoController extends Controller
                ->leftjoin('quotes','orders.rfq_no','quotes.rfq_no')
                ->leftjoin('users','quotes.user_id','users.id')
                // ->where('orders.po_no',$po_no)->whereNull('quotes.deleted_at')->whereNull('quote_schedules.deleted_at')
-              ->where('users.id',$id)
+              ->where('users.id',$id)->whereNull('quotes.deleted_at')
                ->select('sales_orders.so_no','sales_orders.created_at','delivery_orders.do_no','delivery_orders.do_quantity','delivery_orders.created_at as do_date','users.name','sales_contracts.qty_cont','delivery_orders.id as do_id')
                ->get();
 
@@ -411,7 +411,7 @@ class DoController extends Controller
                ->leftjoin('quotes','orders.rfq_no','quotes.rfq_no')
                ->leftjoin('users','quotes.user_id','users.id')
                // ->where('orders.po_no',$po_no)->whereNull('quotes.deleted_at')->whereNull('quote_schedules.deleted_at')
-              ->where('users.zone',$zone)
+              ->where('users.zone',$zone)->whereNull('quotes.deleted_at')
                ->select('sales_orders.so_no','sales_orders.created_at','delivery_orders.do_no','delivery_orders.do_quantity','delivery_orders.created_at as do_date','users.name','sales_contracts.qty_cont','delivery_orders.id as do_id')
                ->get();
 
