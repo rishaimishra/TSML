@@ -30,9 +30,7 @@ class DoController extends Controller
          
     	$validation = \Validator::make($request->all(),[ 
     		"user_id" => "required|numeric",
-            "so_no" => "required|numeric",
-            "invoice_no" => "required",
-            "material_grade" => "required", 
+        "so_no" => "required", 
         ]);
 
         if ($validation->fails()) {
