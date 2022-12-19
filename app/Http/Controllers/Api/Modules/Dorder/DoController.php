@@ -13,6 +13,7 @@ use Storage;
 use Response;
 use DB; 
 use Mail;
+use Auth;
 
 
 class DoController extends Controller
@@ -252,16 +253,18 @@ class DoController extends Controller
 
     // ----------------------------- get do sub category id -------------------------
 
-     public function getAllDo()
+     public function getAllDo($id)
       {
 
           try{ 
                
-            $res = DB::table('sales_orders')->leftjoin('delivery_orders','sales_orders.so_no','delivery_orders.so_no')
+            $res = DB::table('delivery_orders')
+              ->leftjoin('sales_orders','delivery_orders.so_no','sales_orders.so_no')
                ->leftjoin('sales_contracts','sales_orders.transact_id','sales_contracts.id')
                // ->leftjoin('sub_categorys','quote_schedules.sub_cat_id','sub_categorys.id')
               ->leftjoin('users','sales_orders.user_id','users.id')
                // ->where('orders.po_no',$po_no)->whereNull('quotes.deleted_at')->whereNull('quote_schedules.deleted_at')
+              ->where('delivery_orders.plant_id',$id)
                ->select('sales_orders.so_no','sales_orders.created_at','delivery_orders.do_no','delivery_orders.do_quantity','delivery_orders.created_at as do_date','users.name','sales_contracts.qty_cont','delivery_orders.id as do_id')
                ->get();
 
@@ -343,4 +346,133 @@ class DoController extends Controller
       }
 
    // ---------------------------------------------------------------------------
+
+   // ----------------------------- get do for cus -------------------------
+
+     public function get_do_by_cus($id)
+      {
+
+          try{ 
+               
+            $res = DB::table('delivery_orders')
+              ->leftjoin('sales_orders','delivery_orders.so_no','sales_orders.so_no')
+               ->leftjoin('sales_contracts','sales_orders.transact_id','sales_contracts.id')
+               ->leftjoin('orders','sales_contracts.po_no','orders.po_no')
+               ->leftjoin('quotes','orders.rfq_no','quotes.rfq_no')
+               ->leftjoin('users','quotes.user_id','users.id')
+               // ->where('orders.po_no',$po_no)->whereNull('quotes.deleted_at')->whereNull('quote_schedules.deleted_at')
+              ->where('users.id',$id)
+               ->select('sales_orders.so_no','sales_orders.created_at','delivery_orders.do_no','delivery_orders.do_quantity','delivery_orders.created_at as do_date','users.name','sales_contracts.qty_cont','delivery_orders.id as do_id')
+               ->get();
+
+               foreach ($res as $key => $value) {
+                  
+                  $arra['do_id'] = $value->do_id;
+                  $arra['so_no'] = $value->so_no;
+                  $arra['do_no'] = $value->do_no;
+                  $arra['do_quantity'] = $value->do_quantity;
+                  $arra['so_date'] = date('d-m-Y',strtotime($value->created_at));
+                  $arra['do_date'] = date('d-m-Y',strtotime($value->do_date));
+                  $arra['qty_cont'] = $value->qty_cont;
+                  $arra['cus_name'] = $value->name;
+                  
+               }
+               
+                   // echo "<pre>";print_r($newcount);exit();
+             
+              return response()->json(['status'=>1,
+                'message' =>'success',
+                'result' => $arra],
+                config('global.success_status'));
+
+
+        }catch(\Exception $e){
+
+         return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
+       }
+
+         
+      }
+
+   // ---------------------------------------------------------------------------
+
+
+     public function get_do_by_cam($id)
+      {
+
+          try{ 
+
+            $zone =  Auth::user()->zone;
+               
+            $res = DB::table('delivery_orders')
+              ->leftjoin('sales_orders','delivery_orders.so_no','sales_orders.so_no')
+               ->leftjoin('sales_contracts','sales_orders.transact_id','sales_contracts.id')
+               ->leftjoin('orders','sales_contracts.po_no','orders.po_no')
+               ->leftjoin('quotes','orders.rfq_no','quotes.rfq_no')
+               ->leftjoin('users','quotes.user_id','users.id')
+               // ->where('orders.po_no',$po_no)->whereNull('quotes.deleted_at')->whereNull('quote_schedules.deleted_at')
+              ->where('users.zone',$zone)
+               ->select('sales_orders.so_no','sales_orders.created_at','delivery_orders.do_no','delivery_orders.do_quantity','delivery_orders.created_at as do_date','users.name','sales_contracts.qty_cont','delivery_orders.id as do_id')
+               ->get();
+
+               foreach ($res as $key => $value) {
+                  
+                  $arra['do_id'] = $value->do_id;
+                  $arra['so_no'] = $value->so_no;
+                  $arra['do_no'] = $value->do_no;
+                  $arra['do_quantity'] = $value->do_quantity;
+                  $arra['so_date'] = date('d-m-Y',strtotime($value->created_at));
+                  $arra['do_date'] = date('d-m-Y',strtotime($value->do_date));
+                  $arra['qty_cont'] = $value->qty_cont;
+                  $arra['cus_name'] = $value->name;
+                  
+               }
+               
+                   // echo "<pre>";print_r($newcount);exit();
+             
+              return response()->json(['status'=>1,
+                'message' =>'success',
+                'result' => $arra],
+                config('global.success_status'));
+
+
+        }catch(\Exception $e){
+
+         return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
+       }
+
+         
+      }
+
+
+    public function get_all_so()
+    {
+        try{ 
+               $arra = array();
+               $res = DB::table('sales_orders')
+               ->get();
+               // echo "<pre>";print_r($res);exit();
+               if(!empty($res))
+               {
+               foreach ($res as $key => $value) {
+                  
+                 
+                  $arra['so_no'] = $value->so_no;
+                  $arra['co_no'] = $value->co_no;
+      
+                  
+               }
+             }
+             
+              return response()->json(['status'=>1,
+                'message' =>'success',
+                'result' => $arra],
+                config('global.success_status'));
+
+
+        }catch(\Exception $e){
+
+         return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
+       }
+    }
 }
