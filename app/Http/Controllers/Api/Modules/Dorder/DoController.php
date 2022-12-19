@@ -30,7 +30,7 @@ class DoController extends Controller
    		// dd($request->all());
          
     	$validation = \Validator::make($request->all(),[ 
-    		"user_id" => "required|numeric",
+    		 
         "so_no" => "required", 
         ]);
 
