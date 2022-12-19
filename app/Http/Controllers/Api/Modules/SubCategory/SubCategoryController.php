@@ -51,7 +51,7 @@
     	            return response()->json(['status'=>0,'errors'=>$validation->errors()],200);
     	        }
 
-                dd($request->pro_size);
+                // dd($request->pro_size);
     	   		
     	   		 
     	   		if (!empty($chkcata)) {
