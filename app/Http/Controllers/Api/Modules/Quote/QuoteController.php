@@ -2057,7 +2057,7 @@ class QuoteController extends Controller
            \DB::beginTransaction();
         try{
 
-            $result = DeliveryMethod::get();
+            $result = DeliveryMethod::where('status',1)->get();
 
             \DB::commit();
 

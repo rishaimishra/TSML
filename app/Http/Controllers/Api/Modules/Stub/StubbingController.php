@@ -78,4 +78,38 @@ echo $response;
 
         return $data;
     }
+
+
+
+       public function gstDetailsDummyNew()
+        {
+              $result['stjCd'] = "MHCG0674";
+              $result['lgnm'] = "REYNOLDS PENS INDIA PRIVATE LIMITED";
+              $result['stj'] = "SAKINAKA_703";
+              $result['dty'] = "Input Service Distributor (ISD)";
+              $result['adadr'] = [];
+              $result['cxdt'] = "MHCG0674";
+              $result['gstin'] = "27AABCR4412R1Z1";
+              $result['nba'] = [
+                                 "Recipient of Goods or Services"
+                              ];
+              $result['lstupdt'] = "07/09/2019";
+              $result['rgdt'] = "07/09/2019";
+              $result['ctb'] = "Private Limited Company";
+              $result['pradr'] = $this->demo_json();
+              $result['tradeNam'] = "REYNOLDS PENS INDIA PRIVATE LIMITED";
+              $result['sts'] = "Active";
+              $result['ctjCd'] = "VM0804";
+              $result['ctj'] = "VM0804";
+
+
+
+              return response()->json(['status'=>1,
+              'message' =>'success',
+              'result' => $result],
+              config('global.success_status'));
+
+
+
+        }
 }
