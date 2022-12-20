@@ -498,8 +498,8 @@ class PriceManagementController extends Controller
               'cat_id'     => 'required',
               'sub_cat_id'        => 'required', 
               'size'     => 'required', 
-              'pickup_from'     => 'required',
-              'destation_location'        => 'required',  
+              // 'pickup_from'     => 'required',
+              // 'destation_location'        => 'required',  
             ]);
 
             if ($validator->fails()) { 
@@ -509,12 +509,13 @@ class PriceManagementController extends Controller
             
             $getdeliverycost = Freights::where('pickup_from',$request->pickup_from)->where('location',$request->location)->where('destation_location',$request->destation_location)->first(); 
              
-            if (!empty($getdeliverycost) && !empty($priceData)) {
+            if (!empty($priceData)) {
                 $data['bpt_price'] = $priceData->BPT_Price;
                 $data['price_premium_sing'] = $priceData->Price_Premium_sing;
                 $data['price_premium'] = $priceData->Price_Premium;
                 $data['misc_expense'] = $priceData->Misc_Expense;
-                $data['delivery_cost'] = $getdeliverycost->freight_charges; 
+                // $data['delivery_cost'] = $getdeliverycost->freight_charges; 
+                $data['delivery_cost'] = (!empty($getdeliverycost->freight_charges)) ?  $getdeliverycost->freight_charges : 0;
                 $data['interest_rate'] = $priceData->Interest_Rate;
                 $data['cam_discount'] = $priceData->CAM_Discount;
                 $data['gst_percentage'] = $priceData->gst_per; 
