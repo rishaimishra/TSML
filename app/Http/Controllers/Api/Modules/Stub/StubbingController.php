@@ -102,11 +102,13 @@ echo $response;
               $result['ctjCd'] = "VM0804";
               $result['ctj'] = "VM0804";
 
-
+              
+              $data['error'] = false;
+              $data['data'] = $result;
 
               return response()->json(['status'=>1,
               'message' =>'success',
-              'result' => $result],
+              'result' => $data],
               config('global.success_status'));
 
 
