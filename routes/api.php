@@ -50,6 +50,8 @@ Route::group(['namespace'=>'Api\Modules'],function(){
 	Route::get('sub_cat_details/{subId}', 'Product\ProductController@sub_cat_details');
 
 	Route::get('get_all_news_all','News\NewsController@getAllNews');//news list for all
+   // Sayan.....
+   Route::get('product-related-category-fetch','Product\ProductController@product_related');
 });
  
 

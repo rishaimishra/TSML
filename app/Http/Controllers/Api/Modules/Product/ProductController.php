@@ -20,6 +20,24 @@ use DB;
 
 class ProductController extends Controller
 {
+    public function product_related()
+    {
+        $response = [];
+        // $product1 = Category::where('product_id',1)->with('getProductDetails','subCategory')->first();
+       
+        // $product2 = Category::where('product_id',2)->with('getProductDetails','subCategory')->first();
+        $product1 = Category::where('product_id',1)->with('getProductDetails')->first();
+       
+        $product2 = Category::where('product_id',2)->with('getProductDetails')->first();
+        $response['success'] = true;
+        $response['product_one_category'] = $product1;
+        $response['product_two_category'] = $product2;
+        // $response['image_url'] = 'https://beas.in/mje-shop/storage/app/public/images/product/';
+        $response['image_url'] = asset('storage/app/public/images/product/');
+        return $response;
+    }
+
+
     /**
      * This is for display product in index page.
      *
