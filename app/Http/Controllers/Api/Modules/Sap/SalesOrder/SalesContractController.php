@@ -165,12 +165,13 @@ class SalesContractController extends Controller
                  	 	 $data[$key]['user_code'] = $value->user_code;
                  	 	 $data[$key]['addressone'] = $value->addressone;
                  	 	 $data[$key]['addresstwo'] = $value->addresstwo;
-                     $data[$key]['odr_qty'] = $this->orderQty($value->mat_code,$po_no);
+                     $data[$key]['odr_qty'] = $this->orderQty($value->mat_code,$po_no);//qty per size
                  	 	 $data[$key]['city'] = $value->city;
                  	 	 $data[$key]['state'] = $value->state;
                  	 	 $data[$key]['pincode'] = $value->pincode;
                  	 	 $data[$key]['net_value'] = $this->scNetValue($po_no);
                  	 	 $data[$key]['qty_ct'] = $this->qty_ct($po_no);
+                     $data[$key]['tot_qty'] = $this->rfqTotQty($value->rfq_no);//total rfq qty
                  	 	 $data[$key]['price_det'] = $this->priceBreakById($value->mat_code);
                  	 	 $data[$key]['specs'] = $this->subcatspecs($value->mat_code);
                  	 	 $data[$key]['total'] = $this->totalRfqPrice($value->schedule);
@@ -552,4 +553,20 @@ class SalesContractController extends Controller
          
       }
       // --------------------------------------------------------------------
+
+      public function rfqTotQty($rfq_no)
+      {    
+
+           $sum = 0;
+
+           $res = DB::table('quotes')->where('rfq_no',$rfq_no)->whereNull('deleted_at')
+           ->select('quantity')->get();
+
+           foreach ($res as $key => $value) {
+               
+               $sum+=  $value->quantity;
+           }
+
+           return $sum;
+      }
 }
