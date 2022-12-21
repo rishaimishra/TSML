@@ -23,12 +23,12 @@ class ProductController extends Controller
     public function product_related()
     {
         $response = [];
-        // $product1 = Category::where('product_id',1)->with('getProductDetails','subCategory')->first();
+        $product1 = Category::where('product_id',1)->with('getProductDetails','subCategory')->first();
        
-        // $product2 = Category::where('product_id',2)->with('getProductDetails','subCategory')->first();
-        $product1 = Category::where('product_id',1)->with('getProductDetails')->first();
+        $product2 = Category::where('product_id',2)->with('getProductDetails','subCategory')->first();
+        // $product1 = Category::where('product_id',1)->with('getProductDetails')->first();
        
-        $product2 = Category::where('product_id',2)->with('getProductDetails')->first();
+        // $product2 = Category::where('product_id',2)->with('getProductDetails')->first();
         $response['success'] = true;
         $response['product_one_category'] = $product1;
         $response['product_two_category'] = $product2;
