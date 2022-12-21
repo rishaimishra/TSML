@@ -13,4 +13,9 @@ class Product extends Model
     // public function getSubCateDetails(){
     //     return $this->belongsTo('App\Models\ProductSubCategory','sub_cat_id','id');
     // }
+
+    public function subcategroryDetails()
+    {
+    	return $this->hasMany('App\Models\ProductSubCategory','pro_id','id');
+    }
 }
