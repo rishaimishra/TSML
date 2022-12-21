@@ -87,11 +87,11 @@
 		                    <tr>
 		                        <td>
 		                            <label style="font-size: 14px; white-space: nowrap;">Pickup From</label>
-		                            <input style="width: 100%;" type="text" name="" value="{{$showshed['plant']}}">
+		                            <input style="width: 100%;" type="text" name="" value="{{$showshed['plant'] ? $showshed['plant'] :'Na'}}">
 		                        </td>
 		                        <td colspan="2">
 		                            <label style="font-size: 14px; white-space: nowrap;">Location</label>
-		                            <input style="width: 100%;" type="text" name="" value="{{$showshed['location']}}">
+		                            <input style="width: 100%;" type="text" name="" value="{{$showshed['location'] ? $showshed['location'] :'Na'}}">
 		                        </td>
 		                        <td>
 		                            <label style="font-size: 14px; white-space: nowrap;">CAM's Price</label>
