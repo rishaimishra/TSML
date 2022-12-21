@@ -106,10 +106,9 @@ echo $response;
               $data['error'] = false;
               $data['data'] = $result;
 
-              return response()->json(['status'=>1,
-              'message' =>'success',
-              'result' => $data],
-              config('global.success_status'));
+              return response()->json(
+              $data
+             );
 
 
 
