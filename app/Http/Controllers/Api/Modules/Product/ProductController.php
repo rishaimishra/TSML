@@ -491,6 +491,7 @@ class ProductController extends Controller
             $product_id = $request->product_id;
             $data['data'] = $data['data']->where('product_id', $product_id);
             $response['getCategory'] = Category::where('status','!=',2)->select('id','cat_name')->where('product_id',request('product_id'))->orderBy('id','desc')->get();
+            $response['subCategories'] = ProductSubCategory::where('pro_id',$request->product_id)->get();
         }
 
 
