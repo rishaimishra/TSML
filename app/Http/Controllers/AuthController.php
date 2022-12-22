@@ -8,6 +8,7 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use Illuminate\Http\Request;
 use App\User;
 use App\Admin;
+use App\Address;
 use JWTAuth;
 use Validator;
  
@@ -95,7 +96,15 @@ class AuthController extends Controller
     */
    public function me()
    {
-       return response()->json(auth()->user());
+       $response = [];
+       $response['customer_information'] = User::select('name','email','phone')->where('id',auth()->user()->id)->first();
+       $response['customer_kyc'] = User::select('company_gst','company_pan')->where('id',auth()->user()->id)->first();
+       $response['shipping_address'] = Address::where('user_id',auth()->user()->id)->where('type','A')->get();
+       $response['billing_address'] = Address::where('user_id',auth()->user()->id)->where('type','B')->get();
+       $response['documents'] =  User::select('address_proof_file','cancel_cheque_file','pan_card_file','gst_certificate','turnover_declare','itr_last_yr','form_d','registration_certificate','tcs')->where('id',auth()->user()->id)->first();
+       $response['file_link'] = asset('https://beas.in/mje-shop/storage/app/public/user');
+       $response['success'] = true;
+       return $response;
    }
  
    /**
@@ -106,7 +115,7 @@ class AuthController extends Controller
    public function logout()
    {
        auth()->logout();
- 
+       
        return response()->json(['message' => 'Successfully logged out']);
    }
  

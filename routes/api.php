@@ -76,7 +76,7 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
 {
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
-    Route::post('me', 'AuthController@me');
+    Route::get('profile', 'AuthController@me');
    	Route::resource('customer', 'UserController');	
    	Route::post('customers/{id}', 'UserController@update');	
    	Route::post('reset-password', 'UserController@resetPassword')->name('reset_password');
@@ -270,6 +270,14 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
          Route::post('get-rfq-order-status-cust','RfqOrderStatus\RfqOrderStatusController@getRfqOrderStatuCust')->name('get_rfq_order_status_cust');
 
          //------------------- End of RFQ Order Status Customer -------------------//
+
+         // -------------------- search ----------------------------------------
+          
+          Route::post('rfq_search_list','Search\SearchController@cusRfqSearchList');
+
+          Route::post('po_search_list','Search\SearchController@poSearchList');
+
+         // ---------------------------------------------------------------------
      });
    	
 });
