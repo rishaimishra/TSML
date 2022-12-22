@@ -35,29 +35,66 @@ class StubbingController extends Controller
         //   'result' => $result],
         //   config('global.success_status'));
 
+          $url ="http://172.16.2.102:6082/getGstDetails";
+       // echo $url;
+       $gst_details = array();
+      $gstin=$request->gstId;
+       $ch = curl_init();
+       curl_setopt($ch, CURLOPT_URL, $url);
+       curl_setopt($ch, CURLOPT_HEADER, 0);
+       curl_setopt($ch, CURLOPT_POST, true);
+       curl_setopt($ch, CURLOPT_POSTFIELDS, $gstin);
+       curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+       curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: text/plain'));
+       $head = curl_exec($ch);
 
-$curl = curl_init();
+       print_r("asdf",$head);
+       $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+       curl_close($ch);
+       $sa = str_split($head);
 
-curl_setopt_array($curl, array(
-  CURLOPT_URL => 'http://172.16.2.102:6082/getGstDetails',
-  CURLOPT_RETURNTRANSFER => true,
-  CURLOPT_ENCODING => '',
-  CURLOPT_MAXREDIRS => 10,
-  CURLOPT_TIMEOUT => 0,
-  CURLOPT_FOLLOWLOCATION => true,
-  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-  CURLOPT_CUSTOMREQUEST => 'POST',
-  CURLOPT_POSTFIELDS =>$request->gstId,
-  CURLOPT_HTTPHEADER => array(
-    'cache-control: no-cache',
-    'content-type: text/plain'
-  ),
-));
+       $cnt = 0;
+       $cntd = '';
+       $cntda = array();
+       foreach ($sa as $k => $v) {
+           if ($v == '{') {
+               $cnt++;
+           }
 
-$response = curl_exec($curl);
+           if (!empty($cnt)) {
+               $cntd .= $v;
+           }
 
-curl_close($curl);
-echo $response;
+           if ($v == '}') {
+               $cnt--;
+           }
+
+           if (empty($cnt) && !empty($cntd)) {
+               $cntda[] = $cntd;
+               $cntd = '';
+           }
+       }
+       
+       if(isset($cntda[0]) && !empty($cntda[0]))
+       {
+            $gst_details = json_decode($cntda[0], true);
+            
+           
+       }
+       
+       if(!empty($gst_details['data']))
+       {
+           return $gst_details['data'];
+       }
+       else
+       {
+           return false;
+       }
+
+
+
+
+
     }
 
     public function demo_json(){
