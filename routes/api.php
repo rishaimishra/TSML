@@ -318,6 +318,7 @@ Route::group(['prefix' => 'admin','middleware' => ['assign.guard:admins','jwtmid
 		// Product Routes ....
 		Route::post('store-product', 'Product\ProductController@storeProduct')->name('store_product');
 		Route::put('edit-product/{proId}', 'Product\ProductController@editProduct')->name('edit_product');
+      Route::post('update-product/{proId}', 'Product\ProductController@updateProduct')->name('update_product');
 		Route::get('delete-product/{proId}', 'Product\ProductController@deleteProduct')->name('delete_product');
 		Route::get('product-list', 'Product\ProductController@productList')->name('product_list');
 		Route::get('inactive-product/{proId}', 'Product\ProductController@inactiveProduct')->name('inactive_product');

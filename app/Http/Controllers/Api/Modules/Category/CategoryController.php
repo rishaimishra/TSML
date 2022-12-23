@@ -35,9 +35,9 @@
                 "cat_name" => "required|unique:categorys|max:200",
                 "cat_dese" => "required|max:200",
                 "primary_image" => "mimes:jpg,jpeg,png",
-                "image_2" => "mimes:jpg,jpeg,png",
-                "image_3" => "mimes:jpg,jpeg,png",
-                "image_4" => "mimes:jpg,jpeg,png",
+                // "image_2" => "mimes:jpg,jpeg,png",
+                // "image_3" => "mimes:jpg,jpeg,png",
+                // "image_4" => "mimes:jpg,jpeg,png",
             ],[ 'product_id.required'=>'Product id is required.',
             	'cat_name.required'=>'Category name is required.',
             	'cat_name.unique'=>'Category already exists.',
@@ -59,6 +59,9 @@
 		    	$image = $request->primary_image; 
 
                 $filename = str_replace(' ', '_',$request->cat_name).'-'.time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+
+                // $filename = rand(1000,9999).'-'.$image->getClientOriginalName();
+
                 Storage::putFileAs('public/images/product/', $image, $filename);
 
                 $input['primary_image'] = $filename;
@@ -185,32 +188,32 @@
 		   			$catdetails['primary_image_url'] =  null;
 		   		}
 		   		
-		   		if($catData->image_2)
-		   		{
-		   			$catdetails['image_2_url'] =  asset('storage/app/public/images/product/'.$catData->image_2);
-		   		}
-		   		else
-		   		{
-		   			$catdetails['image_2_url'] =  null;	
-		   		}
+		   		// if($catData->image_2)
+		   		// {
+		   		// 	$catdetails['image_2_url'] =  asset('storage/app/public/images/product/'.$catData->image_2);
+		   		// }
+		   		// else
+		   		// {
+		   		// 	$catdetails['image_2_url'] =  null;	
+		   		// }
 
-		   		if($catData->image_3)
-		   		{
-		   			$catdetails['image_3_url'] =  asset('storage/app/public/images/product/'.$catData->image_3);
-		   		}
-		   		else
-		   		{
-		   			$catdetails['image_3_url'] =  null;	
-		   		}
+		   		// if($catData->image_3)
+		   		// {
+		   		// 	$catdetails['image_3_url'] =  asset('storage/app/public/images/product/'.$catData->image_3);
+		   		// }
+		   		// else
+		   		// {
+		   		// 	$catdetails['image_3_url'] =  null;	
+		   		// }
 
-		   		if($catData->image_4)
-		   		{
-		   			$catdetails['image_4_url'] =  asset('storage/app/public/images/product/'.$catData->image_4);
-		   		}
-		   		else
-		   		{
-		   			$catdetails['image_4_url'] =  null;	
-		   		} 
+		   		// if($catData->image_4)
+		   		// {
+		   		// 	$catdetails['image_4_url'] =  asset('storage/app/public/images/product/'.$catData->image_4);
+		   		// }
+		   		// else
+		   		// {
+		   		// 	$catdetails['image_4_url'] =  null;	
+		   		// } 
 
 	   			return response()->json(['status'=>1,'message' =>'success','result' => $catdetails],200); 
  
@@ -268,37 +271,37 @@
 		                $updatecat['primary_image'] = $filename;
 				    	 
 				    }
-				    if ($request->hasFile('image_2'))
-				    {
-				    	@unlink(storage_path('app/public/images/product/'.$srch_reg->image_2)); 
+				    // if ($request->hasFile('image_2'))
+				    // {
+				    // 	@unlink(storage_path('app/public/images/product/'.$srch_reg->image_2)); 
 
-				    	$image = $request->image_2;
-		                $filename =  str_replace(' ', '_',$request->cat_name).time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
-		                Storage::putFileAs('public/images/product/', $image, $filename);
-		                $updatecat['image_2'] = $filename;
+				    // 	$image = $request->image_2;
+		      //           $filename =  str_replace(' ', '_',$request->cat_name).time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+		      //           Storage::putFileAs('public/images/product/', $image, $filename);
+		      //           $updatecat['image_2'] = $filename;
 
 				    	 
-				    }
-				    if ($request->hasFile('image_3'))
-				    {	
-				    	@unlink(storage_path('app/public/images/product/'.$srch_reg->image_3)); 
+				    // }
+				    // if ($request->hasFile('image_3'))
+				    // {	
+				    // 	@unlink(storage_path('app/public/images/product/'.$srch_reg->image_3)); 
 
-				    	$image = $request->image_3;
-		                $filename =  str_replace(' ', '_',$request->cat_name).time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
-		                Storage::putFileAs('public/images/product/', $image, $filename);
-		                $updatecat['image_3'] = $filename; 
+				    // 	$image = $request->image_3;
+		      //           $filename =  str_replace(' ', '_',$request->cat_name).time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+		      //           Storage::putFileAs('public/images/product/', $image, $filename);
+		      //           $updatecat['image_3'] = $filename; 
 				    	 
-				    }
-				    if ($request->hasFile('image_4'))
-				    {
-				    	@unlink(storage_path('app/public/images/product/'.$srch_reg->image_4)); 
+				    // }
+				    // if ($request->hasFile('image_4'))
+				    // {
+				    // 	@unlink(storage_path('app/public/images/product/'.$srch_reg->image_4)); 
 
-				    	$image = $request->image_4;
-		                $filename =  str_replace(' ', '_',$request->cat_name).time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
-		                Storage::putFileAs('public/images/product/', $image, $filename);
-		                $updatecat['image_4'] = $filename; 
+				    // 	$image = $request->image_4;
+		      //           $filename =  str_replace(' ', '_',$request->cat_name).time().'-'.rand(1000,9999).'.'.$image->getClientOriginalExtension();
+		      //           Storage::putFileAs('public/images/product/', $image, $filename);
+		      //           $updatecat['image_4'] = $filename; 
 	 
-				    }
+				    // }
 
 
 
@@ -308,7 +311,7 @@
 
 			        // return response()->json(['sucs'=>'New category added successfully.'],200);
 
-			   	  	return response()->json(['status'=>1,'message' =>'Category updated successfully.','result' => $catData],200);
+			   	  	return response()->json(['status'=>1,'message' =>'Category updated successfully.'],200);
 
 				    
 				   }
