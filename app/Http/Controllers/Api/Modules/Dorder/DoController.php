@@ -297,6 +297,58 @@ class DoController extends Controller
          
       }
 
+      public function validateDo($id)
+      {
+        // dd('ok');
+          try{ 
+               
+            $res = DB::table('sales_orders')
+              // ->leftjoin('sales_orders','delivery_orders.so_no','sales_orders.so_no')
+               ->leftjoin('sales_contracts','sales_orders.transact_id','sales_contracts.id')
+               // ->leftjoin('sub_categorys','quote_schedules.sub_cat_id','sub_categorys.id')
+              // ->leftjoin('users','sales_orders.user_id','users.id')
+               // ->where('orders.po_no',$po_no)->whereNull('quotes.deleted_at')->whereNull('quote_schedules.deleted_at')
+              ->where('sales_orders.so_no',$id)
+               ->select('sales_orders.so_no','sales_contracts.qty_cont')
+               ->first();
+               $doQuenty = $res->qty_cont;
+                
+               // dd($doQuenty);
+
+               $chek =  DeliveryOrders::where('so_no',$id)->get();
+                   // echo "<pre>";print_r($newcount);exit();
+               $doqua = 0;
+               foreach ($chek as $key => $value) {
+                $doqua += $value->do_quantity;
+               }
+                
+               if ($doqua>0) {
+                if ($doQuenty<$doqua) { 
+                return response()->json(['status'=>0,'message' =>'DO quantity not greater then SO quantity','result' => []],config('global.success_status'));
+                 }
+                 else{
+                  return response()->json(['status'=>1,'message' =>'Success']);
+                 }
+               }
+               else{
+                 return response()->json(['status'=>1,'message' =>'No data found','result' => []],config('global.success_status'));
+               }
+               
+             
+              // return response()->json(['status'=>1,
+              //   'message' =>'success',
+              //   'result' => $doQuenty],
+              //   config('global.success_status'));
+
+
+        }catch(\Exception $e){
+
+         return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
+       }
+
+         
+      }
+
    // ---------------------------------------------------------------------------
 
       // ----------------------------- get do sub category id -------------------------

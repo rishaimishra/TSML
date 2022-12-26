@@ -42,10 +42,11 @@ class UserController extends Controller
 
    public function testmail()
    {     
-    $data['email'] = 'partha.beas@gmail.com';
-        Mail::send(new Register($data));
+    phpinfo();
+    // $data['email'] = 'partha.beas@gmail.com';
+    //     Mail::send(new Register($data));
 
-     echo "mail sent - ".$data['email'];
+    //  echo "mail sent - ".$data['email'];
    }
    /**
     * Display a listing of the resource.
