@@ -49,6 +49,9 @@ class RfqOrderStatusController extends Controller
           $input['requated'] = $request->requated;
           $input['under_negotiation'] = $request->under_negotiation;
           $input['quote_closed'] = $request->quote_closed;
+          $input['sc_created'] = $request->sc_created;
+          $input['so_created'] = $request->so_created;
+          $input['do_created'] = $request->do_created;
            
           // dd($input);
           $chk = RfqOrderStatusKam::where('rfq_no',$request->rfq_no)->first();
@@ -92,7 +95,28 @@ class RfqOrderStatusController extends Controller
           	if ($request->quote_closed) {
           		$inpute['quote_closed'] = $request->quote_closed;          		
           		$freightsData = RfqOrderStatusKam::where('rfq_no',$request->rfq_no)->update($inpute);
-          	} 
+          	}
+
+            if ($request->sc_created) {
+
+              $inpute['sc_created'] = $request->sc_created;             
+              $freightsData = RfqOrderStatusKam::where('rfq_no',$request->rfq_no)->update($inpute);
+            }
+
+            if ($request->so_created) {
+              $inpute['so_created'] = $request->so_created;             
+              $freightsData = RfqOrderStatusKam::where('rfq_no',$request->rfq_no)->update($inpute);
+            }
+
+            if ($request->do_created) {
+              $inpute['do_created'] = $request->do_created;             
+              $freightsData = RfqOrderStatusKam::where('rfq_no',$request->rfq_no)->update($inpute);
+            }
+
+            if ($request->material_invoiced) {
+              $inpute['material_invoiced'] = $request->material_invoiced;             
+              $custData =RfqOrderStatusCust::where('rfq_no',$request->rfq_no)->update($inpute);
+            }  
           	
           }else{
           	$freightsData = RfqOrderStatusKam::create($input);
@@ -168,6 +192,9 @@ class RfqOrderStatusController extends Controller
           $input['under_negotiation'] = $request->under_negotiation;
           $input['final_quoted_by_tsml'] = $request->final_quoted_by_tsml;
           $input['rfq_closed'] = $request->rfq_closed;
+          $input['sc_created'] = $request->sc_created;
+          $input['so_created'] = $request->so_created;
+          $input['do_created'] = $request->do_created;
           
           // dd($input);
           $chk = RfqOrderStatusCust::where('rfq_no',$request->rfq_no)->first();
@@ -194,7 +221,27 @@ class RfqOrderStatusController extends Controller
           	if ($request->rfq_closed) {
           		$inpute['rfq_closed'] = $request->rfq_closed;          		
           		$custData =RfqOrderStatusCust::where('rfq_no',$request->rfq_no)->update($inpute);
-          	} 
+          	}
+
+            if ($request->sc_created) {
+              $inpute['sc_created'] = $request->sc_created;             
+              $custData =RfqOrderStatusCust::where('rfq_no',$request->rfq_no)->update($inpute);
+            }
+
+            if ($request->so_created) {
+              $inpute['so_created'] = $request->so_created;             
+              $custData =RfqOrderStatusCust::where('rfq_no',$request->rfq_no)->update($inpute);
+            }
+
+            if ($request->do_created) {
+              $inpute['do_created'] = $request->do_created;             
+              $custData =RfqOrderStatusCust::where('rfq_no',$request->rfq_no)->update($inpute);
+            }
+
+            if ($request->material_invoiced) {
+              $inpute['material_invoiced'] = $request->material_invoiced;             
+              $custData =RfqOrderStatusCust::where('rfq_no',$request->rfq_no)->update($inpute);
+            } 
           	
           	
           }else{
