@@ -253,7 +253,7 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
    		Route::get('get_do_by_cus/{id}','Dorder\DoController@get_do_by_cus');
    		Route::get('get_do_by_cam/{id}','Dorder\DoController@get_do_by_cam');
    		Route::get('get_all_so','Dorder\DoController@get_all_so');
-         Route::get('validate_do/{id}','Dorder\DoController@validateDo');
+         Route::post('validate_do_qty','Dorder\DoController@validateDo');
    		//------------------- End of Dorder Routes --------------------------//
 
 

@@ -297,7 +297,7 @@ class DoController extends Controller
          
       }
 
-      public function validateDo($id)
+      public function validateDo(Request $request)
       {
         // dd('ok');
           try{ 
@@ -308,31 +308,44 @@ class DoController extends Controller
                // ->leftjoin('sub_categorys','quote_schedules.sub_cat_id','sub_categorys.id')
               // ->leftjoin('users','sales_orders.user_id','users.id')
                // ->where('orders.po_no',$po_no)->whereNull('quotes.deleted_at')->whereNull('quote_schedules.deleted_at')
-              ->where('sales_orders.so_no',$id)
+              ->where('sales_orders.so_no',$request->so_no)
                ->select('sales_orders.so_no','sales_contracts.qty_cont')
                ->first();
                $doQuenty = $res->qty_cont;
                 
                // dd($doQuenty);
+               // dd($request->do_quantity);
 
-               $chek =  DeliveryOrders::where('so_no',$id)->get();
+               $chek =  DeliveryOrders::where('so_no',$request->so_no)->get();
                    // echo "<pre>";print_r($newcount);exit();
                $doqua = 0;
                foreach ($chek as $key => $value) {
                 $doqua += $value->do_quantity;
                }
+
+
                 
-               if ($doqua>0) {
-                if ($doQuenty<$doqua) { 
-                return response()->json(['status'=>0,'message' =>'DO quantity not greater then SO quantity','result' => []],config('global.success_status'));
-                 }
-                 else{
-                  return response()->json(['status'=>1,'message' =>'Success']);
-                 }
-               }
-               else{
-                 return response()->json(['status'=>1,'message' =>'No data found','result' => []],config('global.success_status'));
-               }
+                if ($doqua>0) {
+
+                  $totalvaldo = $doqua+$request->do_quantity;
+                  if ($doQuenty<$doqua || $doQuenty<$request->do_quantity || $doQuenty<$totalvaldo) { 
+                  return response()->json(['status'=>0,'message' =>'DO quantity not greater then SO quantity','result' => []],config('global.success_status'));
+                   }
+                   else{
+                    return response()->json(['status'=>1,'message' =>'Success']);
+                   }
+                }
+                else{
+                  if ($doQuenty<$doqua || $doQuenty<$request->do_quantity) { 
+                  return response()->json(['status'=>0,'message' =>'DO quantity not greater then SO quantity','result' => []],config('global.success_status'));
+                   }
+                   else{
+                    return response()->json(['status'=>1,'message' =>'Success']);
+                   }
+                }
+                
+                
+                
                
              
               // return response()->json(['status'=>1,
