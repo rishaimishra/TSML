@@ -515,7 +515,7 @@ class PriceManagementController extends Controller
                 $data['price_premium'] = $priceData->Price_Premium;
                 $data['misc_expense'] = $priceData->Misc_Expense;
                 // $data['delivery_cost'] = $getdeliverycost->freight_charges;
-                if ($request->delivery_method=='dap') {
+                if ($request->delivery_method=='DAP (Delivered at Place)') {
                   $data['delivery_cost'] =  0;
                  }
                  else{
