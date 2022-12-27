@@ -52,7 +52,7 @@ class RfqOrderStatusController extends Controller
           $input['sc_created'] = $request->sc_created;
           $input['so_created'] = $request->so_created;
           $input['do_created'] = $request->do_created;
-           
+          $input['material_invoiced'] = $request->material_invoiced;
           // dd($input);
           $chk = RfqOrderStatusKam::where('rfq_no',$request->rfq_no)->first();
            
@@ -195,6 +195,7 @@ class RfqOrderStatusController extends Controller
           $input['sc_created'] = $request->sc_created;
           $input['so_created'] = $request->so_created;
           $input['do_created'] = $request->do_created;
+          $input['material_invoiced'] = $request->material_invoiced;
           
           // dd($input);
           $chk = RfqOrderStatusCust::where('rfq_no',$request->rfq_no)->first();
