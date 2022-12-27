@@ -2243,8 +2243,12 @@ class QuoteController extends Controller
     public function st_txt($rfq)
     {
         $res = DB::table('rfq_order_status_kam')->where('rfq_no',$rfq)
-        ->select('rfq_submited','approve_pending_from_sales','reverted_by_sales_plaing','price_approved_awaited','requated','under_negotiation','quote_closed','price_accepted','price_rejected')->first();
-      
+        ->select('rfq_submited','approve_pending_from_sales','reverted_by_sales_plaing','price_approved_awaited','requated','under_negotiation','quote_closed','price_accepted','price_rejected','material_invoiced','do_created','so_created','sc_created')->first();
+         
+         $arr['material_invoiced'] = (!empty($res->material_invoiced)) ? $res->material_invoiced : '';
+         $arr['do_created'] = (!empty($res->do_created)) ? $res->do_created : '';
+         $arr['so_created'] = (!empty($res->so_created)) ? $res->so_created : '';
+         $arr['sc_created'] = (!empty($res->sc_created)) ? $res->sc_created : '';
          $arr['quote_closed'] = (!empty($res->quote_closed)) ? $res->quote_closed : '';
          $arr['under_negotiation'] = (!empty($res->under_negotiation)) ? $res->under_negotiation : '';
          $arr['requated'] = (!empty($res->requated)) ? $res->requated : '';
@@ -2257,7 +2261,32 @@ class QuoteController extends Controller
          
          // echo "<pre>";print_r($arr['price_rejected']);exit();
         // $data = json_decode($res, TRUE);
-        if($arr['quote_closed'] == 1)
+        if($arr['material_invoiced'] == 1)
+        {
+            $val = "Material Invoiced";
+            // exit;
+            return $val;
+        }
+        elseif($arr['do_created'] == 1)
+        {
+            $val = "DO Created";
+            // exit;
+            return $val;
+        }
+        elseif($arr['so_created'] == 1)
+        {
+            $val = "SO Created";
+            // exit;
+            return $val;
+        }
+
+        elseif($arr['sc_created'] == 1)
+        {
+            $val = "SC Created";
+            // exit;
+            return $val;
+        }
+        elseif($arr['quote_closed'] == 1)
         {
             $val = "Quote Closed";
             // exit;
@@ -2320,8 +2349,12 @@ class QuoteController extends Controller
     public function cusSttxt($rfq)
     {
         $res = DB::table('rfq_order_status_cust')->where('rfq_no',$rfq)
-        ->select('rfq_submited','quoted_by_tsml','final_quoted_by_tsml','under_negotiation','rfq_closed')->first();
-      
+        ->select('rfq_submited','quoted_by_tsml','final_quoted_by_tsml','under_negotiation','rfq_closed','material_invoiced','do_created','so_created','sc_created')->first();
+         
+         $arr['material_invoiced'] = (!empty($res->material_invoiced)) ? $res->material_invoiced : '';
+         $arr['do_created'] = (!empty($res->do_created)) ? $res->do_created : '';
+         $arr['so_created'] = (!empty($res->so_created)) ? $res->so_created : '';
+         $arr['sc_created'] = (!empty($res->sc_created)) ? $res->sc_created : '';
          $arr['rfq_closed'] = (!empty($res->rfq_closed)) ? $res->rfq_closed : '';
          $arr['final_quoted_by_tsml'] = (!empty($res->final_quoted_by_tsml)) ? $res->final_quoted_by_tsml : '';
          $arr['under_negotiation'] = (!empty($res->under_negotiation)) ? $res->under_negotiation : '';
@@ -2331,7 +2364,33 @@ class QuoteController extends Controller
          
          // echo "<pre>";print_r($arr);exit();
         // $data = json_decode($res, TRUE);
-        if($arr['rfq_closed'] == 1)
+         if($arr['material_invoiced'] == 1)
+        {
+            $val = "Material Invoiced";
+            // exit;
+            return $val;
+        }
+        elseif($arr['do_created'] == 1)
+        {
+            $val = "DO Created";
+            // exit;
+            return $val;
+        }
+        elseif($arr['so_created'] == 1)
+        {
+            $val = "SO Created";
+            // exit;
+            return $val;
+        }
+
+        elseif($arr['sc_created'] == 1)
+        {
+            $val = "SC Created";
+            // exit;
+            return $val;
+        }
+
+        elseif($arr['rfq_closed'] == 1)
         {
             $val = "RFQ Closed";
             // exit;
