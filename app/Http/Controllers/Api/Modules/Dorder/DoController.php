@@ -514,7 +514,7 @@ class DoController extends Controller
     {
         try{ 
                $arra = array();
-               $res = DB::table('sales_orders')
+               $res = DB::table('sales_orders')->leftjoin('orders','sales_orders.po_no','orders.po_no')->select('sales_orders.so_no','sales_orders.co_no','orders.rfq_no')
                ->get();
                // echo "<pre>";print_r($res);exit();
                if(!empty($res))
@@ -524,6 +524,7 @@ class DoController extends Controller
                  
                   $arra[$key]['so_no'] = $value->so_no;
                   $arra[$key]['co_no'] = $value->co_no;
+                  $arra[$key]['rfq_no'] = $value->rfq_no;
       
                   
                }
