@@ -59,8 +59,8 @@ class SapSummaryController extends Controller
         {
 	    	foreach ($res as $key => $value) {
 	    		 
-	    		$value->do_no;
-	    		 array_push($data,$value->do_no);
+	    		 $data[$key]['do_no'] = $value->do_no;
+	    		 $data[$key]['do_quantity'] = $value->do_quantity;
 	    	}
         }else{
 
