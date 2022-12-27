@@ -152,7 +152,7 @@ class NotificationController extends Controller
 			    	 $data[$key]['desc_no'] = $value->desc_no;
 			    	 $data[$key]['user_id'] = $value->cus_name;
 			    	 $data[$key]['url_type'] = $value->url_type;
-			    	 
+			    	 $data[$key]['date'] = date("m-d-Y", strtotime($value->created_at));
 			    	 
 		         }
 		         
@@ -231,6 +231,7 @@ class NotificationController extends Controller
 			    	 $data[$key]['desc_no'] = $value->desc_no;
 			    	 $data[$key]['user_id'] = $value->uname;
 			    	 $data[$key]['url_type'] = $value->url_type;
+			    	 $data[$key]['date'] = date("m-d-Y", strtotime($value->created_at));
 			    	 
 			    	 
 		         }
@@ -313,6 +314,7 @@ class NotificationController extends Controller
 			    	 $data[$key]['desc_no'] = $value->desc_no;
 			    	 $data[$key]['user_id'] = $value->name;
 			    	 $data[$key]['url_type'] = $value->url_type;
+			    	 $data[$key]['date'] = date("m-d-Y", strtotime($value->created_at));
 			    	 
 			    	 
 		         }
