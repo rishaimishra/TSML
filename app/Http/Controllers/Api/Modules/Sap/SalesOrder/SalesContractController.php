@@ -172,7 +172,7 @@ class SalesContractController extends Controller
                  	 	 $data[$key]['net_value'] = $this->scNetValue($po_no);
                  	 	 $data[$key]['qty_ct'] = $this->qty_ct($po_no);
                      $data[$key]['tot_qty'] = $this->rfqTotQty($value->rfq_no);//total rfq qty
-                 	 	 $data[$key]['price_det'] = $this->priceBreakById($value->mat_code);
+                 	 	 $data[$key]['price_det'] = $this->priceBreakById($value->mat_code,$value->rfq_no);
                  	 	 $data[$key]['specs'] = $this->subcatspecs($value->mat_code);
                  	 	 $data[$key]['total'] = $this->totalRfqPrice($value->schedule);
 
@@ -197,14 +197,14 @@ class SalesContractController extends Controller
 
 	// ----------------------------- get all price braeks by mat no. --------------
 
-	   public function priceBreakById($mat_no)
+	   public function priceBreakById($mat_no,$rfq_no)
 	    {
 
 	    	  
                    
                  	 $res = DB::table('sc_transactions')->leftjoin('price_masters','sc_transactions.code','price_masters.code')
-                 	     ->select('sc_transactions.*','price_masters.component')->where('sc_transactions.mat_code',$mat_no)->get();
-
+                 	     ->select('sc_transactions.*','price_masters.component')->where('sc_transactions.mat_code',$mat_no)->where('sc_transactions.rfq_no',$rfq_no)->get();
+                    // echo "<pre>";print_r($res);exit();
                  	  foreach ($res as $key => $value) {
                  	  	
                  	  	  $arr[$key]['cnty'] = $value->code;
