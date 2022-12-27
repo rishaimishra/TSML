@@ -177,6 +177,7 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
    		 Route::post('up_cam_noti','Notification\NotificationController@upCamNoti');
    		 Route::post('up_cus_noti','Notification\NotificationController@upCusNoti');
    		 Route::post('up_sales_noti','Notification\NotificationController@upSalesNoti');
+         Route::post('clear_notification','Notification\NotificationController@clearNotification');
 
 
    	// ----------------- sap sales order --------------------------------------------
