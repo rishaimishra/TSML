@@ -4,13 +4,73 @@ namespace App\Http\Controllers\Api\Modules\Notification;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Camnotification;
 use App\Models\CusNotification;
+use App\Models\Camnotification;
 use App\Models\SalesNotification;
+use App\User;
+use JWTAuth;
+use Validator;
+use Response;
 use DB;
 
 class NotificationController extends Controller
 {
+	public function clearNotification(Request $request)
+    {
+
+    	try{ 
+             
+            $validation = \Validator::make($request->all(),[ 
+        		"user_type" => "required",
+                "user_id" => "required", 
+            ]);
+
+            $chk = User::where('id',$request->user_id)->first();
+            // dd($chk);
+             
+            if (!empty($chk) && ($chk->user_type == $request->user_type)) 
+            {
+            	// dd('ok');
+            	if ($request->user_type == 'C') // Clear customer notifecations.....
+            	{
+            		 
+            		$data['status'] = 2;
+            		$clearNoti = CusNotification::where('sender_ids',$request->user_id)
+            										->update($data);
+            		return response()->json(['status'=>1, 'message' =>'success','result' => 'Notification cleared'],config('global.success_status'));
+            	}
+            	if ($request->user_type == 'Kam') // Clear kam notifecations.....
+            	{
+            		// dd('Clear Kam notifecations');
+            		$data['status'] = 2;
+            		$clearNoti = Camnotification::where('sender_ids',$chk->zone)
+            										->update($data);
+            		return response()->json(['status'=>1, 'message' =>'success','result' => 'Notification cleared'],config('global.success_status'));
+            	}
+            	if ($request->user_type == 'Sales') // Clear Sales notifecations.....
+            	{
+            		// dd('Clear Sales notifecations');
+            		$data['status'] = 2;
+            		$clearNoti = DB::table('sales_notifications')->update($data);
+            		return response()->json(['status'=>1, 'message' =>'success','result' => 'Notification cleared'],config('global.success_status'));
+            	}
+            }
+            else{
+            	return response()->json(['status'=>0,'message' =>'No user found.','result' => []]);
+            }
+                  
+		    // echo "<pre>";print_r($data);exit();
+		    return response()->json(['status'=>1, 'message' =>'success','result' => 'Notification cleared'],config('global.success_status'));
+
+
+      	}catch(\Exception $e){
+
+       return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
+     }
+
+    	 
+    }
+
     public function camNotificationSubmit(Request $request)
     {
 
