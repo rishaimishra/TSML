@@ -8,6 +8,7 @@ use App\Models\CusNotification;
 use App\Models\Camnotification;
 use App\Models\SalesNotification;
 use App\Models\OptNotification;
+use App\Models\PlantNotification;
 use App\User;
 use JWTAuth;
 use Validator;
@@ -219,6 +220,7 @@ class NotificationController extends Controller
 		         $res = DB::table('users')->leftjoin('cam_notifications','users.zone','cam_notifications.sender_ids')
                  ->leftjoin('users as cus_user','cam_notifications.user_id','cus_user.id')
 		         ->select('cam_notifications.*','cus_user.name as cus_name')->where('users.id',$id)
+		         ->orderBy('cam_notifications.id','desc')
 		         ->where('cam_notifications.status',1)
 		         ->get();
 
@@ -299,6 +301,7 @@ class NotificationController extends Controller
 		         ->select('cus_notifications.*','users.name as uname')
 		         ->where('cus_notifications.sender_ids',$id)
 		         ->where('cus_notifications.status',1)
+		         ->orderBy('cus_notifications.id','desc')
 		         ->get();
 
 		         foreach ($res as $key => $value) {
@@ -381,6 +384,7 @@ class NotificationController extends Controller
 		         $res = DB::table('sales_notifications')
 		         ->leftjoin('users','sales_notifications.user_id','users.id')
 		         ->select('sales_notifications.*','users.name')
+		         ->orderBy('sales_notifications.id','desc')
 		         ->where('sales_notifications.status',1)->get();
 		         
 
@@ -479,6 +483,44 @@ class NotificationController extends Controller
 
 	       return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
 	     }
+    }
+
+
+
+    public function plantNotificationSubmit(Request $request)
+    {
+
+    	  try{ 
+                 // dd($request->all());
+                 // $data = array();
+		    	
+		        
+		         echo "<pre>";print_r($request->all());exit();
+
+
+
+		    	 $data['desc'] = $request->input('desc');
+		    	 $data['desc_no'] = $request->input('desc_no');
+		    	 $data['sender_ids'] = $request->input('sender_ids');
+		    	 $data['url_type'] = $request->input('url_type');
+		    	 $data['status'] = 1;
+		    	  // dd($data);
+
+		    	 PlantNotification::create($data);
+
+		    	 // echo "<pre>";print_r($data);exit();
+		        return response()->json(['status'=>1,
+		          'message' =>'success',
+		          'result' => 'Notification submitted'],
+		          config('global.success_status'));
+
+
+      }catch(\Exception $e){
+
+       return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
+     }
+
+    	 
     }
 
     	 
