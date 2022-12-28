@@ -2304,7 +2304,7 @@ class QuoteController extends Controller
             // exit;
             return $val;
         }
-         elseif($arr['price_rejected'] == 1)
+         elseif($arr['price_rejected'] == 1 && $arr['price_accepted'] == null)
         {
             $val = "Price Rejected";
             // exit;
