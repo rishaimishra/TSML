@@ -178,8 +178,8 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
    		 Route::post('up_cus_noti','Notification\NotificationController@upCusNoti');
    		 Route::post('up_sales_noti','Notification\NotificationController@upSalesNoti');
          Route::post('clear_notification','Notification\NotificationController@clearNotification');
-
-
+         Route::post('opt_notification_submit','Notification\NotificationController@optNotificationSubmit');
+         Route::get('get_opt_notification','Notification\NotificationController@getOptNotification');
    	// ----------------- sap sales order --------------------------------------------
         
         Route::post('get_plant_id','Sap\SalesOrder\SalesContractController@getPlantId');

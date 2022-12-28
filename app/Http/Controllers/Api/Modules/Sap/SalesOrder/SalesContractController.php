@@ -101,7 +101,7 @@ class SalesContractController extends Controller
 
                       foreach ($value['price_det'] as $k => $v) {
                       	   
-
+                        
 	                      $priceDet['mat_id'] = $sid['id'];
 	                      $priceDet['mat_code'] = $value['mat_code'];
 	                      $priceDet['cnty'] = $v['cnty'];
@@ -109,12 +109,12 @@ class SalesContractController extends Controller
 	                      $priceDet['amt'] = $v['amt'];
 
 
-	                      ScPriceDetail::create($priceDet);
+	                      // ScPriceDetail::create($priceDet);
 	                     
                       }
 
-
-                       // echo "<pre>";print_r($specs);exit();
+                      
+                       // echo "<pre>";print_r($priceDet);exit();
 
 		    	 }
           // }

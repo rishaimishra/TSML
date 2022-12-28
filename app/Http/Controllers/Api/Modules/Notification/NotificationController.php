@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\CusNotification;
 use App\Models\Camnotification;
 use App\Models\SalesNotification;
+use App\Models\OptNotification;
 use App\User;
 use JWTAuth;
 use Validator;
@@ -64,6 +65,82 @@ class NotificationController extends Controller
 
 
       	}catch(\Exception $e){
+
+       return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
+     }
+
+    	 
+    }
+
+    public function optNotificationSubmit(Request $request)
+    {
+
+    	  try{ 
+                 // dd($request->all());
+                 // $data = array();
+		    	
+		        
+		         // echo "<pre>";print_r($url_type);exit();
+
+		    	 $data['desc'] = $request->input('desc');
+		    	 $data['desc_no'] = $request->input('desc_no');
+		    	 $data['sender_ids'] = $request->input('sender_ids');
+		    	 $data['url_type'] = $request->input('url_type');
+		    	 $data['status'] = 1;
+		    	  // dd($data);
+
+		    	 OptNotification::create($data);
+
+		    	 // echo "<pre>";print_r($data);exit();
+		        return response()->json(['status'=>1,
+		          'message' =>'success',
+		          'result' => 'Notification submitted'],
+		          config('global.success_status'));
+
+
+      }catch(\Exception $e){
+
+       return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
+     }
+
+    	 
+    }
+
+    public function getOptNotification()
+    {
+
+    	  try{ 
+
+                 $data = array();
+
+		         $res = DB::table('opt_notification') 
+                 ->leftjoin('users','opt_notification.sender_ids','users.id')
+		         ->select('opt_notification.*','users.org_name as plant_name')
+		         ->where('opt_notification.status',1)
+		         ->get();
+
+		         foreach ($res as $key => $value) {
+		         	 
+		         	 $data[$key]['id'] = $value->id;
+		         	 $data[$key]['desc'] = $value->desc;
+			    	 $data[$key]['desc_no'] = $value->desc_no; 
+			    	 $data[$key]['url_type'] = $value->url_type;
+			    	 $data[$key]['plant_name'] = $value->plant_name;
+			    	 $data[$key]['date'] = date("m-d-Y", strtotime($value->created_at));
+			    	 
+		         }
+		         
+		    	 
+
+
+		    	 // echo "<pre>";print_r($id);exit();
+		        return response()->json(['status'=>1,
+		          'message' =>'success',
+		          'result' => $data],
+		          config('global.success_status'));
+
+
+      }catch(\Exception $e){
 
        return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
      }
