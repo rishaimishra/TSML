@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateProductTable extends Migration
+class CreatePlantNotificationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,14 @@ class CreateProductTable extends Migration
      */
     public function up()
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('plant_notifications', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('pro_name');
-            $table->string('slug')->nullable();
-            $table->text('pro_desc')->nullable();
-            $table->unsignedTinyInteger('status')->default(1)->comment('1=Active|2=Inactive'); 
+            $table->string('desc');
+            $table->string('desc_no');
+            $table->string('sender_id');
+            $table->string('plant_id');
+            $table->string('url_type')->nullable();
+            $table->integer('status');
             $table->timestamps();
         });
     }
@@ -30,6 +32,6 @@ class CreateProductTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('plant_notifications');
     }
 }
