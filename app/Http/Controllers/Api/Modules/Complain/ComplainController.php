@@ -8,6 +8,7 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use Illuminate\Support\Facades\Auth;
 use App\Mail\ComplaintMail;
 use App\Mail\ComplaintMailToRm;
+use App\ServicesMy\MailService;
 use App\User;
 use App\Models\Product;
 use App\Models\Category;
@@ -25,6 +26,8 @@ use App\Models\ComplainMain;
 use App\Models\Camnotification;
 use App\Models\CusNotification;
 use App\Models\SalesNotification;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 use JWTAuth;
 use Validator;
 use File; 
@@ -393,22 +396,29 @@ class ComplainController extends Controller
               array_push($cc_email,$value['email']);
             }
 
-            $data['customer_name'] = $getuser['name'];
-            $data['email'] = $getuser['email'];
-            $data['cc'] = $cc_email;
-            $data['po_number'] = $request->po_number;
-            $data['user_type'] = '';
+            // $data['customer_name'] = $getuser['name'];
+            // $data['email'] = $getuser['email'];
+            // $data['cc'] = $cc_email;
+            // $data['po_number'] = $request->po_number;
+            // $data['user_type'] = '';
 
+            // dd($data);
 
-                     
+            $mailSub = 'Complaint Mail';
+            $mailTemplateBlade = 'mail.complaint_mail_user'; 
+            $sentTo = $getuser['email']; 
+            $mailData['customer_name'] = $getuser['name'];
+            $mailData['po_number'] = $request->po_number;
+            // dd($cc_email);
+            (new MailService)->dotestMail($mailSub,$mailTemplateBlade,$sentTo,$mailData,$cc_email);
+
             $desc_no = DB::table('orders')->where('po_no',$request->po_number)->first();
                      
             $resA = DB::table('quotes')->leftjoin('users','quotes.user_id','users.id')
                 ->select('users.zone')
                 ->where('quotes.rfq_no',$desc_no->rfq_no)
                 ->whereNull('quotes.deleted_at')->first();
-                // echo "<pre>";print_r($resA);exit();
-
+              
             $zone = $resA->zone;
 
             $datas['desc'] = 'Complaints raised against';
@@ -489,13 +499,21 @@ class ComplainController extends Controller
               array_push($cc_email,$value['email']);
             }
 
-            $data['customer_name'] = $getuser['name'];
-            $data['email'] = $getuser['email'];
-            $data['cc'] = $cc_email;
-            $data['po_number'] = $complainData->po_number;
-            $data['user_type'] = '';
+            // $data['customer_name'] = $getuser['name'];
+            // $data['email'] = $getuser['email'];
+            // $data['cc'] = $cc_email;
+            // $data['po_number'] = $complainData->po_number;
+            // $data['user_type'] = '';
 
             // dd($data);
+
+            $mailSub = 'Complaint Mail';
+            $mailTemplateBlade = 'mail.complaint_mail_user'; 
+            $sentTo = $getuser['email']; 
+            $mailData['customer_name'] = $getuser['name'];
+            $mailData['po_number'] = $complainData->po_number;
+            // dd($cc_email);
+            (new MailService)->dotestMail($mailSub,$mailTemplateBlade,$sentTo,$mailData,$cc_email);
 
             $desc_no = DB::table('orders')->where('po_no',$complainData->po_number)->first();
                      
@@ -554,17 +572,22 @@ class ComplainController extends Controller
               }
 
               
-              $data['customer_name'] = $getuser['name'];
-              $data['email'] = $getuser['email'];
-              $data['cc'] = $cc_email;
-              $data['po_number'] = $complainData->po_number;
-              $data['user_type'] = 'Kam';
+              // $data['customer_name'] = $getuser['name'];
+              // $data['email'] = $getuser['email'];
+              // $data['cc'] = $cc_email;
+              // $data['po_number'] = $complainData->po_number;
+              // $data['user_type'] = 'Kam';
             // dd($data);
 
-            $cdata = array();
-          
-            
-             
+              $mailSub = 'Complaint Mail';
+              $mailTemplateBlade = 'mail.complaint_mail_kam'; 
+              $sentTo = $getuser['email']; 
+              $mailData['customer_name'] = $getuser['name'];
+              $mailData['po_number'] = $complainData->po_number;
+              // dd($sentTo);
+              (new MailService)->dotestMail($mailSub,$mailTemplateBlade,$sentTo,$mailData,$cc_email);
+
+            $cdata = array(); 
 
             $cdata['desc'] = 'Complaint replayed';
             $cdata['desc_no'] = $complainData->po_number;
