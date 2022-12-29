@@ -454,7 +454,7 @@ class SalesContractController extends Controller
            ->orderBy('quotes.updated_at','desc')
            ->groupBy('quotes.rfq_no');
 
-           $quote = $quote->whereNull('quotes.deleted_at')->where('quote_schedules.quote_status',1)
+           $quote = $quote->whereNull('quotes.deleted_at')->where('quote_schedules.quote_status',1)->whereNotNull('orders.cus_po_no')
            ->get()->toArray();
            // echo "<pre>";print_r($quote);exit();
 
@@ -462,8 +462,7 @@ class SalesContractController extends Controller
           {
           foreach ($quote as $key => $value) {
             
-            if(!empty($value->cus_po_no))
-            {
+            
             $result[$key]['po_no'] = $value->po_no;
             $result[$key]['cus_po_no'] = $value->cus_po_no;
             $result[$key]['user'] = $value->name;
@@ -477,7 +476,7 @@ class SalesContractController extends Controller
             $result[$key]['sc_no'] = $value->sc_no;
             $result[$key]['sc_date'] = date('m-d-y',strtotime($value->sc_dt));
 
-           }
+           
 
           }
         }
