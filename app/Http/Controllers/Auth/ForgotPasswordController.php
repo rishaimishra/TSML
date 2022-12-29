@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use App\Mail\ForgotPasswordMail;
 use Illuminate\Http\Request;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+use App\ServicesMy\MailService;
 use App\User;
 use Validator;
 use Response; 
@@ -67,9 +70,17 @@ class ForgotPasswordController extends Controller
         $vcode = random_int(100000, 999999); 
         
         User::where('email',$request->email)->update(['remember_token'=>$vcode]);
-        $data['OTP'] =  $vcode;
-        $data['name'] = $user->name;
-        $data['email'] = $user->email;
+        // $data['OTP'] =  $vcode;
+        // $data['name'] = $user->name;
+        // $data['email'] = $user->email;
+
+        $mailSub = 'Forgot Password';
+        $mailTemplateBlade = 'mail.forgot_password'; 
+        $sentTo = $user->email;
+        $mailData['OTP'] = $request->vcode;
+        $mailData['name'] = $request->name; 
+         
+        (new MailService)->dotestMail($mailSub,$mailTemplateBlade,$sentTo,$mailData);
          
         
         Mail::send(new ForgotPasswordMail($data));
