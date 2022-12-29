@@ -37,6 +37,11 @@ Route::post('quote_gen_mail', 'Api\Modules\QuoteEmail\QuoteEmailController@quote
 Route::post('sale_accpt_mail', 'Api\Modules\QuoteEmail\QuoteEmailController@saleAccptMail');
 Route::post('accepted_price_mail', 'Api\Modules\QuoteEmail\QuoteEmailController@acceptedPriceMail');
 Route::post('order_cnrfm_mail', 'Api\Modules\QuoteEmail\QuoteEmailController@orderCnrfmMail');
+
+// ------------ sap mails------------------------------------------
+Route::post('sc_mail', 'Api\Modules\QuoteEmail\QuoteEmailController@scMail');
+
+// ---------------------------------------------------------------
 Route::group(['namespace'=>'Api\Modules'],function(){
 	// Index Page Routes ....
 	Route::get('index-page/{proId}/{plant_id?}', 'Product\ProductController@indexPage')->name('index_page');
