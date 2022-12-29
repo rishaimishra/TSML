@@ -77,13 +77,13 @@ class ForgotPasswordController extends Controller
         $mailSub = 'Forgot Password';
         $mailTemplateBlade = 'mail.forgot_password'; 
         $sentTo = $user->email;
-        $mailData['OTP'] = $request->vcode;
-        $mailData['name'] = $request->name; 
-         
+        $mailData['OTP'] = $vcode;
+        $mailData['name'] = $user->name; 
+         // dd($mailData);
         (new MailService)->dotestMail($mailSub,$mailTemplateBlade,$sentTo,$mailData);
          
         
-        Mail::send(new ForgotPasswordMail($data));
+        // Mail::send(new ForgotPasswordMail($data));
         return response()->json(['status'=>1,'message' =>'A OTP send to your email address for reset your password .'],200);
         
     }

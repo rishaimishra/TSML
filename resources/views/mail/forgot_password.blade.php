@@ -40,7 +40,7 @@
  
                </div>
                <p style="font-family:Arial; font-size:14px; font-weight:500; color:#000;margin-left: 5px;">
-                  If you did not make this request, just ignore this email.Otherwise please click the link above to reset your password <a href="https://beas.in/tsml/#/auth/forget-password">Reset password !!</a> <!-- <a href="https://demo-tsml.mjunction.in/mj-front/#/forget-password">Reset password !!</a> --> 
+                  If you did not make this request, just ignore this email.Otherwise please click the link above to reset your password <a href="http://localhost:4200/#/auth/forget-password">Reset password !!</a> <!-- <a href="https://beas.in/tsml/#/auth/forget-password">Reset password !!</a> --> <!-- <a href="https://demo-tsml.mjunction.in/mj-front/#/forget-password">Reset password !!</a> --> 
                </p>
                 <!-- <p style="font-weight: 400; font-size: 15px; line-height: 1.8; color: rgba(0,0,0,.8);">It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p> -->
             </td>

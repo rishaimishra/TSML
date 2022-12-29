@@ -49,7 +49,7 @@ class ResetPasswordController extends Controller
         //     'password_confirm.required'=>'The confirm password field is required']);
 
         $validator = Validator::make($request->all(), [
-                'email' =>'required|string|email|max:255'
+                'email' =>'required|string|email|max:255',
                 'otp' =>'required|numeric|digits:6',
                 'password' =>'required|string|min:6|required_with:password-confirm', 
                 'password_confirm' =>'required|required_with:password|same:password',   
@@ -61,24 +61,30 @@ class ResetPasswordController extends Controller
             ]
         );
 
-        if ($validator->fails()) {
-                $response['error']['validation'] = $validator->errors();
-                return Response::json($response);
-            }
+        // if ($validator->fails()) {
+        //         $response['error']['validation'] = $validator->errors();
+        //         return Response::json($response);
+        //     }
+
+             if ($validator->fails()) { 
+              return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $validator->errors()],config('global.failed_status'));
+          }
 
         $chkOtp = User::where('remember_token',@$request->otp)->where('email',@$request->email)->first();
         // dd($chkOtp);
         if(!@$chkOtp){
-            $response['error']['message'] = "Invalid OTP or email please check !!";
+            return response()->json(['status'=>0,'message' =>'Invalid OTP or email please check !!']);
+            // $response['error']['message'] = "Invalid OTP or email please check !!";
             return Response::json($response);
              
         }
         else{
             if($request->password == $request->password_confirm && $request->password){
-                 // dd('ok');
+                 // dd($request->password);
                 $remember_token = $request->otp; 
                 $update['password'] = Hash::make($request->password);
                 $update['remember_token'] = '';
+                // dd($update);
                 $user = User::Where('remember_token',$remember_token)->update($update);
                 if($user) {
                     return response()->json(['status'=>1,'message' =>'Password changed successfully !!'],200);
