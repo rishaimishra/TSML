@@ -9,7 +9,7 @@ use PHPMailer\PHPMailer\Exception;
 class MailService
 {
     
-    public function dotestMail($sub,$var,$sentto,$data,$emailcc)
+    public function dotestMail($sub,$var,$sentto,$data=null,$emailcc)
     {
 
              $mail = new PHPMailer(true);     // Passing `true` enables exceptions
