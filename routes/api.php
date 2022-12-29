@@ -33,7 +33,7 @@ Route::post('password-update', 'Auth\ResetPasswordController@reset')->name('user
 Route::get('get_user_by_id/{id}', 'UserController@getUserById');
 Route::get('test', 'UserController@test');
 Route::get('test_mail', 'UserController@testmail');
-Route::post('cus_quote_gen_mail', 'Api\Modules\QuoteEmail\QuoteEmailController@quotePoMail');
+Route::post('quote_gen_mail', 'Api\Modules\QuoteEmail\QuoteEmailController@quotePoMail');
 Route::post('sale_accpt_mail', 'Api\Modules\QuoteEmail\QuoteEmailController@saleAccptMail');
 Route::post('accepted_price_mail', 'Api\Modules\QuoteEmail\QuoteEmailController@acceptedPriceMail');
 Route::post('order_cnrfm_mail', 'Api\Modules\QuoteEmail\QuoteEmailController@orderCnrfmMail');
