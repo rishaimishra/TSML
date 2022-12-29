@@ -7,10 +7,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Quote;
 use App\Models\Plant;
 use App\Models\DeliveryMethod;
-use App\Mail\RfqGeneratedMail;
-use App\Mail\AcceptedRfqMail;
-use App\Mail\OrderConfirmationMail;
-use App\Mail\SalesacceptMail;
+// use App\Mail\RfqGeneratedMail;
+// use App\Mail\AcceptedRfqMail;
+// use App\Mail\OrderConfirmationMail;
+// use App\Mail\SalesacceptMail;
+use App\ServicesMy\MailService;
 use App\User;
 use Validator;
 use Auth;
@@ -37,22 +38,26 @@ class QuoteEmailController extends Controller
          	  array_push($cc_email,$value['email']);
          }
 
-         
+         $sub = 'Your RFQ has been raised successfully'.'   '.$rfq_no;
+ 
+         $html = 'mail.rfqgeneratedmail';
 
-    	 $data['name'] = $user['name'];
-         $data['email'] = $user['email'];
-         $data['rfq_no'] = $rfq_no;
-         $data['cc'] = $cc_email;
+         $data = "";
+
+    	 // $data['name'] = $user['name'];
+      //    $data['email'] = $user['email'];
+      //    $data['rfq_no'] = $rfq_no;
+      //    $data['cc'] = $cc_email;
          // echo "<pre>";print_r($data);exit();
-
-         Mail::send(new RfqGeneratedMail($data));
+        (new MailService)->dotestMail($sub,$html,$user['email'],$data,$cc_email);
+         // Mail::send(new RfqGeneratedMail($data));
 
          $msg = "Mail sent successfully";
          return response()->json(['status'=>1,'message' =>$msg],200);
     }
 
 
-    // --------------------  accepted price mail ----------------------------------------------
+    // --------------------  accepted price mail ------------------------------------
     public function acceptedPriceMail(Request $request)
     {
          $cc_email = array();
@@ -71,22 +76,26 @@ class QuoteEmailController extends Controller
               array_push($cc_email,$value['email']);
          }
 
-         
+         $sub = 'Sales team has accepted the price, volume and delivery timeline'.'   '.$rfq_no;
+ 
+         $html = 'mail.priceaceptancemail';
 
-         $data['name'] = $user['name'];
-         $data['email'] = $user['email'];
-         $data['rfq_no'] = $rfq_no;
-         $data['cc'] = $cc_email;
+         $data = "";
+
+         // $data['name'] = $user['name'];
+         // $data['email'] = $user['email'];
+         // $data['rfq_no'] = $rfq_no;
+         // $data['cc'] = $cc_email;
          // echo "<pre>";print_r($data);exit();
-
-         Mail::send(new AcceptedRfqMail($data));
+         (new MailService)->dotestMail($sub,$html,$user['email'],$data,$cc_email);
+         // Mail::send(new AcceptedRfqMail($data));
 
          $msg = "Mail sent successfully";
          return response()->json(['status'=>1,'message' =>$msg],200);
     }
-    // --------------------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------------
 
-    // --------------------  order confirmation mail ----------------------------------------------
+    // --------------------  order confirmation mail --------------------------------
     public function orderCnrfmMail(Request $request)
     {
          $cc_email = array();
@@ -105,22 +114,27 @@ class QuoteEmailController extends Controller
               array_push($cc_email,$value['email']);
          }
 
-         
+         $sub = 'TSML Order confirmation'.'   '.$rfq_no;
+ 
+         $html = 'mail.orderconfirmationmail';
 
-         $data['name'] = $user['name'];
-         $data['email'] = $user['email'];
-         $data['rfq_no'] = $rfq_no;
-         $data['cc'] = $cc_email;
-         // echo "<pre>";print_r($data);exit();
+         $data = "";
 
-         Mail::send(new OrderConfirmationMail($data));
+         // $data['name'] = $user['name'];
+         // $data['email'] = $user['email'];
+         // $data['rfq_no'] = $rfq_no;
+         // $data['cc'] = $cc_email;
+         // // echo "<pre>";print_r($data);exit();
+
+         // Mail::send(new OrderConfirmationMail($data));
+         (new MailService)->dotestMail($sub,$html,$user['email'],$data,$cc_email);
 
          $msg = "Mail sent successfully";
          return response()->json(['status'=>1,'message' =>$msg],200);
     }
-    // --------------------------------------------------------------------------------------------
+    // ------------------------------------------------------------------------------
 
-    // --------------------  sales acceptance mail ----------------------------------------------
+    // --------------------  sales acceptance mail --------------------------------
     public function saleAccptMail(Request $request)
     {
          $cc_email = array();
@@ -128,8 +142,7 @@ class QuoteEmailController extends Controller
          $rfq_no = $request->input('rfq_no');
          $user_id = $request->input('user_id');
          
-         
-         
+                 
          $user = User::where('id',$user_id)->first();
 
          $cam = User::where('zone',$user->zone)->where('id','!=',$user_id)->where('user_type','Kam')->get()->toArray();
@@ -139,20 +152,24 @@ class QuoteEmailController extends Controller
               array_push($cc_email,$value['email']);
          }
 
-         
+         $sub = 'Your RFQ has been raised successfully'.'   '.$rfq_no;
+ 
+         $html = 'mail.salesacceptmail';
 
-         $data['name'] = $user['name'];
-         $data['email'] = $user['email'];
-         $data['rfq_no'] = $rfq_no;
-         $data['cc'] = $cc_email;
+         $data = "";
+
+         // $data['name'] = $user['name'];
+         // $data['email'] = $user['email'];
+         // $data['rfq_no'] = $rfq_no;
+         // $data['cc'] = $cc_email;
          // echo "<pre>";print_r($data);exit();
 
-         Mail::send(new SalesacceptMail($data));
-
+         // Mail::send(new SalesacceptMail($data));
+         (new MailService)->dotestMail($sub,$html,$user['email'],$data,$cc_email);
          $msg = "Mail sent successfully";
          return response()->json(['status'=>1,'message' =>$msg],200);
     }
-    // --------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------
 
 
 }
