@@ -289,10 +289,10 @@ class RequoteController extends Controller
                $remarks = $request->input('remarks');
                
                $res = Smremark::where('rfq_no',$rfq_no)->get();
-               if(!empty($res))
-               {
-                   Smremark::where('rfq_no',$rfq_no)->delete();
-               }
+               // if(!empty($res))
+               // {
+               //     Smremark::where('rfq_no',$rfq_no)->delete();
+               // }
 
                $arr['user_id'] = $user_id;
                $arr['type'] = $type;
