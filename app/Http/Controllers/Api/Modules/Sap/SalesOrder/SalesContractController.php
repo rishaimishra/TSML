@@ -454,13 +454,14 @@ class SalesContractController extends Controller
            ->orderBy('quotes.updated_at','desc')
            ->groupBy('quotes.rfq_no');
 
-           $quote = $quote->whereNull('quotes.deleted_at')->where('quote_schedules.quote_status',1)
+           $quote = $quote->whereNull('quotes.deleted_at')->where('quote_schedules.quote_status',1)->whereNotNull('orders.cus_po_no')
            ->get()->toArray();
            // echo "<pre>";print_r($quote);exit();
 
           if(!empty($quote))
           {
           foreach ($quote as $key => $value) {
+            
             
             $result[$key]['po_no'] = $value->po_no;
             $result[$key]['cus_po_no'] = $value->cus_po_no;
@@ -475,7 +476,7 @@ class SalesContractController extends Controller
             $result[$key]['sc_no'] = $value->sc_no;
             $result[$key]['sc_date'] = date('m-d-y',strtotime($value->sc_dt));
 
-         
+           
 
           }
         }
@@ -534,7 +535,7 @@ class SalesContractController extends Controller
                  ->leftjoin('orders','sales_contracts.po_no','orders.po_no')
                  ->leftjoin('quotes','orders.rfq_no','quotes.rfq_no')
                  ->leftjoin('users','quotes.user_id','users.id')
-                 ->select('sales_contracts.sc_no','sales_contracts.sc_dt','users.org_name','sap_sales_organization.id','sap_sales_organization.sales_orgerms_dec','sap_distribution_channel.distr_chan_code as disid','sap_distribution_channel.distr_chan_terms_dec','sap_division.id as divid','sap_division.division_dec','sap_sales_office.id as ofcid','sap_sales_office.sales_office_dec','sap_sales_group.id as salesid','sap_sales_group.sales_group_dec','users.id as uid','sales_contracts.id as transactid','orders.rfq_no')
+                 ->select('sales_contracts.sc_no','sales_contracts.sc_dt','users.org_name','sap_sales_organization.sales_orgerms_code as id','sap_sales_organization.sales_orgerms_dec','sap_distribution_channel.distr_chan_code as disid','sap_distribution_channel.distr_chan_terms_dec','sap_division.division_code as divid','sap_division.division_dec','sap_sales_office.sales_office_code as ofcid','sap_sales_office.sales_office_dec','sap_sales_group.sales_group_code as salesid','sap_sales_group.sales_group_dec','users.id as uid','sales_contracts.id as transactid','orders.rfq_no')
                  ->where('sales_contracts.sc_no',$so_no)
                  ->whereNull('quotes.deleted_at')
                  ->get()->toArray();

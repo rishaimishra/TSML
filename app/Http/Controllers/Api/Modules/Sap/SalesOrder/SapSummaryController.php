@@ -24,13 +24,14 @@ class SapSummaryController extends Controller
           $res = DB::table('orders')
                       ->leftjoin('sales_contracts','orders.po_no','sales_contracts.po_no')
                       ->leftjoin('sales_orders','orders.po_no','sales_orders.po_no')
-                      ->select('sales_contracts.sc_no','sales_orders.so_no','orders.po_no')
+                      ->select('sales_contracts.sc_no','sales_orders.so_no','orders.po_no','orders.cus_po_no')
                       ->where('orders.po_no',$po_no)
                       ->first();
 
                 $arr['sc_no'] = $res->sc_no;
                 $arr['so_no'] = $res->so_no;
                 $arr['po_no'] = $res->po_no;
+                $arr['cus_po_no'] = $res->cus_po_no;
                 $arr['do_no'] = $this->getDoNoByPo($res->so_no);
 
 
