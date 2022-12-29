@@ -282,6 +282,9 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
           Route::post('po_search_list','Search\SearchController@poSearchList');
 
          // ---------------------------------------------------------------------
+         // ----------------------- production fg -------------------------------
+           Route::post('prod-qty-upload-user','Orders\OrderPlanningController@prodQtyUploadAdmin');
+          // -------------------------------------------------------------------
      });
    	
 });
