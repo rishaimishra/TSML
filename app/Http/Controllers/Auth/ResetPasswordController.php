@@ -61,20 +61,15 @@ class ResetPasswordController extends Controller
             ]
         );
 
-        // if ($validator->fails()) {
-        //         $response['error']['validation'] = $validator->errors();
-        //         return Response::json($response);
-        //     }
-
-             if ($validator->fails()) { 
-              return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $validator->errors()],config('global.failed_status'));
-          }
+        if ($validator->fails()) {
+                $response['error']['validation'] = $validator->errors();
+                return Response::json($response);
+            }
 
         $chkOtp = User::where('remember_token',@$request->otp)->where('email',@$request->email)->first();
         // dd($chkOtp);
         if(!@$chkOtp){
-            return response()->json(['status'=>0,'message' =>'Invalid OTP or email please check !!']);
-            // $response['error']['message'] = "Invalid OTP or email please check !!";
+            $response['error']['message'] = "Invalid OTP or email please check !!";
             return Response::json($response);
              
         }
