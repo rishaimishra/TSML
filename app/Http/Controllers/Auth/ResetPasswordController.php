@@ -49,6 +49,7 @@ class ResetPasswordController extends Controller
         //     'password_confirm.required'=>'The confirm password field is required']);
 
         $validator = Validator::make($request->all(), [
+                'email' =>'required|string|email|max:255'
                 'otp' =>'required|numeric|digits:6',
                 'password' =>'required|string|min:6|required_with:password-confirm', 
                 'password_confirm' =>'required|required_with:password|same:password',   
@@ -65,10 +66,10 @@ class ResetPasswordController extends Controller
                 return Response::json($response);
             }
 
-        $chkOtp = User::where('remember_token',@$request->otp)->first();
+        $chkOtp = User::where('remember_token',@$request->otp)->where('email',@$request->email)->first();
         // dd($chkOtp);
         if(!@$chkOtp){
-            $response['error']['message'] = "Invalid OTP please check !!";
+            $response['error']['message'] = "Invalid OTP or email please check !!";
             return Response::json($response);
              
         }
