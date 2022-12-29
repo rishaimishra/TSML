@@ -12,6 +12,8 @@ use App\Models\Department;
 use App\Models\DepartmentMail;
 use App\Models\ComplaintManage;
 use App\Models\ComplainRemarks;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 use JWTAuth;
 use Validator;
 use File; 
@@ -50,8 +52,8 @@ class ComplainManageController extends Controller
           	$input['kam_id'] = $request->kam_id;
             $input['po_no'] = $request->po_no;
             $input['complain_id'] = $request->complain_id;
-          	 
-            $freightsData = ComplaintManage::create($input);
+          	 // dd($input);
+            // $freightsData = ComplaintManage::create($input);
 
              
 
