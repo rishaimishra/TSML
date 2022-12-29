@@ -9,7 +9,7 @@ use PHPMailer\PHPMailer\Exception;
 class MailService
 {
     
-    public function dotestMail($sub,$var,$sentto,$data=null,$emailcc)
+    public function dotestMail($mailSub=null,$mailTemplateBlade=null,$sentTo=null,$mailData=null,$emailcc=null)
     {
 
              $mail = new PHPMailer(true);     // Passing `true` enables exceptions
@@ -28,20 +28,21 @@ class MailService
                 $mail->SMTPSecure = 'tls';                  // encryption - ssl/tls
                 $mail->Port = 587;                          // port - 587/465
 
-                $mail->setFrom('noreply.esales@tatasteelmining.com', 'SenderName');
-                $mail->addAddress($sentto);
-                foreach ($emailcc as $key => $value) {
-                    
-                  $mail->addCC($value);
-                }
-
+                $mail->setFrom('noreply.esales@tatasteelmining.com', 'TSML Teem');
+                $mail->addAddress($sentTo);
+                
+                if (!empty($emailcc)) 
+                {
+                    foreach ($emailcc as $key => $value) 
+                    {                    
+                        $mail->addCC($value);
+                    }
+                } 
 
                 $mail->isHTML(true);                
 
-                $mail->Subject = $sub;
-                $mail->Body    = view($var, ['data' => $data])->render();;
-
-
+                $mail->Subject = $mailSub;
+                $mail->Body    = view($mailTemplateBlade, ['data' => $mailData])->render(); 
 
                 if( !$mail->send() ) {
                     return back()->with("failed", "Email not sent.")->withErrors($mail->ErrorInfo);

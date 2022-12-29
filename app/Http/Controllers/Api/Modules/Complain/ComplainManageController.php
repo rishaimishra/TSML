@@ -7,11 +7,14 @@ use App\Http\Controllers\Controller;
 use App\Mail\ComplaintMail;
 use App\Mail\ComplaintMailToRm;
 use App\Mail\ComplaintMailSend;
+use App\ServicesMy\MailService;
 use App\User;
 use App\Models\Department;
 use App\Models\DepartmentMail;
 use App\Models\ComplaintManage;
 use App\Models\ComplainRemarks;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 use JWTAuth;
 use Validator;
 use File; 
@@ -50,19 +53,26 @@ class ComplainManageController extends Controller
           	$input['kam_id'] = $request->kam_id;
             $input['po_no'] = $request->po_no;
             $input['complain_id'] = $request->complain_id;
-          	 
-            $freightsData = ComplaintManage::create($input);
+          	 // dd($input);
+            // $freightsData = ComplaintManage::create($input);
 
              
 
-            $mailData['email'] = $request->r_mail;
-          	$mailData['kam_remarks'] = $request->ka_remarks;
+           //  $mailData['email'] = $request->r_mail;
+          	// $mailData['kam_remarks'] = $request->ka_remarks;
           	// $mailData['com_cate_name'] =  $ComplainListData->com_cate_name;
           	// $mailData['com_sub_cate_name'] = $ComplainListData->com_sub_cate_name;          
           	// $mailData['po_no'] = $ComplainListData->po_no;
           	// $mailData['kam_name'] = $getkam->name;
           	// $mailData['remarksData'] = $remarksData;
-
+          	// $data['email'] = 'partha.beas@gmail.com';
+    //     Mail::send(new Register($data));
+		    $mailSub = 'Complaint Mail';
+		    $mailTemplateBlade = 'mail.complaint_mail_send'; 
+		    $sentTo = $request->r_mail;
+		    $mailData['kam_remarks'] = $request->ka_remarks; 
+		     
+          	(new MailService)->dotestMail($mailSub,$mailTemplateBlade,$sentTo,$mailData);
             // Mail::send(new ComplaintMailSend($mailData));
           	
           	return response()->json(['status'=>1,'message' =>'Complaint mail send to successfully.'],200);
