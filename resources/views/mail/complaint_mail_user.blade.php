@@ -11,11 +11,15 @@
             <td style="background: #3D7EEB;">
                 <table style="width: 100%;">
                     <tr>
-                        <td>
-                            <img src="https://beas.in/tsml/assets/images/logo-white.png" style="max-width: 188px;">
+                        <td style="vertical-align: top;">
+                            <div style="padding-top:22px;">
+                                <img src="https://beas.in/tsml/assets/images/logo-white.png" style="max-width: 188px;">
+                            </div>
                         </td>
-                        <td>
-                            <img src="https://beas.in/tsml/assets/images/secondary-white.png" style="max-width: 50px; float: right;">
+                        <td style="vertical-align: top;">
+                            <div>
+                                <img src="https://beas.in/tsml/assets/images/secondary-white.png" style="max-width: 50px; float: right;">
+                            </div>
                         </td>
                     </tr>
                 </table>
