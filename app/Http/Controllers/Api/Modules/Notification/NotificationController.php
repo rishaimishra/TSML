@@ -494,24 +494,123 @@ class NotificationController extends Controller
                  // dd($request->all());
                  // $data = array();
 		    	
-		        
-		         echo "<pre>";print_r($request->all());exit();
+		         $res = DB::table('quotes')->leftjoin('quote_schedules','quotes.id','quote_schedules.quote_id')->leftjoin('users','quote_schedules.plant','users.org_name')->where('quotes.rfq_no',$request->input('rfq_no'))
+		         ->whereNull('quotes.deleted_at')
+		         ->select('users.id')->get();
+		         // echo "<pre>";print_r($value->id);exit();
+               
+                foreach ($res as $key => $value) {
+                	 // echo "<pre>";print_r($value->id);exit();
+                	if(!empty($value->id))
+                	{
+	                 $data['desc'] = $request->input('desc');
+			    	 $data['desc_no'] = $request->input('desc_no');
+			    	 $data['sender_id'] = $request->input('user_id');
+			    	 $data['plant_id'] = $value->id;
+			    	 $data['url_type'] = "";
+			    	 $data['status'] = 1;
+			    	  // dd($data);
 
+			    	 PlantNotification::create($data);
+			    	}
+                }
 
-
-		    	 $data['desc'] = $request->input('desc');
-		    	 $data['desc_no'] = $request->input('desc_no');
-		    	 $data['sender_ids'] = $request->input('sender_ids');
-		    	 $data['url_type'] = $request->input('url_type');
-		    	 $data['status'] = 1;
-		    	  // dd($data);
-
-		    	 PlantNotification::create($data);
+		    	 
 
 		    	 // echo "<pre>";print_r($data);exit();
 		        return response()->json(['status'=>1,
 		          'message' =>'success',
 		          'result' => 'Notification submitted'],
+		          config('global.success_status'));
+
+
+      }catch(\Exception $e){
+
+       return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
+     }
+
+    	 
+    }
+
+
+
+    public function getPlantNotification($id)
+    {
+
+    	  try{ 
+
+                 $data = array();
+
+		         $res = PlantNotification::where('plant_id',$id)->where('status',1)->with('userName')->orderBy('id','desc')->get();
+		         
+
+		         foreach ($res as $key => $value) {
+		         	 
+		         	 $data[$key]['id'] = $value->id;
+		         	 $data[$key]['desc'] = $value->desc;
+			    	 $data[$key]['desc_no'] = $value->desc_no;
+			    	 $data[$key]['user_name'] = $value['userName']['name'];
+			    	 $data[$key]['url_type'] = $value->url_type;
+			    	 $data[$key]['date'] = date("m-d-Y", strtotime($value->created_at));
+			    	 
+			    	 
+		         }
+		         
+
+		    	 // echo "<pre>";print_r($res);exit();
+		        return response()->json(['status'=>1,
+		          'message' =>'success',
+		          'result' => $data],
+		          config('global.success_status'));
+
+
+      }catch(\Exception $e){
+
+       return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
+     }
+
+    	 
+    }
+
+
+    public function clearsinglemsg($id)
+    {
+
+    	  try{ 
+
+                 $data = array();
+
+		         PlantNotification::where('id',$id)->update(['status' => 2]);
+		         
+		    	 // echo "<pre>";print_r($res);exit();
+		        return response()->json(['status'=>1,
+		          'message' =>'success',
+		          'result' => 'Ntification updated'],
+		          config('global.success_status'));
+
+
+      }catch(\Exception $e){
+
+       return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
+     }
+
+    	 
+    }
+
+
+    public function clearallPlantNoti()
+    {
+
+    	  try{ 
+
+                 $data = array();
+
+		         DB::table('plant_notifications')->update(['status' => 2]);
+		         
+		    	 // echo "<pre>";print_r($res);exit();
+		        return response()->json(['status'=>1,
+		          'message' =>'success',
+		          'result' => 'Ntification updated'],
 		          config('global.success_status'));
 
 

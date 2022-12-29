@@ -171,5 +171,45 @@ class QuoteEmailController extends Controller
     }
     // -----------------------------------------------------------------------------
 
+    // -------------------  sc mail ------------------------------------------
+
+    public function scMail(Request $request)
+
+        {
+             $cc_email = array();
+
+             $sc_no = $request->input('sc_no');
+             $po_no = $request->input('po_no');
+             $user_id = $request->input('user_id');
+             
+             
+             $user = User::where('id',$user_id)->first();
+
+             $cam = User::where('zone',$user->zone)->where('id','!=',$user_id)->where('user_type','Kam')->get()->toArray();
+
+             foreach ($cam as $key => $value) {
+                 
+                  array_push($cc_email,$value['email']);
+             }
+
+             $sub = 'Your Sales Contarct is genrated';
+     
+             $html = 'mail.rfqgeneratedmail';
+
+             $data = "";
+
+             // $data['name'] = $user['name'];
+          //    $data['email'] = $user['email'];
+          //    $data['rfq_no'] = $rfq_no;
+          //    $data['cc'] = $cc_email;
+             // echo "<pre>";print_r($data);exit();
+            (new MailService)->dotestMail($sub,$html,$user['email'],$data,$cc_email);
+             // Mail::send(new RfqGeneratedMail($data));
+
+             $msg = "Mail sent successfully";
+             return response()->json(['status'=>1,'message' =>$msg],200);
+        }
+    // -----------------------------------------------------------------------
+
 
 }
