@@ -2269,7 +2269,7 @@ class QuoteController extends Controller
         }
         elseif($arr['do_created'] == 1)
         {
-            $val = "DO Created";
+            $val = "Invoice Uploaded";
             // exit;
             return $val;
         }
@@ -2372,7 +2372,7 @@ class QuoteController extends Controller
         }
         elseif($arr['do_created'] == 1)
         {
-            $val = "DO Created";
+            $val = "Invoice Generated";
             // exit;
             return $val;
         }
