@@ -1,45 +1,65 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-    <title>Forgot Password Email</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Page Title</title>
 </head>
+<body style="background-color: #f1f1f1; padding: 0; margin: 0; font-family: 'Roboto', sans-serif;">
 
-<body>
-    <style type="text/css">
-        .linkk:hover {
-            background: #01b02e !important;
-        }
-    </style>
-    <div style="max-width:640px; margin:0 auto;">
-        <div
-            style="/*width:620px;*/background:#F9F9F9; /*padding: 0px 10px;*/ border:1px solid #d9d8d8; border-bottom: none;height: 100px; margin: -9px 0px -13px 0px;">
-            <div
-                style="float: none; text-align: center; margin-top: 20px; background:url('{{ URL::to('#') }}') repeat center center">
-                <img src="{{asset('public/admin/assets/images/logo.png')}}" width="135" alt="">
-            </div>
-        </div>
-        <div style="max-width:620px; border:1px solid #d9d8d8; margin:0 0; padding:15px; ">
+<div style="width: 600px; margin: 0 auto; background: #fff; padding: 0;">
+    <table style="width: 100%;">
+        <tr>
+            <td style="background: #3D7EEB;">
+                <table style="width: 100%;">
+                    <tr>
+                        <td style="vertical-align: top;">
+                            <div style="padding-top:22px;">
+                                <img src="https://beas.in/tsml/assets/images/logo-white.png" style="max-width: 188px;">
+                            </div>
+                        </td>
+                        <td style="vertical-align: top;">
+                            <div>
+                                <img src="https://beas.in/tsml/assets/images/secondary-white.png" style="max-width: 50px; float: right;">
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0 15px;">
+                <p style="font-weight: 400; font-size: 15px; color: rgba(0,0,0,.9);">Dear Madam/Sir,</p>
+                <p style="font-weight: 400; font-size: 15px; color: rgba(0,0,0,.9);">Greetings from tatasteelmining.com!</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0 15px;">
+                <p style="font-weight: 400; font-size: 15px; line-height: 1.8; color: rgba(0,0,0,.8);">Thank you for registering in the eSales Portal of Tata Steel Mining. Please select the product and raise and RFQ here.</p>
+               
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0 15px;">
+                <p style="font-weight: 400; font-size: 15px; color: rgba(0,0,0,.9);">Thank You,</p>
+                <p style="font-weight: 400; font-size: 15px; color: rgba(0,0,0,.9);">Team-tatasteelmining.com</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0; border-top: 2px solid #f1f1f1;">
+                <p style="font-weight: 400; font-size: 15px; color: #fff; background: #09172F; text-align: center; padding: 10px 0; margin: 0;">© 2021 Tata Steel Mining Limited. All Rights Reserved.</p>
+                <table style="width: 100%;">
+                    <tr>
+                        <td>
+                            <p style="font-weight: 400; font-size: 15px; color: rgba(0,0,0,.9); text-align: right;">Powered by</p>
+                        </td>
+                        <td>
+                            <img src="https://beas.in/tsml/assets/images/mjunction_logo.png">
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>
 
-            <div style="display:block; overflow:hidden; width:100%;">
-
-                Hello dear,
-                <p>
-                    Thank you for registering in the eSales Portal of Tata Steel Mining. Please select the product and raise and RFQ here.
-                  
-                  
-                </p>
-
-            </div>
-
-            <p style="font-family:Arial; font-size:14px; font-weight:500; color:#363839;margin: 0px 0px 10px 0px;">
-                Regards<br>
-               TSML
-            </p>
-
-        </div>
-    </div>
 </body>
-
 </html>

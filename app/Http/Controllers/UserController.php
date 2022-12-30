@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Models\OtpVerification;
 use App\Mail\Register;
+use App\ServicesMy\MailService;
 use App\User;
 use JWTAuth;
 use Validator;
@@ -732,5 +733,25 @@ class UserController extends Controller
     {
          $kam_details = User::where('zone',$zone)->where('id','!=',$id)->first();
          return $kam_details;
+    }
+
+
+    public function registerEmail(Request $request)
+    {
+        // echo "<pre>";print_r($request->email);exit();
+
+             $email = $request->email;
+             $sub = 'You have successfully regsitered';
+     
+             $html = 'mail.register';
+
+             $cc_email = "";
+             $data = "";
+
+            (new MailService)->dotestMail($sub,$html,$email,$data,$cc_email);
+             // Mail::send(new RfqGeneratedMail($data));
+
+             $msg = "Mail sent successfully";
+             return response()->json(['status'=>1,'message' =>$msg],200);
     }
 }
