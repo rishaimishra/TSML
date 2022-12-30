@@ -194,9 +194,10 @@ class QuoteEmailController extends Controller
 
              $sub = 'Your Sales Contarct is genrated';
      
-             $html = 'mail.rfqgeneratedmail';
+             $html = 'mail.scgeneratemail';
 
-             $data = "";
+             $data['sc_no'] = $sc_no;
+             $data['po_no'] = $po_no;
 
              // $data['name'] = $user['name'];
           //    $data['email'] = $user['email'];

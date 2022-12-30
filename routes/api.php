@@ -25,6 +25,7 @@ Route::get('gst_details_dummy_new','Api\Modules\Stub\StubbingController@gstDetai
 // Route::get('get-po-details-admin/{id}','Api\Modules\PoDetails\PoDetailsController@getPoDetailsId')->name('get_po_details_admin');
 
 Route::post('/register', 'UserController@store');
+Route::get('register_email', 'UserController@registerEmail');
 Route::post('login', 'AuthController@login');
 Route::post('send-mobile-otp', 'UserController@sendOtpToMobile')->name('send_mobile_otp');
 Route::post('verify-mobile-otp', 'UserController@verifyMobileOtp')->name('verify_mobile_otp');
