@@ -514,7 +514,9 @@ class DoController extends Controller
     {
         try{ 
                $arra = array();
-               $res = DB::table('sales_orders')->leftjoin('orders','sales_orders.po_no','orders.po_no')->select('sales_orders.so_no','sales_orders.co_no','orders.rfq_no')
+               $res = DB::table('sales_orders')->leftjoin('orders','sales_orders.po_no','orders.po_no')->leftjoin('quotes','orders.rfq_no','quotes.rfq_no')
+               ->whereNull('quotes.deleted_at')->groupBy('quotes.rfq_no')
+               ->select('sales_orders.so_no','sales_orders.co_no','orders.rfq_no','orders.po_no','quotes.user_id as cus_id')
                ->get();
                // echo "<pre>";print_r($res);exit();
                if(!empty($res))
@@ -525,6 +527,8 @@ class DoController extends Controller
                   $arra[$key]['so_no'] = $value->so_no;
                   $arra[$key]['co_no'] = $value->co_no;
                   $arra[$key]['rfq_no'] = $value->rfq_no;
+                  $arra[$key]['po_no'] = $value->po_no;
+                  $arra[$key]['cus_id'] = $value->cus_id;
       
                   
                }
