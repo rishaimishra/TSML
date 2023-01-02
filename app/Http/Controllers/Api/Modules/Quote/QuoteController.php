@@ -331,6 +331,7 @@ class QuoteController extends Controller
           $sche['sub_cat_id'] = $value['sub_cat_id'];
           $sche['quote_status'] = (!empty($value['quote_status'])) ? $value['quote_status'] : 0;
           $sche['pay_term'] = $value['pay_term'];
+          $sche['credit_days'] = $value['credit_days'];
           
           
           // echo "<pre>";print_r($sche);exit();
@@ -1769,6 +1770,7 @@ class QuoteController extends Controller
              $quote_sches[$key]['sub_cat_id'] = $value->sub_cat_id;
              $quote_sches[$key]['sub_cat_name'] = (!empty($value->sub_cat_name)) ? $value->sub_cat_name : '';
              $quote_sches[$key]['pay_term'] = $value->pay_term;
+             $quote_sches[$key]['credit_days'] = $value->credit_days;
         
              
 
