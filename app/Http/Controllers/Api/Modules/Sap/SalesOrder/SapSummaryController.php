@@ -24,14 +24,18 @@ class SapSummaryController extends Controller
           $res = DB::table('orders')
                       ->leftjoin('sales_contracts','orders.po_no','sales_contracts.po_no')
                       ->leftjoin('sales_orders','orders.po_no','sales_orders.po_no')
-                      ->select('sales_contracts.sc_no','sales_orders.so_no','orders.po_no','orders.cus_po_no')
+                      ->leftjoin('delivery_orders','sales_orders.so_no','delivery_orders.so_no')
+                      ->select('sales_contracts.sc_no','sales_orders.so_no','orders.po_no','orders.cus_po_no','sales_contracts.qty_cont',DB::raw("SUM(delivery_orders.do_quantity) as do_sum"))
                       ->where('orders.po_no',$po_no)
                       ->first();
 
                 $arr['sc_no'] = $res->sc_no;
                 $arr['so_no'] = $res->so_no;
                 $arr['po_no'] = $res->po_no;
+                $arr['po_qty'] = $res->qty_cont;
                 $arr['cus_po_no'] = $res->cus_po_no;
+                $arr['do_sum'] = $res->do_sum;
+                $arr['balance'] = $res->qty_cont - $res->do_sum;
                 $arr['do_no'] = $this->getDoNoByPo($res->so_no);
 
 
