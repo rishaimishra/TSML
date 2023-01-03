@@ -303,6 +303,7 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
 Route::post('admin-login', 'AdminAuthController@Adminlogin')->name('admin_login');
 Route::post('admin-register', 'AdminAuthController@Adminregister')->name('admin_register');
 Route::post('user-bulk-upload','Api\Modules\Bulk\BulkController@storeUser');
+Route::post('bulk-product-upload','Api\Modules\Bulk\BulkController@storeProduct');
 
 Route::group(['prefix' => 'admin','middleware' => ['assign.guard:admins','jwtmiddleware']],function (){
 	Route::get('/demo','AdminController@demo');	
