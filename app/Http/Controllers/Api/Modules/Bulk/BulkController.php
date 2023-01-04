@@ -207,7 +207,7 @@ class BulkController extends Controller
                     // return $explode[1];
 
                     // check if the code explode code exits or not
-                    $check = ProductSubCategory::where('code',$explode[1])->where('sub_cat_name',$value[6])->where('company_code',$value[0])->first();
+                    $check = ProductSubCategory::where('code',$explode[1])->where('sub_cat_name',$value[6])->where('plant_code',$value[0])->first();
                     // return $check;
 
                     
@@ -215,7 +215,7 @@ class BulkController extends Controller
                     if ($check=="") {
                         // return $value[5];
                         $sub = new ProductSubCategory;
-                        $sub->company_code = @$value[0];
+                        $sub->plant_code = @$value[0];
                         $sub->cat_id = $cat_id;
                         $sub->pro_id = 1;
                         $sub->sub_cat_name = $value[6];
@@ -232,6 +232,13 @@ class BulkController extends Controller
                         $sub->code = $explode[1];
                         $sub->save();
 
+                        \DB::table('product_size_mat_no')->insert([
+                            'plant_id'=>1,
+                            'sub_cat_id'=>$sub->id,
+                            'product_size'=>@$value[7],
+                            'mat_no'=>@$value[9],
+                        ]);
+
 
 
                     }else{
@@ -245,6 +252,13 @@ class BulkController extends Controller
                          $upd['pro_size'] = $pro_concat;
                          $upd['mat_no'] = $mat_concat;
                          ProductSubCategory::where('id',$check->id)->update($upd);
+
+                         \DB::table('product_size_mat_no')->insert([
+                            'plant_id'=>1,
+                            'sub_cat_id'=>$check->id,
+                            'product_size'=>@$value[7],
+                            'mat_no'=>@$value[9],
+                        ]);
                     }
                     
                   }
