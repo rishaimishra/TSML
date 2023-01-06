@@ -21,6 +21,7 @@ Route::get('download-po-details-pdf/{id}','Api\Modules\PoDetails\PoDetailsContro
 Route::get('gst_details_dummy','Api\Modules\Stub\StubbingController@gstDetailsDummy');
 Route::get('gst_details_dummy/{gstId}','Api\Modules\Stub\StubbingController@gstDetailsDummy');
 Route::get('gst_details_dummy_new','Api\Modules\Stub\StubbingController@gstDetailsDummyNew');
+Route::post('sap_sales_contarct','Api\Modules\Stub\StubbingController@sapSalesContarct');
 
 // Route::get('get-po-details-admin/{id}','Api\Modules\PoDetails\PoDetailsController@getPoDetailsId')->name('get_po_details_admin');
 

@@ -150,4 +150,34 @@ class StubbingController extends Controller
 
 
         }
+
+
+    public function sapSalesContarct(Request $request)
+    {
+
+
+        $curl = curl_init();
+
+          curl_setopt_array($curl, array(
+          CURLOPT_URL => 'https://15.207.150.126:50001/RESTAdapter/SalesContract',
+          CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_ENCODING => '',
+          CURLOPT_MAXREDIRS => 10,
+          CURLOPT_TIMEOUT => 0,
+          CURLOPT_FOLLOWLOCATION => true,
+          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+          CURLOPT_CUSTOMREQUEST => 'POST',
+          CURLOPT_POSTFIELDS =>'{"OrganizationalData":{"ContractType":"JSDQ","SalesOrganization":"5500","DistributionChannel":"51","Division":"51","ContractValidFrom":"20230107","ContractValidTo":"20230108","Salesoffice":"2000","Salesgroup":"100","Incoterms":"A03","Paymentterms":"B6P3"},"SoldToParty":{"QtyContractTSML":100,"Sold_To_Party":"0050001234","Ship_To_Party":"0050001234","Cust_Referance":"CUST3366","NetValue":107269.29,"Cust_Ref_Date":"2023-01-03"},"Sales":{"Shp_Cond":"2"},"Items":[{"item":10,"Material":"120000112","Quantity":100,"CustomarMaterialNumber":"120000112","OrderQuantity":"100","Plant":"2202"}],"Conditions":[{"ItemNumber":10,"CnTy":"ZPR0","Amount":"100000"},{"ItemNumber":10,"CnTy":"ZPR0","Amount":"0"}],"AdditionalDataA":{"Freight":"B1","CustomerGroup4":"DOM"},"AdditionalDataforPricing":{"FreightIndicator":"X"}}',
+          CURLOPT_HTTPHEADER => array(
+            'Authorization: Basic TUpVTkNUSU9OX01fUElfREVWOldlbGNvbWVAMTIz',
+            'Content-Type: application/json'
+          ),
+        ));
+
+        $response = curl_exec($curl);
+         
+        curl_close($curl);
+        echo $response;
+
+      }
 }
