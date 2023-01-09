@@ -620,5 +620,38 @@ class ProductController extends Controller
 
     }
 
+
+
+   public function subcatFilter(Request $request)
+    {
+
+
+            $plant = DB::table('plants')->where('id',$request->plant_id)->first();
+
+            $variable = DB::table('products')->leftjoin('sub_categorys','products.id','sub_categorys.pro_id')->where('products.id',$request->product_id)
+             ->where('sub_categorys.plant_code',$plant->type_2)->select('sub_categorys.*','products.id as pid','products.pro_name')->get();
+
+             foreach ($variable as $key => $value) {
+                 
+                 $data[$key]['id'] = $value->id;
+                 $data[$key]['pro_id'] = $value->pid;
+                 $data[$key]['sub_cat_name'] = $value->sub_cat_name;
+                 $data[$key]['sub_cat_dese'] = $value->sub_cat_dese;
+                 $data[$key]['pro_size'] = $value->pro_size;
+                 $data[$key]['code'] = $value->code;
+                 $data[$key]['plant_code'] = $value->plant_code;
+
+
+             }
+              
+
+
+
+
+            
+            return response()->json(['status'=>1,'message' =>'success.','result' => $data],200);
+
+    }
+
      
 }

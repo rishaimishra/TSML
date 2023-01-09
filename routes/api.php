@@ -52,6 +52,7 @@ Route::group(['namespace'=>'Api\Modules'],function(){
 	Route::any('filter-product-menu', 'Product\ProductController@productFilter')->name('product_filter');
 	Route::get('category-dropdown', 'Product\ProductController@CategoryDropdown')->name('category_list');
 	Route::get('product-dropdown', 'Product\ProductController@ProductDropdown')->name('product_list_my');
+   Route::post('subcategory-product-menu', 'Product\ProductController@subcatFilter');
 
 	Route::get('product-details/{catId}/{proId}', 'Product\ProductController@productDetails')->name('product_details');
 	Route::get('sub_cat_details/{subId}', 'Product\ProductController@sub_cat_details');
