@@ -509,6 +509,14 @@ class ProductController extends Controller
             });
         }
 
+        if (@$request->plant_id) {
+            
+            $data['data'] = $data['data']->whereHas('subCategory',function($query){
+                $get_plant_code = \DB::table('plants')->where('id',request('plant_id'))->first();
+                $query->where('plant_code',$get_plant_code->type_2);
+            });
+        }
+
         if (@$request->prosize) 
         {
             // $val = [100,250];
