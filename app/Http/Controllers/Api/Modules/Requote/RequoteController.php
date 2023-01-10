@@ -161,15 +161,22 @@ class RequoteController extends Controller
                    // echo "<pre>";print_r($request->all());exit();
                foreach ($request->all() as $key => $value) {
                   
-                  // echo "<pre>";print_r($value['schedule']);exit();
+                  // echo "<pre>";print_r($value['plant']);exit();
                   $res = ScTransaction::where('rfq_no',$value['rfq_no'])->where('schedule',$value['schedule'])->get();
                   if(!empty($res))
                   {
                       ScTransaction::where('rfq_no',$value['rfq_no'])->where('schedule',$value['schedule'])->delete();
                   }
+
+              $plant_key = DB::table('plants')->where('id',$value['plant'])->first();
+
+                  $sub_cat = DB::table('sub_categorys')->where('id',$value['sub_cat_id'])->first();
+
+              $newSub = DB::table('sub_categorys')->where('sub_cat_name',$sub_cat->sub_cat_name)->where('plant_code',$plant_key->type_2)->first();
+              
                   $mat_code = DB::table('product_size_mat_no')
-                  ->where('sub_cat_id',$value['sub_cat_id'])->where('product_size',$value['size'])->first();
-                   
+                  ->where('sub_cat_id',$newSub->id)->where('product_size',$value['size'])->where('plant_type',$plant_key->type_2)->first();
+                   // dd($mat_code->mat_no);
                     foreach ($value['components'] as $k => $v) {
                         
                           $data['code'] = $v['comp'];
