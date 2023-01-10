@@ -154,7 +154,7 @@ class StubbingController extends Controller
 
     public function sapSalesContarct(Request $request)
     {
-         
+         dd($request->scData);
         $curl = curl_init();
 
           curl_setopt_array($curl, array(
@@ -181,7 +181,7 @@ class StubbingController extends Controller
           
           $response = json_decode(curl_exec($curl));
           echo $response;
-           curl_close($curl);
+          curl_close($curl);
 
       }
 }

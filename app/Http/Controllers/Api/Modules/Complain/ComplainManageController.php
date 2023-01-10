@@ -54,7 +54,7 @@ class ComplainManageController extends Controller
             $input['po_no'] = $request->po_no;
             $input['complain_id'] = $request->complain_id;
           	 // dd($input);
-            // $freightsData = ComplaintManage::create($input);
+            $freightsData = ComplaintManage::create($input);
 
              
 
