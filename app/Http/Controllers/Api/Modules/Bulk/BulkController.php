@@ -237,6 +237,7 @@ class BulkController extends Controller
                             'sub_cat_id'=>$sub->id,
                             'product_size'=>@$value[7],
                             'mat_no'=>@$value[9],
+                            'plant_type'=>@$value[0],
                         ]);
 
 
@@ -258,6 +259,7 @@ class BulkController extends Controller
                             'sub_cat_id'=>$check->id,
                             'product_size'=>@$value[7],
                             'mat_no'=>@$value[9],
+                            'plant_type'=>@$value[0],
                         ]);
                     }
                     
