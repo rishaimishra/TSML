@@ -26,7 +26,7 @@ class ExportSoDocs implements FromCollection, WithHeadings
     public function headings(): array
     {
         return [
-            'id',
+            'Id',
             'Order Type', 
             'Sales Organization',
             'Distribution Channel', 
