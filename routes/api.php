@@ -82,7 +82,7 @@ Route::get('download-po-pdf/{id}','Api\Modules\Quote\QuoteController@downloadPdf
 Route::post('sc_excel_submit','Api\Modules\Temp\TemporaryController@scExcelSubmit');
 Route::get('sc_excel_download','Api\Modules\Temp\TemporaryController@scExceldown'); 
 Route::post('so-excel-submit','Api\Modules\Temp\SoTemporaryController@SoExcelSubmit');
-
+Route::get('so-excel-download/{contract_no?}','Api\Modules\Temp\SoTemporaryController@SoExcelDownload'); 
  
 Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmiddleware']],function ()
 {

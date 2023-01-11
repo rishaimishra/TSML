@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Api\Modules\Temp;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ExportDocs;
+use App\Exports\ExportSoDocs;
 use App\Models\SoTempExcel;
 use JWTAuth;
 use Validator;
@@ -46,5 +49,12 @@ class SoTemporaryController extends Controller
     	  	\DB::rollback(); 
            	return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $e->getMessage()],config('global.failed_status'));
         }
+    }
+
+    public function SoExcelDownload($contract_no=null)
+    {  
+    	 // dd("SoExcelDownload");
+    	$contract_number = $contract_no;    	 
+    	return Excel::download(new ExportSoDocs($contract_number), 'so.xlsx');
     }
 }
