@@ -13,72 +13,72 @@ class TemporaryController extends Controller
     public function scExcelSubmit(Request $request)
     {
     	 // echo "<pre>";print_r($request->OrganizationalData['ContractType']);exit();
-
+          $ids = array();
     	 foreach ($request->Items as $key => $value) {
     	 	
     	 	  // echo "<pre>";print_r($value['item']);exit();
-    	 	$data[$key]['ContractType'] = $request->OrganizationalData['ContractType'];
-    	 	$data[$key]['SalesOrganization'] = $request->OrganizationalData['SalesOrganization'];
-    	 	$data[$key]['DistributionChannel'] = $request->OrganizationalData['DistributionChannel'];
-    	 	$data[$key]['Division'] = $request->OrganizationalData['Division'];
-    	 	$data[$key]['ContractValidFrom'] = $request->OrganizationalData['ContractValidFrom'];
-    	 	$data[$key]['ContractValidTo'] = $request->OrganizationalData['ContractValidTo'];
-    	 	$data[$key]['Salesoffice'] = $request->OrganizationalData['Salesoffice'];
-    	 	$data[$key]['Salesgroup'] = $request->OrganizationalData['Salesgroup'];
-    	 	$data[$key]['Incoterms'] = $request->OrganizationalData['Incoterms'];
-    	 	$data[$key]['Paymentterms'] = $request->OrganizationalData['Paymentterms'];
+    	 	$data['ContractType'] = $request->OrganizationalData['ContractType'];
+    	 	$data['SalesOrganization'] = $request->OrganizationalData['SalesOrganization'];
+    	 	$data['DistributionChannel'] = $request->OrganizationalData['DistributionChannel'];
+    	 	$data['Division'] = $request->OrganizationalData['Division'];
+    	 	$data['ContractValidFrom'] = $request->OrganizationalData['ContractValidFrom'];
+    	 	$data['ContractValidTo'] = $request->OrganizationalData['ContractValidTo'];
+    	 	$data['Salesoffice'] = $request->OrganizationalData['Salesoffice'];
+    	 	$data['Salesgroup'] = $request->OrganizationalData['Salesgroup'];
+    	 	$data['Incoterms'] = $request->OrganizationalData['Incoterms'];
+    	 	$data['Paymentterms'] = $request->OrganizationalData['Paymentterms'];
 
 
-    	 	$data[$key]['QtyContractTSML'] = $request->SoldToParty['QtyContractTSML'];
-    	 	$data[$key]['Sold_To_Party'] = $request->SoldToParty['Sold_To_Party'];
-    	 	$data[$key]['Ship_To_Party'] = $request->SoldToParty['Ship_To_Party'];
-    	 	$data[$key]['Cust_Referance'] = $request->SoldToParty['Cust_Referance'];
-    	 	$data[$key]['NetValue'] = $request->SoldToParty['NetValue'];
-    	 	$data[$key]['Cust_Ref_Date'] = $request->SoldToParty['Cust_Ref_Date'];
+    	 	$data['QtyContractTSML'] = $request->SoldToParty['QtyContractTSML'];
+    	 	$data['Sold_To_Party'] = $request->SoldToParty['Sold_To_Party'];
+    	 	$data['Ship_To_Party'] = $request->SoldToParty['Ship_To_Party'];
+    	 	$data['Cust_Referance'] = $request->SoldToParty['Cust_Referance'];
+    	 	$data['NetValue'] = $request->SoldToParty['NetValue'];
+    	 	$data['Cust_Ref_Date'] = $request->SoldToParty['Cust_Ref_Date'];
 
 
-    	 	$data[$key]['Shp_Cond'] = $request->Sales['Shp_Cond'];
+    	 	$data['Shp_Cond'] = $request->Sales['Shp_Cond'];
 
 
-    	 	$data[$key]['item'] = $value['item'];
-    	 	$data[$key]['Material'] = $value['Material'];
-    	 	$data[$key]['Quantity'] = $value['Quantity'];
-    	 	$data[$key]['CustomarMaterialNumber'] = $value['CustomarMaterialNumber'];
-    	 	$data[$key]['OrderQuantity'] = $value['OrderQuantity'];
-    	 	$data[$key]['Plant'] = $value['Plant'];
+    	 	$data['item'] = $value['item'];
+    	 	$data['Material'] = $value['Material'];
+    	 	$data['Quantity'] = $value['Quantity'];
+    	 	$data['CustomarMaterialNumber'] = $value['CustomarMaterialNumber'];
+    	 	$data['OrderQuantity'] = $value['OrderQuantity'];
+    	 	$data['Plant'] = $value['Plant'];
 
 
-    	 	$data[$key]['ItemNumber'] = $request->Conditions[$key]['ItemNumber'];
-    	 	$data[$key]['CnTy'] = $request->Conditions[$key]['CnTy'];
-    	 	$data[$key]['Amount'] = $request->Conditions[$key]['Amount'];
+    	 	$data['ItemNumber'] = $request->Conditions[$key]['ItemNumber'];
+    	 	$data['CnTy'] = $request->Conditions[$key]['CnTy'];
+    	 	$data['Amount'] = $request->Conditions[$key]['Amount'];
 
 
 
-            $data[$key]['Freight'] = $request->AdditionalDataA['Freight'];
-    	 	$data[$key]['CustomerGroup4'] = $request->AdditionalDataA['CustomerGroup4'];
-    	 	$data[$key]['FreightIndicator'] = $request->AdditionalDataforPricing['FreightIndicator'];
+            $data['Freight'] = $request->AdditionalDataA['Freight'];
+    	 	$data['CustomerGroup4'] = $request->AdditionalDataA['CustomerGroup4'];
+    	 	$data['FreightIndicator'] = $request->AdditionalDataforPricing['FreightIndicator'];
 
-    	 	$data[$key]['date'] = date('Y-m-d');
+    	 	$data['date'] = date('Y-m-d');
 
+            $res = DB::table('sc_excel_datas')->insertGetId($data);
 
+            array_push($ids, $res);
 
     	 }
 
     	 // echo "<pre>";print_r($data);exit();
 
-    	 $res = DB::table('sc_excel_datas')->insert($data);
-
-    	 if($res)
-    	 { 
+ 
     	 	 // Excel::download(new ExportDocs, 'sc.xlsx');
-    	 	return response()->json(['status'=>1, 'message' =>'success','result' => 'Submitted'],config('global.success_status'));
-    	 }
+    	 	return response()->json(['status'=>1, 'message' =>'success','result' => $ids],config('global.success_status'));
+    	 
     }
 
 
     public function scExceldown()
     {  
-    	// dd('hi');
-    	return Excel::download(new ExportDocs, 'sc.xlsx');
+    	$ids = [1,2];
+    	// dd($ids);
+    	return Excel::download(new ExportDocs($ids), 'sc.xlsx');
     }
 }
