@@ -54,7 +54,7 @@ class SoTemporaryController extends Controller
     public function SoExcelDownload($contract_no=null)
     {  
     	 // dd("SoExcelDownload");
-    	$contract_number = $contract_no;    	 
+    	$contract_number = $contract_no;  	 
     	return Excel::download(new ExportSoDocs($contract_number), 'so.xlsx');
     }
 }
