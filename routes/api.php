@@ -80,6 +80,7 @@ Route::group(['namespace'=>'Api\Modules'],function(){
 
 Route::get('download-po-pdf/{id}','Api\Modules\Quote\QuoteController@downloadPdf')->name('downloadPdf');
 Route::post('sc_excel_submit','Api\Modules\Temp\TemporaryController@scExcelSubmit');
+Route::get('sc_excel_download','Api\Modules\Temp\TemporaryController@scExceldown');
 
 Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmiddleware']],function ()
 {
