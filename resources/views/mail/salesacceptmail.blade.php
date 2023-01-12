@@ -33,7 +33,7 @@
         </tr>
         <tr>
             <td style="padding: 0 15px;">
-                <p style="font-weight: 400; font-size: 15px; line-height: 1.8; color: rgba(0,0,0,.8);">Thank you for your patience. Our sales team has reverted to you with an updated price, volume and delivery timeline against your RFQ. You may check the details in the portal.<a href="https://esales.tatasteelmining.com/">Go to Portal.</a></p>
+                <p style="font-weight: 400; font-size: 15px; line-height: 1.8; color: rgba(0,0,0,.8);">Thank you for your patience. Our sales team has reverted to you with an updated price, volume and delivery timeline against your RFQ. You may check the details <a href="https://esales.tatasteelmining.com/">here.</a></p>
                
             </td>
         </tr>

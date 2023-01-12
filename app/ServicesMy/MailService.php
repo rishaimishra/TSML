@@ -28,7 +28,7 @@ class MailService
                 $mail->SMTPSecure = 'tls';                  // encryption - ssl/tls
                 $mail->Port = 587;                          // port - 587/465
 
-                $mail->setFrom('noreply.esales@tatasteelmining.com', 'TSML Teem');
+                $mail->setFrom('noreply.esales@tatasteelmining.com', 'TSML Team');
                 $mail->addAddress($sentTo);
                 
                 if (!empty($emailcc)) 
