@@ -33,7 +33,7 @@
         </tr>
         <tr>
             <td style="padding: 0 15px;">
-                <p style="font-weight: 400; font-size: 15px; line-height: 1.8; color: rgba(0,0,0,.8);">Your Sales Contarct, {{@$data['sc_no']}} is genrated against PO No. : {{@$data['po_no']}}. Please check it. </p>
+                <p style="font-weight: 400; font-size: 15px; line-height: 1.8; color: rgba(0,0,0,.8);">Your Sales Contarct, {{@$data['sc_no']}} is genrated against PO No. : {{@$data['po_no']}}. Please check it in the portal. <a href="https://esales.tatasteelmining.com/"></a></p>
                 <!-- <p style="font-weight: 400; font-size: 15px; line-height: 1.8; color: rgba(0,0,0,.8);">It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p> -->
             </td>
         </tr>
