@@ -106,6 +106,23 @@ class AuthController extends Controller
        $response['success'] = true;
        return $response;
    }
+
+    public function updateMobile(Request $request)
+   {
+        $response = [];
+        $validator = Validator::make($request->all(), [
+            'mobile'=>'required',
+        ]);
+        
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
+        }
+
+        User::where('id',auth()->user()->id)->update(['phone'=>$request->mobile]);
+        $response['success'] = true;
+        $response['message'] = 'Mobile Number Updated Successfully';
+        return $response;
+   }
  
    /**
     * Log the user out (Invalidate the token).

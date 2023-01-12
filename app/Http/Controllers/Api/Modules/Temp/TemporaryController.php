@@ -69,15 +69,15 @@ class TemporaryController extends Controller
     	 // echo "<pre>";print_r($data);exit();
 
  
-    	 	 // Excel::download(new ExportDocs, 'sc.xlsx');
+    	 	$this->scExceldown($ids);
     	 	return response()->json(['status'=>1, 'message' =>'success','result' => $ids],config('global.success_status'));
     	 
     }
 
 
-    public function scExceldown()
+    public function scExceldown($ids)
     {  
-    	$ids = [1,2];
+    	// $ids = [1,2];
     	// dd($ids);
     	return Excel::download(new ExportDocs($ids), 'sc.xlsx');
     }

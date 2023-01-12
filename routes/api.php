@@ -89,6 +89,7 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
     Route::get('profile', 'AuthController@me');
+    Route::post('update-mobile','AuthController@updateMobile');
    	Route::resource('customer', 'UserController');	
    	Route::post('customers/{id}', 'UserController@update');	
    	Route::post('reset-password', 'UserController@resetPassword')->name('reset_password');
