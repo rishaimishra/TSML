@@ -131,8 +131,8 @@ class UserController extends Controller
                 $input['otp'] = $otp;
 
                 $categoryData = OtpVerification::create($input); 
+ 
 
-       
                 $msg = "OTP has been send to this mobile number ".$request->mobile_no." successfully.";
                 return response()->json(['status'=>1,'message' =>$msg,'result' => $categoryData],200);
             }
@@ -753,5 +753,33 @@ class UserController extends Controller
 
              $msg = "Mail sent successfully";
              return response()->json(['status'=>1,'message' =>$msg],200);
+    }
+
+
+        /**
+     * This is for validate user mobile OTP.
+     *
+     * @return \Illuminate\Http\Response
+    */
+    public function chkEmail(Request $request)
+    {
+       
+
+        $chkemail = User::where('email',$request->email)->first();
+        
+        if (!empty($chkemail)) 
+        {
+            
+              return response()->json(['status'=>0,'message' => $chkemail,'status' => 200]);
+
+        }
+        else
+        {
+            return response()->json(['status'=>0,'message' => [],'status' => 200]);
+        }
+
+        
+         
+
     }
 }
