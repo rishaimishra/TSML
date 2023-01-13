@@ -97,24 +97,25 @@ class UserController extends Controller
         
         $validator = Validator::make($request->all(), [ 
             'mobile_no' =>'required|digits:10',
+            'email' =>'required|email',
               
         ],
         [   
             'mobile_no.required'=>'Mobile is required',               
         ]
         );
-
+        // dd($request->all());
         if ($validator->fails()) {
             $response['error']['validation'] = $validator->errors();
             return Response::json($response);
         }
 
-        $chkmob = OtpVerification::where('mob_number',$request->mobile_no)->first(); 
+        $chkmob = OtpVerification::where('email',$request->email)->where('mob_number',$request->mobile_no)->first(); 
 
-        
+        // dd($chkmob);
         if(!empty($chkmob->otp) && $chkmob->is_verified != 2)
         {
-            return response()->json(['status'=>0,'message' => array('OTP already send to this mobile number '.$request->mobile_no)]); 
+            return response()->json(['status'=>0,'message' => array('OTP already send to this email addess '.$request->email)]); 
         }
         else
         {
@@ -128,12 +129,22 @@ class UserController extends Controller
                 $otp = random_int(100000, 999999); 
 
                 $input['mob_number'] = $request->mobile_no;
+                $input['email'] = $request->email;
                 $input['otp'] = $otp;
 
                 $categoryData = OtpVerification::create($input); 
 
+                $sub = "OTP for registration";
+                $html = 'mail.Otpverificationmail';
+
+                $data['otp'] = $otp;
+
+                $cc_email = "";
+                $email = $request->email;
+
+                (new MailService)->dotestMail($sub,$html,$email,$data,$cc_email); 
        
-                $msg = "OTP has been send to this mobile number ".$request->mobile_no." successfully.";
+                $msg = "OTP has been send to this email adress ".$request->email." successfully.";
                 return response()->json(['status'=>1,'message' =>$msg,'result' => $categoryData],200);
             }
             
@@ -166,8 +177,8 @@ class UserController extends Controller
             return Response::json($response);
         }
 
-        $chkmob = OtpVerification::where('mob_number',$request->mobile_no)->first();
-        
+        $chkmob = OtpVerification::where('email',$request->email)->where('mob_number',$request->mobile_no)->first();
+        // dd($chkmob);
         if (!empty($chkmob)) 
         {
             if($chkmob->otp == null && $chkmob->is_verified == 2)
@@ -185,7 +196,7 @@ class UserController extends Controller
 
                         $categoryData = OtpVerification::where('mob_number',$request->mobile_no)->where('otp',$chkmob->otp)->update($input); 
                  
-                        return response()->json(['status'=>1,'message' =>'Mobile number verified successfully.'],200);
+                        return response()->json(['status'=>1,'message' =>'Verification successfully.'],200);
                     }
                     else
                     {
