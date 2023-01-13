@@ -132,19 +132,18 @@ class UserController extends Controller
                 $input['email'] = $request->email;
                 $input['otp'] = $otp;
 
-                $categoryData = OtpVerification::create($input); 
+                $categoryData = OtpVerification::create($input);  
 
                 $sub = "OTP for registration";
                 $html = 'mail.Otpverificationmail';
-
                 $data['otp'] = $otp;
-
                 $cc_email = "";
                 $email = $request->email;
 
                 (new MailService)->dotestMail($sub,$html,$email,$data,$cc_email); 
        
                 $msg = "OTP has been send to this email adress ".$request->email." successfully.";
+  
                 return response()->json(['status'=>1,'message' =>$msg,'result' => $categoryData],200);
             }
             
@@ -764,5 +763,33 @@ class UserController extends Controller
 
              $msg = "Mail sent successfully";
              return response()->json(['status'=>1,'message' =>$msg],200);
+    }
+
+
+        /**
+     * This is for validate user mobile OTP.
+     *
+     * @return \Illuminate\Http\Response
+    */
+    public function chkEmail(Request $request)
+    {
+       
+
+        $chkemail = User::where('email',$request->email)->first();
+        
+        if (!empty($chkemail)) 
+        {
+            
+              return response()->json(['status'=>0,'message' => $chkemail,'status' => 200]);
+
+        }
+        else
+        {
+            return response()->json(['status'=>0,'message' => [],'status' => 200]);
+        }
+
+        
+         
+
     }
 }
