@@ -97,7 +97,7 @@ class UserController extends Controller
         
         $validator = Validator::make($request->all(), [ 
             'mobile_no' =>'required|digits:10',
-            'email' =>'required|email',
+            'email' => ['required', 'string','max:255','regex:/^\w+[-\.\w]*@(?!(?:myemail)\.com$)\w+[-\.\w]*?\.\w{2,4}$/'],
               
         ],
         [   
@@ -142,7 +142,7 @@ class UserController extends Controller
 
                 (new MailService)->dotestMail($sub,$html,$email,$data,$cc_email); 
        
-                $msg = "OTP has been send to this email adress ".$request->email." successfully.";
+                $msg = "OTP has been send to this email address ".$request->email." successfully.";
   
                 return response()->json(['status'=>1,'message' =>$msg,'result' => $categoryData],200);
             }
@@ -163,6 +163,8 @@ class UserController extends Controller
     {
         $validator = Validator::make($request->all(), [ 
             'mobile_no' =>'required|digits:10',
+            'email' =>'required|email',
+            'email' => ['required', 'string','max:255','regex:/^\w+[-\.\w]*@(?!(?:myemail)\.com$)\w+[-\.\w]*?\.\w{2,4}$/'], 
             'otp' =>'required|digits:6',              
         ],
         [   
@@ -195,7 +197,7 @@ class UserController extends Controller
 
                         $categoryData = OtpVerification::where('mob_number',$request->mobile_no)->where('otp',$chkmob->otp)->update($input); 
                  
-                        return response()->json(['status'=>1,'message' =>'Verification successfully.'],200);
+                        return response()->json(['status'=>1,'message' =>'Verification successfully.','result' => $chkmob],200);
                     }
                     else
                     {
@@ -773,19 +775,27 @@ class UserController extends Controller
     */
     public function chkEmail(Request $request)
     {
-       
+       $validator = Validator::make($request->all(), [ 
+             
+            'email' => ['required', 'string','max:255','regex:/^\w+[-\.\w]*@(?!(?:myemail)\.com$)\w+[-\.\w]*?\.\w{2,4}$/'],              
+        ]);
+        // dd($request->all());
+        if ($validator->fails()) {
+            return response()->json(['status'=>0,'message' =>'error','result' => $validator->errors()],200); 
+        }
 
         $chkemail = User::where('email',$request->email)->first();
-        
-        if (!empty($chkemail)) 
+         
+        if (empty($chkemail)) 
         {
             
-              return response()->json(['status'=>0,'message' => $chkemail,'status' => 200]);
+              return response()->json(['status'=>1,'message' =>'success']);
 
         }
         else
         {
-            return response()->json(['status'=>0,'message' => [],'status' => 200]);
+            return response()->json(['status'=>0,'message' =>'success','result'=>'It looks like you already signed up, login to your account.'],200);
+            // return response()->json(['status'=>0,'message' => [],'status' => 200]);
         }
 
         

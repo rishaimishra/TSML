@@ -516,10 +516,11 @@ class PriceManagementController extends Controller
                 $data['misc_expense'] = $priceData->Misc_Expense;
                 // $data['delivery_cost'] = $getdeliverycost->freight_charges;
                 if ($request->delivery_method=='DAP (Delivered at Place)') {
-                  $data['delivery_cost'] =  0;
-                 }
-                 else{
+                  
                   $data['delivery_cost'] = (!empty($getdeliverycost->freight_charges)) ?  $getdeliverycost->freight_charges : 0;
+                 }
+                 else if ($request->delivery_method=='Ex-Works'){
+                  $data['delivery_cost'] =  0;
                  } 
                
                 $data['interest_rate'] = $priceData->Interest_Rate;
