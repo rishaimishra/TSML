@@ -2356,13 +2356,13 @@ class QuoteController extends Controller
         }
          elseif($arr['price_rejected'] == 1 && $arr['price_accepted'] == null)
         {
-            $val = "Price Rejected";
+            $val = "Price Rejected By Head";
             // exit;
             return $val;
         }
          elseif($arr['price_accepted'] == 1)
         {
-            $val = "Price Accepted";
+            $val = "Price Accepted By Head";
             // exit;
             return $val;
         }
