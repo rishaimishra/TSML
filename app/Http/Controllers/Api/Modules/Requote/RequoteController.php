@@ -326,5 +326,46 @@ class RequoteController extends Controller
 
    // ---------------------------------------------------------------------------
 
+  // ----------------------------- get sm remark -------------------------
+
+     public function smRemarkById($id)
+      {
+
+          try{ 
+               
+              
+               $res = Smremark::where('rfq_no',$id)->get();
+               // if(!empty($res))
+               // {
+               //     Smremark::where('rfq_no',$rfq_no)->delete();
+               // }
+              foreach ($res as $key => $value) {
+              
+                 $arr[$key]['user_id'] = $value->user_id;
+                 $arr[$key]['type'] = $value->type;
+                 $arr[$key]['rfq_no'] = $value->rfq_no;
+                 $arr[$key]['remarks'] = $value->remarks;
+              }
+
+
+                   // echo "<pre>";print_r($arr);exit();
+               // Smremark::create($arr);
+             
+              return response()->json(['status'=>1,
+                'message' =>'success',
+                'result' => $arr],
+                config('global.success_status'));
+
+
+        }catch(\Exception $e){
+
+         return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
+       }
+
+         
+      }
+
+   // ---------------------------------------------------------------------------
+
 
 }
