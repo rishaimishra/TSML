@@ -1907,12 +1907,18 @@ class QuoteController extends Controller
             // $user = User::where('id',$userId)
             //       ->select('addressone','addresstwo','city','state','pincode')
             //       ->first();
-
+        //$adrrArr = array();
         $user = DB::table('users')->leftjoin('address','users.id','address.user_id')
-                 ->where('users.id',$userId)->select('users.id as uid','address.*')->get();
+                 ->where('users.id',$userId)->where('address.type','A')->select('users.id as uid','address.*')->get();
+
+        $addrB = DB::table('users')->leftjoin('address','users.id','address.user_id')
+                 ->where('users.id',$userId)->where('address.type','B')->select('users.id as uid','address.*')->get();
           // echo "<pre>";print_r($quotes);exit();
+
                 foreach ($user as $key => $value) {
                    
+                   // if($value->type == 'A')
+                   // {
                     $arr[$key]['user_id'] = $value->uid;
                     $arr[$key]['addr_id'] = $value->id;
                     $arr[$key]['addressone'] = $value->addressone;
@@ -1922,10 +1928,36 @@ class QuoteController extends Controller
                     $arr[$key]['state'] = $value->state;
                     $arr[$key]['pincode'] = $value->pincode;
                     $arr[$key]['type'] = $value->type;
+                  // }
                 }
-               return response()->json(['status'=>1,
-                'message' =>'success',
-                'result' => $arr],
+
+
+                foreach ($addrB as $key => $value) {
+                   
+                   
+                    $arrB[$key]['user_id'] = $value->uid;
+                    $arrB[$key]['addr_id'] = $value->id;
+                    $arrB[$key]['addressone'] = $value->addressone;
+                    $arrB[$key]['addresstwo'] = $value->addresstwo;
+                    $arrB[$key]['addressone'] = $value->addressone;
+                    $arrB[$key]['city'] = $value->city;
+                    $arrB[$key]['state'] = $value->state;
+                    $arrB[$key]['pincode'] = $value->pincode;
+                    $arrB[$key]['type'] = $value->type;
+                 
+                }
+               
+               if(!empty($arr))
+               {
+
+                $adrrArr['ship'] = $arr;
+               }
+               if(!empty($arrB))
+               {
+
+                $adrrArr['bill'] = $arrB;
+               }
+               return response()->json(['status'=>1, 'message' =>'success','result' =>$adrrArr],
                 config('global.success_status'));
 
 
