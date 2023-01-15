@@ -334,18 +334,18 @@ class RequoteController extends Controller
           try{ 
                
               
-               $res = Smremark::where('rfq_no',$id)->get();
+               $res = Smremark::where('rfq_no',$id)->orderBy('id','desc')->first();
                // if(!empty($res))
                // {
                //     Smremark::where('rfq_no',$rfq_no)->delete();
                // }
-              foreach ($res as $key => $value) {
               
-                 $arr[$key]['user_id'] = $value->user_id;
-                 $arr[$key]['type'] = $value->type;
-                 $arr[$key]['rfq_no'] = $value->rfq_no;
-                 $arr[$key]['remarks'] = $value->remarks;
-              }
+              
+                 $arr['user_id'] = $res->user_id;
+                 $arr['type'] = $res->type;
+                 $arr['rfq_no'] = $res->rfq_no;
+                 $arr['remarks'] = $res->remarks;
+              
 
 
                    // echo "<pre>";print_r($arr);exit();
