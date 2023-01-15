@@ -673,7 +673,7 @@ class QuoteController extends Controller
             $result[$key]['quantity'] = $value['quantity'];
             $result[$key]['st'] = $value['kam_status'];
             $result[$key]['user_name'] = $value['user']['name'];
-            $result[$key]['dt'] = date('m-d-y',strtotime($value['created_at']));
+            $result[$key]['dt'] = date('d/m/y',strtotime($value['created_at']));
           }
             
           }
