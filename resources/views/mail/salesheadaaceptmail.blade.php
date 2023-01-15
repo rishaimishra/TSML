@@ -33,7 +33,8 @@
         </tr>
         <tr>
             <td style="padding: 0 15px;">
-                <p style="font-weight: 400; font-size: 15px; line-height: 1.8; color: rgba(0,0,0,.8);">Thank you for confirming the order and sharing the PO. Request to make the payment and share the payment details with your CAM for processing the order further.</p>
+                <p style="font-weight: 400; font-size: 15px; line-height: 1.8; color: rgba(0,0,0,.8);">Congratulations! Our sales team has quoted the price, volume and delivery timeline against your RFQ. Please confirm the final quotation and upload your PO so that the order can be processed by our sales team.
+                You may check the details <a href="https://esales.tatasteelmining.com/">here.</a></p>
                
             </td>
         </tr>

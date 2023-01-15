@@ -212,5 +212,42 @@ class QuoteEmailController extends Controller
         }
     // -----------------------------------------------------------------------
 
+    // --------------------  sales head acceptance mail --------------------------------
+    public function saleHeadAccptMail(Request $request)
+    {
+         $cc_email = array();
+
+         $rfq_no = $request->input('rfq_no');
+         $user_id = $request->input('user_id');
+         
+                 
+         $user = User::where('id',$user_id)->first();
+
+         $cam = User::where('zone',$user->zone)->where('id','!=',$user_id)->where('user_type','Kam')->get()->toArray();
+
+         foreach ($cam as $key => $value) {
+             
+              array_push($cc_email,$value['email']);
+         }
+
+         $sub = 'Congratulations! Sales team has quoted the price, volume and delivery timeline against your RFQ';
+ 
+         $html = 'mail.salesheadaaceptmail';
+
+         $data = "";
+
+         // $data['name'] = $user['name'];
+         // $data['email'] = $user['email'];
+         // $data['rfq_no'] = $rfq_no;
+         // $data['cc'] = $cc_email;
+         // echo "<pre>";print_r($data);exit();
+
+         // Mail::send(new SalesacceptMail($data));
+         (new MailService)->dotestMail($sub,$html,$user['email'],$data,$cc_email);
+         $msg = "Mail sent successfully";
+         return response()->json(['status'=>1,'message' =>$msg],200);
+    }
+    // -----------------------------------------------------------------------------
+
 
 }
