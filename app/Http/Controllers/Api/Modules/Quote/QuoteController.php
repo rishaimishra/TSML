@@ -1904,14 +1904,28 @@ class QuoteController extends Controller
    {
        try{ 
               
-            $user = User::where('id',$userId)
-                  ->select('addressone','addresstwo','city','state','pincode')
-                  ->first();
+            // $user = User::where('id',$userId)
+            //       ->select('addressone','addresstwo','city','state','pincode')
+            //       ->first();
+
+        $user = DB::table('users')->leftjoin('address','users.id','address.user_id')
+                 ->where('users.id',$userId)->select('users.id as uid','address.*')->get();
           // echo "<pre>";print_r($quotes);exit();
-       
+                foreach ($user as $key => $value) {
+                   
+                    $arr[$key]['user_id'] = $value->uid;
+                    $arr[$key]['addr_id'] = $value->id;
+                    $arr[$key]['addressone'] = $value->addressone;
+                    $arr[$key]['addresstwo'] = $value->addresstwo;
+                    $arr[$key]['addressone'] = $value->addressone;
+                    $arr[$key]['city'] = $value->city;
+                    $arr[$key]['state'] = $value->state;
+                    $arr[$key]['pincode'] = $value->pincode;
+                    $arr[$key]['type'] = $value->type;
+                }
                return response()->json(['status'=>1,
                 'message' =>'success',
-                'result' => $user],
+                'result' => $arr],
                 config('global.success_status'));
 
 
