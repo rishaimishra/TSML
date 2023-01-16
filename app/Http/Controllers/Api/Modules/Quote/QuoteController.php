@@ -1979,6 +1979,7 @@ class QuoteController extends Controller
        try{ 
               
             $plants = Plant::where('type',$type)
+                  ->orderBy('name')
                   ->select('id','name')
                   ->get();
 
