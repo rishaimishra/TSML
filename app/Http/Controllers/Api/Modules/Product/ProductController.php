@@ -642,7 +642,7 @@ class ProductController extends Controller
         {
             $variable = $variable->groupBy('sub_categorys.sub_cat_name');
         }
-             $variable = $variable->orderBy('sub_categorys.id','asc')->select('sub_categorys.*','products.id as pid','products.pro_name')->get();
+             $variable = $variable->orderBy('sub_categorys.sub_cat_name','asc')->select('sub_categorys.*','products.id as pid','products.pro_name')->get();
 
              foreach ($variable as $key => $value) {
                  
