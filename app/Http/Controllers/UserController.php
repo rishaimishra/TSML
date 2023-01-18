@@ -321,14 +321,14 @@ class UserController extends Controller
         try {
 
             $validator = Validator::make($request->all(), [
-                'name'        => 'required', 
+                // 'name'        => 'required', 
                 'email'        => 'required|unique:users,email',   
                 'password'     => 'required',  
-                'address_proof_file' => 'required|mimes:jpg,jpeg,png,bmp',
+                // 'address_proof_file' => 'required|mimes:jpg,jpeg,png,bmp',
                 'phone'        => 'required|unique:users,phone',
                 'company_pan'  => 'required|unique:users,company_pan', 
                 'company_gst'  => 'required', 
-                'first_name'  => 'required', 
+                // 'first_name'  => 'required', 
             ]);
 
             if ($validator->fails()) {
