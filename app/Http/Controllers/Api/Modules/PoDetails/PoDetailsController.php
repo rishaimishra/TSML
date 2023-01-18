@@ -23,7 +23,7 @@ class PoDetailsController extends Controller
 
   	public function downloadPoPdf($id)
     { 
-
+      // dd($id);
         $quote = DB::table('orders')
            ->leftjoin('quotes','orders.rfq_no','quotes.rfq_no')
            ->leftjoin('users','quotes.user_id','users.id')
