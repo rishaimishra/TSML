@@ -70,7 +70,9 @@ class AuthController extends Controller
  
         $input = $request->only('email', 'password');
         $jwt_token = null;
- 
+        
+        
+   
         if (!$jwt_token = JWTAuth::attempt($input)) {
          
             return response()->json([
@@ -79,14 +81,28 @@ class AuthController extends Controller
             ], 401);
         }
         
-        $userArr['user_id'] = Auth::user()->id;
-        $userArr['user_name'] = Auth::user()->name;
-        $userArr['user_type'] = Auth::user()->user_type;
-        return response()->json([
-            'success' => true,
-            'data' => $userArr,
-            'token' => $jwt_token,
-        ]);
+        $authChk = Auth::user()->is_loggedin;
+        // dd($id);
+        if($authChk == 0)
+        {
+            $userArr['user_id'] = Auth::user()->id;
+            $userArr['user_name'] = Auth::user()->name;
+            $userArr['user_type'] = Auth::user()->user_type;
+            $updata['is_loggedin'] = 1;
+            $upuser = User::where('id',Auth::user()->id)->update($updata);
+            return response()->json([
+                'success' => true,
+                'data' => $userArr,
+                'token' => $jwt_token,
+            ]);
+      }else{
+          
+           return response()->json([
+                'success' => false,
+                'message' => 'You are already logged in, please logout from there',
+            ], 401);
+
+      }
    }
  
    /**
@@ -131,6 +147,9 @@ class AuthController extends Controller
     */
    public function logout()
    {
+
+       $updata['is_loggedin'] = 0;
+       $upuser = User::where('id',Auth::user()->id)->update($updata);
        auth()->logout();
        
        return response()->json(['message' => 'Successfully logged out']);
@@ -159,6 +178,20 @@ class AuthController extends Controller
            'access_token' => $token,
            'token_type' => 'bearer',
            'expires_in' => auth()->factory()->getTTL() * 60
+       ]);
+   }
+
+
+   public function updateLoggedin(Request $request)
+   { 
+
+         $id = $request->input('id');
+         $val = $request->input('value');
+        $res = User::where('id',$id)->update(['is_loggedin' => $val]);
+
+        return response()->json([
+           'status' => 1,
+           'message' => 'updated'
        ]);
    }
 
