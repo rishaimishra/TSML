@@ -40,7 +40,6 @@ Route::post('quote_gen_mail', 'Api\Modules\QuoteEmail\QuoteEmailController@quote
 Route::post('sale_accpt_mail', 'Api\Modules\QuoteEmail\QuoteEmailController@saleAccptMail');
 Route::post('accepted_price_mail', 'Api\Modules\QuoteEmail\QuoteEmailController@acceptedPriceMail');
 Route::post('order_cnrfm_mail', 'Api\Modules\QuoteEmail\QuoteEmailController@orderCnrfmMail');
-Route::post('sale_head_accpt_mail', 'Api\Modules\QuoteEmail\QuoteEmailController@saleHeadAccptMail');
 
 // ------------ sap mails------------------------------------------
 Route::post('sc_mail', 'Api\Modules\QuoteEmail\QuoteEmailController@scMail');
@@ -136,7 +135,6 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
    		 Route::get('get_price_comp','Requote\RequoteController@getPriceComp');
    		 Route::post('get_price_break','Requote\RequoteController@getPriceBreak');
    		 Route::post('sm_remark_save','Requote\RequoteController@smRemarkSave');
-          Route::get('sm_remark_by_id/{id}','Requote\RequoteController@smRemarkById');
          
    		 Route::post('get-store-pro-price','PriceManagement\PriceManagementController@getProPrice')->name('get_store_pro_price');
    		 Route::get('get-threshold-price','PriceManagement\PriceManagementController@getThresholdPrice')->name('get_threshold_price');

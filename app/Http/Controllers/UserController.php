@@ -23,8 +23,8 @@ class UserController extends Controller
     *
     * @return \Illuminate\Http\Response
     */
-   public function test()
-   {
+   public function test(Request $request)
+   {  
         $usersdata = DB::table('users')
                     ->select('users.state')
                     ->groupBy('users.state')
