@@ -14,6 +14,8 @@ use Illuminate\Http\Request;
 */
 
 // Route::post('get-po-list-admin','Api\Modules\PoDetails\PoDetailsController@getPoDetails')->name('get_po_list_admin');
+Route::post('store_security_question', 'Api\Modules\Security\SecurityQuestionController@StoreSecurityQue');
+Route::get('get_security_questions', 'Api\Modules\Security\SecurityQuestionController@getSecurityQue');
 
 Route::post('store-excel-data','Api\Modules\Bulk\BulkController@storExceleData');
 
@@ -303,9 +305,6 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
          // ----------------------- production fg -------------------------------
            Route::post('prod-qty-upload-user','Orders\OrderPlanningController@prodQtyUploadAdmin');
           // -------------------------------------------------------------------
-         // --------------------- quote remarks ------------------------------------
-           Route::post('submit_remarks','Remarks\RemarkController@submitremarks');
-         // ------------------------------------------------------------------------
      });
    	
 });

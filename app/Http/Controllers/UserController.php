@@ -24,6 +24,15 @@ class UserController extends Controller
     * @return \Illuminate\Http\Response
     */
    public function test(Request $request)
+   {
+    
+   }
+    /**
+    * Display a listing of the resource.
+    *
+    * @return \Illuminate\Http\Response
+    */
+   public function test(Request $request)
    {  
         $usersdata = DB::table('users')
                     ->select('users.state')
