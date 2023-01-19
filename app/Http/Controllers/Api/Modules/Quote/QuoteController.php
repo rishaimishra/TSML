@@ -2480,11 +2480,11 @@ class QuoteController extends Controller
   {
       $type = Auth::user()->user_type;
       $res = DB::table('remarks')->where('rfq_no',$rfq_no)->where('sche_no',$schedule_no)
-      ->where('to',$type)->orderBy('id','desc')->first();
+      ->where('to',$type)->orWhere('from', $type)->orderBy('id','desc')->first();
 
       // foreach ($res as $key => $value) {
         
-          $data['remarks'] = $res->remarks;
+          // $data['remarks'] = $res->remarks;
           $data['camremarks'] = $res->camremarks;
           $data['salesremarks'] = $res->salesremarks;
           $data['from'] = $res->from;
