@@ -305,6 +305,9 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
          // ----------------------- production fg -------------------------------
            Route::post('prod-qty-upload-user','Orders\OrderPlanningController@prodQtyUploadAdmin');
           // -------------------------------------------------------------------
+         // --------------------- quote remarks ------------------------------------
+           Route::post('submit_remarks','Remarks\RemarkController@submitremarks');
+         // ------------------------------------------------------------------------
      });
    	
 });

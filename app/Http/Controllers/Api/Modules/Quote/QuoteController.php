@@ -666,7 +666,7 @@ class QuoteController extends Controller
             $result[$key]['status'] = $value['product']['status'];
             $result[$key]['quotest'] = $value['kam_status'];
             $result[$key]['primary_image_url'] = asset('storage/app/public/images/product/'.$value['category']['primary_image']);
-            $result[$key]['schedule'] = $this->getSubcatname($value['schedules']);
+            $result[$key]['schedule'] = $this->getSubcatname($value['schedules'],$value['rfq_no']);
             $result[$key]['quote_id'] = $value['id'];
             $result[$key]['user_id'] = $value['user_id'];
             $result[$key]['rfq_no'] = $value['rfq_no'];
@@ -2136,7 +2136,7 @@ class QuoteController extends Controller
 
    /*------------------------------------------------------------------------------*/
 
-   public function getSubcatname($schedules)
+   public function getSubcatname($schedules,$rfq_no)
    {
       foreach ($schedules as $key => $value) {
           
@@ -2156,6 +2156,7 @@ class QuoteController extends Controller
            $sct = DB::table('requote_counts')->where('sche_no',$value['schedule_no'])->first();
 
            $schedules[$key]['sche_ct'] = (!empty($sct)) ? $sct->counts : 0;
+           $schedules[$key]['remarksarr'] = $this->getremarksarr($value['schedule_no'],$rfq_no);
 
       }
 
@@ -2473,5 +2474,26 @@ class QuoteController extends Controller
         }
         
     }
+
+
+  public function getremarksarr($schedule_no,$rfq_no)
+  {
+      $type = Auth::user()->user_type;
+      $res = DB::table('remarks')->where('rfq_no',$rfq_no)->where('sche_no',$schedule_no)
+      ->where('to',$type)->orderBy('id','desc')->first();
+
+      // foreach ($res as $key => $value) {
+        
+          $data['remarks'] = $res->remarks;
+          $data['camremarks'] = $res->camremarks;
+          $data['salesremarks'] = $res->salesremarks;
+          $data['from'] = $res->from;
+          $data['to'] = $res->to;
+
+
+      // }
+
+      return $data;
+  }
 
 }
