@@ -2156,7 +2156,11 @@ class QuoteController extends Controller
            $sct = DB::table('requote_counts')->where('sche_no',$value['schedule_no'])->first();
 
            $schedules[$key]['sche_ct'] = (!empty($sct)) ? $sct->counts : 0;
-           $schedules[$key]['remarksarr'] = $this->getremarksarr($value['schedule_no'],$rfq_no);
+           $remarksarr = $this->getremarksarr($value['schedule_no'],$rfq_no);
+           // echo "<pre>";print_r($remarksarr);exit();
+           $schedules[$key]['remarks'] = $remarksarr['remarks'];
+           $schedules[$key]['kamsRemarks'] = $remarksarr['camremarks'];
+           $schedules[$key]['salesRemarks'] = $remarksarr['salesremarks'];
 
       }
 
