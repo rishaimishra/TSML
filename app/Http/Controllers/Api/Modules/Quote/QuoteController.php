@@ -2484,7 +2484,7 @@ class QuoteController extends Controller
 
       // foreach ($res as $key => $value) {
         
-          // $data['remarks'] = $res->remarks;
+          $data['remarks'] = $res->remarks;
           $data['camremarks'] = $res->camremarks;
           $data['salesremarks'] = $res->salesremarks;
           $data['from'] = $res->from;
