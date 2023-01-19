@@ -2479,8 +2479,9 @@ class QuoteController extends Controller
   public function getremarksarr($schedule_no,$rfq_no)
   {
       $type = Auth::user()->user_type;
-      $res = DB::table('remarks')->where('rfq_no',$rfq_no)->where('sche_no',$schedule_no)
-      ->where('to',$type)->orWhere('from', $type)->orderBy('id','desc')->first();
+      $res = DB::table('remarks')
+      ->where('to',$type)->orWhere('from', $type)->orderBy('id','desc')
+      ->where('rfq_no',$rfq_no)->where('sche_no',$schedule_no)->first();
 
       // foreach ($res as $key => $value) {
         
