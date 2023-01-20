@@ -76,14 +76,43 @@ class AuthController extends Controller
         if (!$jwt_token = JWTAuth::attempt($input)) {
             // dd($jwt_token);
             $chkuser = User::where('email',$request->email)->first();
+             
             // dd($chkusermail);
             // \Hash::check($request->password, $user->password)
-            $chkuserpass  = \Hash::check($request->password, $chkuser->password);
+           
             // dd($chkuserpass);
-            return response()->json([
-                'success' => false,
-                'message' => 'Invalid Email or Password',
-            ], 401);
+            if ($chkuser == null) {
+              return response()->json([
+                'success' => false,'message' => 'Invalid Email'], 401);
+            }
+            $chkuserpass  = \Hash::check($request->password, $chkuser->password);
+            if ($chkuserpass == false) {
+
+              $userid = $chkuser->id;
+              // dd($userid);
+              $userlogin_count = $chkuser->login_count;
+              // dd($userlogin_count);
+              $cval['login_count'] = $userlogin_count + 1;
+              $chkusers = User::where('id',$userid)->update($cval);
+              $countchk = User::where('id',$userid)->first();
+               
+              if ($countchk->login_count==2) { 
+                return response()->json([
+                'success' => false,'message' => 'Invalid password you have only one attempt left.','result' => $chkuser]); 
+              }
+              if ($countchk->login_count==3) {
+                $upuser['user_status'] = 2;
+                $chkusers = User::where('id',$userid)->update($upuser);
+                $userdata = User::where('id',$userid)->first();
+                return response()->json([
+                  'success' => false,'message' => 'Your account has been blocked.','result' => $userdata]);
+              } 
+              else{
+                return response()->json([
+                'success' => false,'message' => 'Invalid Password','result' => $chkuser], 401);
+              }
+              
+            } 
         }
         
         $authChk = Auth::user()->is_loggedin;
