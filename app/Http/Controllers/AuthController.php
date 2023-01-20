@@ -133,7 +133,7 @@ class AuthController extends Controller
         if($authChk == 0)
         {
             $userArr['user_id'] = Auth::user()->id;
-            $userArr['user_name'] = Auth::user()->name;
+            $userArr['user_name'] = Auth::user()->org_name;
             $userArr['user_type'] = Auth::user()->user_type;
             $updata['is_loggedin'] = 1;
             $updata['login_count'] = 0;

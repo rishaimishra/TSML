@@ -9,6 +9,7 @@ use App\Models\OtpVerification;
 use App\Mail\Register;
 use App\ServicesMy\MailService;
 use Illuminate\Support\Facades\Hash;
+use App\Address;
 use App\User;
 use JWTAuth;
 use Validator;
@@ -456,7 +457,76 @@ class UserController extends Controller
             // return $userData;exit();
 
             $user = User::create($userData);
+            
+            $user_id = $user->id;
+            if (@$request->shipping_address) {
+                $address = json_decode(@$request->shipping_address,true);
 
+
+                foreach ($address as $key => $value) {
+                    $normal_address = new Address;
+                    $normal_address->user_id =  $user_id;
+                    $normal_address->first_name =  $value['first_name'];
+                    $normal_address->last_name =  $value['last_name'];
+                    $normal_address->addressone =  $value['addressone'];
+                    $normal_address->addresstwo =  $value['addresstwo'];
+                    $normal_address->city =  $value['city'];
+
+                    $normal_address->state =  $value['state'];
+                    $normal_address->pincode  =  $value['pincode'];
+                    $normal_address->company_name  =  $value['company_name'];
+                    $normal_address->gstin  =  $value['gstin'];
+                    $normal_address->type  =  'A';
+                    $normal_address->save();
+
+                    // billing
+
+
+                    if ($value['billing']=="Y") {
+                    $billing = new Address;
+                    $billing->user_id =  $user_id;
+                    $billing->first_name =  $value['first_name'];
+                    $billing->last_name =  $value['last_name'];
+                    $billing->addressone =  $value['addressone'];
+                    $billing->addresstwo =  $value['addresstwo'];
+                    $billing->city =  $value['city'];
+
+                    $billing->gstin =  $value['gstin'];
+                    $billing->company_name =  $value['company_name'];
+
+                    $billing->state =  $value['state'];
+                    $billing->pincode  =  $value['pincode'];
+                    $billing->type  =  'B';
+                    $billing->save();
+                    }
+                    
+                  
+            }
+            }
+
+
+            if (@$request->billing_address) {
+                $billing_address = json_decode($request->billing_address, true);
+            
+                    foreach ($billing_address as $key => $value) {
+                    
+                    $normal_address = new Address;
+                    $normal_address->user_id =  $user_id;
+                    $normal_address->first_name =  $value['first_name'];
+                    $normal_address->last_name =  $value['last_name'];
+                    $normal_address->addressone =  $value['addressone'];
+                    $normal_address->addresstwo =  $value['addresstwo'];
+                    $normal_address->city =  $value['city'];
+
+                    $normal_address->company_name  =  $value['company_name'];
+                    $normal_address->gstin  =  $value['gstin'];
+
+                    $normal_address->state =  $value['state'];
+                    $normal_address->pincode  =  $value['pincode'];
+                    $normal_address->type  =  'B';
+                    $normal_address->save();
+                 }
+           }
             // send-mail
             $data = [
                 'email'=>$request->email,
