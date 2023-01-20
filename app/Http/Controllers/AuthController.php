@@ -173,7 +173,7 @@ class AuthController extends Controller
 
     public function updateMobile(Request $request)
     {
-      $response = [];
+       
       $validator = Validator::make($request->all(), [
           'mobile'=>'required|digits:10',
       ]);
