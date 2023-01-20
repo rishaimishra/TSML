@@ -117,11 +117,15 @@ class SecurityQuestionController extends Controller
         //       return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $validator->errors()],config('global.failed_status'));
         //   }
           // dd($request->all());
+
+        
         foreach ($request->all() as $key => $value) {
+
+             $id = User::where('email',$value['email'])->first();
             
               $input['question_id'] = $value['securityone'];
               $input['answer'] = $value['answoreone'];
-              $input['user_id'] = $value['id'];
+              $input['user_id'] = $id->id;
               $input['status'] = 0; 
              // dd($input);
             SecurityQuestionAnswer::create($input);
@@ -175,5 +179,63 @@ class SecurityQuestionController extends Controller
 
          $msg = "Mail sent successfully";
          return response()->json(['status'=>1,'message' =>$msg],200);
+    }
+
+
+
+        /**
+         * This is for store new Security Question answer by user id.
+         *
+         * 
+         * @return \Illuminate\Http\Response
+         */
+    public function securityQstnMatch(Request $request)
+    { 
+       
+      \DB::beginTransaction();
+
+      try{
+       
+        $secu = array();
+        foreach ($request->all() as $key => $value) {
+            
+              $user = User::where('email',$value['email'])->first();
+              // $input['question_id'] = $value['securityone'];
+              // $input['answer'] = $value['answoreone'];
+              // $input['user_id'] = $value['id'];
+              // $input['status'] = 0; 
+             // dd($value['answoreone']);
+          $ans = SecurityQuestionAnswer::where('user_id',$user->id)
+          ->where('question_id',$value['securityone'])->first();
+
+          if($value['answoreone'] == $ans->answer)
+          {
+              $val = 1;
+          }else{
+              
+              $val = 0;
+          }
+
+          array_push($secu,$val);
+        }
+          // dd($secu);
+          if(in_array("0", $secu))
+          {
+             $result = false;
+          }else{
+             $result = true;
+          }
+
+          \DB::commit();
+
+         
+                return response()->json(['status'=>1,'result' => $result],config('global.success_status'));
+           
+         
+
+      }catch(\Exception $e){ 
+          \DB::rollback(); 
+            return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $e->getMessage()],config('global.failed_status'));
+        }
     }
 }
