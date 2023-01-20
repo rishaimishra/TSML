@@ -105,35 +105,34 @@ class SecurityQuestionController extends Controller
 
       try{
        
-        $validator = Validator::make($request->all(), [
-                'securityone'        => 'required',
-                'answoreone'        => 'required', 
-                'securitytwo'        => 'required',
-                'answoretwo'        => 'required', 
+        // $validator = Validator::make($request->all(), [
+        //         'securityone'        => 'required',
+        //         'answoreone'        => 'required', 
+        //         'securitytwo'        => 'required',
+        //         'answoretwo'        => 'required', 
                 
-          ]);
+        //   ]);
 
-          if ($validator->fails()) { 
-              return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $validator->errors()],config('global.failed_status'));
-          }
-          dd($request->all());
-
-          $input['question_id'] = $request->question_id;
-          $input['answer'] = $request->answer;
-          $input['user_id'] = $request->user_id;
-          $input['status'] = 0; 
-
-          $freightsData = SecurityQuestionAnswer::create($input);
+        //   if ($validator->fails()) { 
+        //       return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $validator->errors()],config('global.failed_status'));
+        //   }
+          // dd($request->all());
+        foreach ($request->all() as $key => $value) {
+            
+              $input['question_id'] = $value['securityone'];
+              $input['answer'] = $value['answoreone'];
+              $input['user_id'] = $value['id'];
+              $input['status'] = 0; 
+             // dd($input);
+            SecurityQuestionAnswer::create($input);
+        }
+          
 
           \DB::commit();
 
-          if($freightsData)
-                {
-                return response()->json(['status'=>1,'message' =>'Security question answer saved successfully','result' => $freightsData],config('global.success_status'));
-            }
-            else{ 
-              return response()->json(['status'=>1,'message' =>'Somthing went wrong','result' => []],config('global.success_status'));
-            } 
+         
+                return response()->json(['status'=>1,'message' =>'Security question answer saved successfully','result' => 1],config('global.success_status'));
+           
          
 
       }catch(\Exception $e){ 
