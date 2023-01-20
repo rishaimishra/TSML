@@ -83,7 +83,7 @@ class AuthController extends Controller
             // dd($chkuserpass);
             if ($chkuser == null) {
               return response()->json([
-                'success' => false,'message' => 'Invalid Email'], 401);
+                'success' => false,'message' => 'Invalid Email']);
             }
             $chkuserpass  = \Hash::check($request->password, $chkuser->password);
             if ($chkuserpass == false) {
@@ -97,19 +97,32 @@ class AuthController extends Controller
               $countchk = User::where('id',$userid)->first();
                
               if ($countchk->login_count==2) { 
+               $datass['user_status'] = $chkuser->user_status;
+                $datass['user_email'] = $chkuser->email;
                 return response()->json([
-                'success' => false,'message' => 'Invalid password you have only one attempt left.','result' => $chkuser]); 
+                'success' => false,'message' => 'Invalid password you have only one attempt left.','result' => $datass]); 
               }
               if ($countchk->login_count==3) {
                 $upuser['user_status'] = 2;
                 $chkusers = User::where('id',$userid)->update($upuser);
                 $userdata = User::where('id',$userid)->first();
+                $data['user_status'] = $userdata->user_status;
+                $data['user_email'] = $userdata->email;
                 return response()->json([
-                  'success' => false,'message' => 'Your account has been blocked.','result' => $userdata]);
+                  'success' => false,'message' => 'Your account has been blocked.','result' => $data]);
+              } 
+              if ($countchk->login_count>3) {
+              $userdata = User::where('id',$userid)->first();
+                $data['user_status'] = $userdata->user_status;
+                $data['user_email'] = $userdata->email; 
+                return response()->json([
+                  'success' => false,'message' => 'Your account has been blocked.','result' => $data]);
               } 
               else{
-                return response()->json([
-                'success' => false,'message' => 'Invalid Password','result' => $chkuser]);
+                $data2['user_status'] = $chkuser->user_status;
+                $data2['user_email'] = $chkuser->email;
+                return response()->json([ 
+                'success' => false,'message' => 'Invalid Password','result' => $data2]);
               }
               
             } 
@@ -123,6 +136,7 @@ class AuthController extends Controller
             $userArr['user_name'] = Auth::user()->name;
             $userArr['user_type'] = Auth::user()->user_type;
             $updata['is_loggedin'] = 1;
+            $updata['login_count'] = 0;
             $upuser = User::where('id',Auth::user()->id)->update($updata);
             return response()->json([
                 'success' => true,
