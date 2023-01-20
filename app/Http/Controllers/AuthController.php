@@ -109,7 +109,7 @@ class AuthController extends Controller
               } 
               else{
                 return response()->json([
-                'success' => false,'message' => 'Invalid Password','result' => $chkuser], 401);
+                'success' => false,'message' => 'Invalid Password','result' => $chkuser]);
               }
               
             } 
