@@ -5,11 +5,14 @@ namespace App\Http\Controllers\Api\Modules\Security;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Tymon\JWTAuth\Exceptions\JWTException;
-  use Illuminate\Support\Facades\Auth;
-  use App\User;
-  use App\Models\SecurityQuestion; 
-  use JWTAuth;
-  use Validator;
+use Illuminate\Support\Facades\Auth;
+use App\User;
+use App\Models\SecurityQuestion; 
+use App\Models\SecurityQuestionAnswer;
+use App\ServicesMy\MailService; 
+use JWTAuth;
+use Validator;
+use Hash;
 
 class SecurityQuestionController extends Controller
 {
@@ -85,5 +88,93 @@ class SecurityQuestionController extends Controller
             $response['error'] = $e->getMessage();
             return response()->json([$response]);
         }
+    }
+
+
+
+        /**
+         * This is for store new Security Question answer by user id.
+         *
+         * 
+         * @return \Illuminate\Http\Response
+         */
+    public function saveSecurityQstAns(Request $request)
+    { 
+       
+      \DB::beginTransaction();
+
+      try{
+       
+        $validator = Validator::make($request->all(), [
+                'securityone'        => 'required',
+                'answoreone'        => 'required', 
+                'securitytwo'        => 'required',
+                'answoretwo'        => 'required', 
+                
+          ]);
+
+          if ($validator->fails()) { 
+              return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $validator->errors()],config('global.failed_status'));
+          }
+          dd($request->all());
+
+          $input['question_id'] = $request->question_id;
+          $input['answer'] = $request->answer;
+          $input['user_id'] = $request->user_id;
+          $input['status'] = 0; 
+
+          $freightsData = SecurityQuestionAnswer::create($input);
+
+          \DB::commit();
+
+          if($freightsData)
+                {
+                return response()->json(['status'=>1,'message' =>'Security question answer saved successfully','result' => $freightsData],config('global.success_status'));
+            }
+            else{ 
+              return response()->json(['status'=>1,'message' =>'Somthing went wrong','result' => []],config('global.success_status'));
+            } 
+         
+
+      }catch(\Exception $e){ 
+          \DB::rollback(); 
+            return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $e->getMessage()],config('global.failed_status'));
+        }
+    }
+
+
+    public function securityQstnMail(Request $request)
+    {
+         $cc_email = array();
+         
+         $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+          $input_length = strlen($permitted_chars);
+        $random_string = '';
+        for($i = 0; $i < 12; $i++) {
+            $random_character = $permitted_chars[mt_rand(0, $input_length - 1)];
+            $random_string .= $random_character;
+        }
+         
+         $password = Hash::make($random_string);
+
+
+         // echo "<pre>";print_r($password);exit();
+         $email = $request->input('email');
+
+         User::where('email',$email)->update(['password' => $password]);
+       
+         $cc_email = "";
+
+         $sub = 'Your password has been updated';
+ 
+         $html = 'mail.securitymail';
+
+         $data['password'] = $random_string;
+
+        (new MailService)->dotestMail($sub,$html,$email,$data,$cc_email);
+
+
+         $msg = "Mail sent successfully";
+         return response()->json(['status'=>1,'message' =>$msg],200);
     }
 }
