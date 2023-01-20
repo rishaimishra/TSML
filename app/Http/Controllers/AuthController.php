@@ -175,17 +175,124 @@ class AuthController extends Controller
     {
       $response = [];
       $validator = Validator::make($request->all(), [
-          'mobile'=>'required',
+          'mobile'=>'required|digits:10',
       ]);
       
       if ($validator->fails()) {
           return response()->json($validator->errors());
       }
 
-      User::where('id',auth()->user()->id)->update(['phone'=>$request->mobile]);
-      $response['success'] = true;
-      $response['message'] = 'Mobile Number Updated Successfully';
-      return $response;
+      $chkmob = OtpVerification::where('email',$request->email)->where('mob_number',$request->mobile_no)->first(); 
+
+        // dd($chkmob);
+        if(!empty($chkmob->otp) && $chkmob->is_verified != 2)
+        {
+            return response()->json(['status'=>0,'message' => array('OTP already send to this email addess '.$request->email)]); 
+        }
+        else
+        {
+ 
+              $otp = random_int(100000, 999999); 
+
+              $input['mob_number'] = $request->mobile_no;
+              $input['email'] = $request->email;
+              $input['otp'] = $otp;
+
+              $categoryData = OtpVerification::create($input);  
+
+              $sub = "OTP for registration";
+              $html = 'mail.Otpverificationmail';
+              $data['otp'] = $otp;
+              $cc_email = "";
+              $email = $request->email;
+
+              (new MailService)->dotestMail($sub,$html,$email,$data,$cc_email); 
+     
+              $msg = "OTP has been send to this email address ".$request->email." successfully.";
+              $userdata['mob_number'] = $request->mobile_no;
+              $userdata['email'] = $request->email;
+              return response()->json(['status'=>1,'message' =>$msg,'result' =>$userdata],200);
+            
+            
+        }
+
+      /**
+       * This is for validate user mobile OTP.
+       *
+       * @return \Illuminate\Http\Response
+      */
+      public function verifyMobileOtpUser(Request $request)
+      {
+        $validator = Validator::make($request->all(), [ 
+            'mobile_no' =>'required|digits:10',
+            'email' =>'required|email',
+            'email' => ['required', 'string','max:255','regex:/^\w+[-\.\w]*@(?!(?:myemail)\.com$)\w+[-\.\w]*?\.\w{2,4}$/'], 
+            'otp' =>'required|digits:6',              
+        ],
+        [   
+            'mobile_no.required'=>'Mobile is required',
+            'otp.required'=>'OTP is required',               
+        ]
+        );
+
+        if ($validator->fails()) {
+            $response['error']['validation'] = $validator->errors();
+            return Response::json($response);
+        }
+        $chkmob = OtpVerification::where('email',$request->email)->where('mob_number',$request->mobile_no)->first();
+        // dd($chkmob);
+        if (!empty($chkmob)) 
+        {
+            if($chkmob->otp == null && $chkmob->is_verified == 2)
+            {
+                return response()->json(['status'=>0,'message' => array('Your mobile number already verified.')]); 
+            }
+            else
+            {
+                if(!empty($chkmob->otp) && $chkmob->is_verified != 2)
+                {
+                    if ($chkmob->otp == $request->otp) 
+                    {
+                        $input['is_verified'] = 2;
+                        $input['otp'] = '';
+
+                        $categoryData = OtpVerification::where('mob_number',$request->mobile_no)->where('otp',$chkmob->otp)->update($input); 
+
+                        User::where('email',$request->email)->update(['phone'=>$request->mobile_no]);
+                        $response['success'] = true;
+                        $response['message'] = 'Mobile Number Updated Successfully';
+                        return $response;
+                 
+                        // return response()->json(['status'=>1,'message' =>'Verification successfully.','result' => $chkmob],200);
+                    }
+                    else
+                    {
+                        return response()->json(['status'=>0,'message' => array('Invalid OTP please check')]);
+                    }
+
+                }
+                else
+                {
+                    return response()->json(['status'=>0,'message' => array('OTP already send to this mobile number '.$request->mobile_no)]);
+                }
+
+            }
+
+        }
+        else
+        {
+            return response()->json(['status'=>0,'message' => array('Somthing wrong please check.')]);
+        }
+
+      }
+
+
+
+
+      // User::where('id',auth()->user()->id)->update(['phone'=>$request->mobile]);
+      // $response['success'] = true;
+      // $response['message'] = 'Mobile Number Updated Successfully';
+      // return $response;
     }
  
    /**
