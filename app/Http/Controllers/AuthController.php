@@ -197,13 +197,15 @@ class AuthController extends Controller
    public function fologout(Request $request)
    {
 
-       $email = $request->email;
+       $email = $request->input('email');
+       // dd($email);
         $chkuser = User::where('email',$email)->first();
-
+   
         if(!empty($chkuser))
         {
+          // dd('ok');
           $updata['is_loggedin'] = 0;
-          $upuser = User::where('id',$chkuser->email)->update($updata);
+          $upuser = User::where('email',$chkuser->email)->update($updata);
             
 
           return response()->json([
