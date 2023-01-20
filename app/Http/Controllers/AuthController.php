@@ -71,10 +71,15 @@ class AuthController extends Controller
         $input = $request->only('email', 'password');
         $jwt_token = null;
         
-        
+        // dd($jwt_token);
    
         if (!$jwt_token = JWTAuth::attempt($input)) {
-         
+            // dd($jwt_token);
+            $chkuser = User::where('email',$request->email)->first();
+            // dd($chkusermail);
+            // \Hash::check($request->password, $user->password)
+            $chkuserpass  = \Hash::check($request->password, $chkuser->password);
+            // dd($chkuserpass);
             return response()->json([
                 'success' => false,
                 'message' => 'Invalid Email or Password',

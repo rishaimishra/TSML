@@ -18,15 +18,7 @@ use DB;
  
 class UserController extends Controller
 {
-    /**
-    * Display a listing of the resource.
-    *
-    * @return \Illuminate\Http\Response
-    */
-   public function test(Request $request)
-   {
-    
-   }
+     
     /**
     * Display a listing of the resource.
     *
@@ -152,8 +144,9 @@ class UserController extends Controller
                 (new MailService)->dotestMail($sub,$html,$email,$data,$cc_email); 
        
                 $msg = "OTP has been send to this email address ".$request->email." successfully.";
-  
-                return response()->json(['status'=>1,'message' =>$msg,'result' => $categoryData],200);
+                $userdata['mob_number'] = $request->mobile_no;
+                $userdata['email'] = $request->email;
+                return response()->json(['status'=>1,'message' =>$msg,'result' =>$userdata],200);
             }
             
            
