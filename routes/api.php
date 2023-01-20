@@ -18,6 +18,7 @@ Route::post('store_security_question', 'Api\Modules\Security\SecurityQuestionCon
 Route::get('get_security_questions', 'Api\Modules\Security\SecurityQuestionController@getSecurityQue');
 Route::post('save_security_qst_ans', 'Api\Modules\Security\SecurityQuestionController@saveSecurityQstAns');
 Route::post('security_qstn_mail', 'Api\Modules\Security\SecurityQuestionController@securityQstnMail');
+ Route::post('force_logout', 'AuthController@fologout');
 
 Route::post('store-excel-data','Api\Modules\Bulk\BulkController@storExceleData');
 

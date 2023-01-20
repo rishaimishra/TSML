@@ -202,6 +202,42 @@ class AuthController extends Controller
        
        return response()->json(['message' => 'Successfully logged out']);
    }
+
+      /**
+    * Log the user out (Invalidate the token).
+    *
+    * @return \Illuminate\Http\JsonResponse
+    */
+   public function fologout(Request $request)
+   {
+
+       $email = $request->input('email');
+       // dd($email);
+        $chkuser = User::where('email',$email)->first();
+   
+        if(!empty($chkuser))
+        {
+          // dd('ok');
+          $updata['is_loggedin'] = 0;
+          $upuser = User::where('email',$chkuser->email)->update($updata);
+            
+
+          return response()->json([
+                'success' => true,
+                'message' => 'Logout Successfully.',
+            ]);
+        }else{
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid email',
+            ]);
+
+        }
+       
+       
+       
+   }
  
    /**
     * Refresh a token.
