@@ -196,12 +196,12 @@ class AuthController extends Controller
          if(!empty($chkmob->otp) && $chkmob->is_verified == 1)
           {
             // dd('OTP already send to this email addess.');
-              return response()->json(['status'=>0,'message' => array('OTP already send to this email addess.'.$request->email)]); 
+              return response()->json(['status'=>0,'message' => 'OTP already send to this email addess.'.$request->email]); 
           }
           else if(empty($chkmob->otp) && $chkmob->is_verified == 2)
           {
             // dd('This mobile number already verified.');
-              return response()->json(['status'=>0,'message' => array('This mobile number already verified.')]); 
+              return response()->json(['status'=>0,'message' =>'This mobile number already verified.']); 
           }
         } 
         else
