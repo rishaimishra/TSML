@@ -213,7 +213,7 @@ class AuthController extends Controller
               if(!empty($chkuser))
               {
                 // dd('of');
-                return response()->json(['status'=>0,'message' => array('Mobile number already exists.')]);
+                return response()->json(['status'=>0,'message' => 'Mobile number already exists.']);
 
               
             }else{
