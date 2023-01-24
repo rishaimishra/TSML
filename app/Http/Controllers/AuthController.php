@@ -418,5 +418,36 @@ class AuthController extends Controller
    }
 
 
+    public function getsavetoken(Request $request)
+   {
+
+        $id = $request->userid;
+        $chkuser = User::where('id',$id)->first();
+   
+        if(!empty($chkuser))
+        {
+          // dd('ok');
+          $data['token'] = $chkuser->jwt_token;
+          
+
+          return response()->json([
+                'success' => true,
+                'message' => 'Success',
+                'result'  => $data,
+            ]);
+        }else{
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid id',
+            ]);
+
+        }
+       
+       
+       
+   }
+
+
  
 }
