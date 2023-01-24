@@ -196,7 +196,7 @@ class AuthController extends Controller
          if(!empty($chkmob->otp) && $chkmob->is_verified == 1)
           {
             // dd('OTP already send to this email addess.');
-              return response()->json(['status'=>0,'message' => 'OTP already send to this email addess.'.$request->email]); 
+              return response()->json(['status'=>0,'message' => 'OTP already sent to this email addess.'.$request->email]); 
           }
           else if(empty($chkmob->otp) && $chkmob->is_verified == 2)
           {
@@ -234,7 +234,7 @@ class AuthController extends Controller
 
               (new MailService)->dotestMail($sub,$html,$email,$data,$cc_email); 
      
-              $msg = "OTP has been send to this email address ".$request->email." successfully.";
+              $msg = "OTP has been sent to this email address ".$request->email." successfully.";
               $userdata['mob_number'] = $request->mobile_no;
               $userdata['email'] = $request->email;
               return response()->json(['status'=>1,'message' =>$msg,'result' =>$userdata],200);
@@ -301,7 +301,7 @@ class AuthController extends Controller
                 }
                 else
                 {
-                    return response()->json(['status'=>0,'message' => array('OTP already send to this mobile number '.$request->mobile_no)]);
+                    return response()->json(['status'=>0,'message' => array('OTP already sent to this mobile number '.$request->mobile_no)]);
                 }
 
             }
@@ -355,7 +355,7 @@ class AuthController extends Controller
           // dd('ok');
           $updata['is_loggedin'] = 0;
           $upuser = User::where('email',$chkuser->email)->update($updata);
-            
+          
 
           return response()->json([
                 'success' => true,
