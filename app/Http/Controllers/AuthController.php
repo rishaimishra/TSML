@@ -178,9 +178,9 @@ class AuthController extends Controller
        return $response;
    }
 
-    public function updateMobile(Request $request)
+    public function updateMobileNUmber(Request $request)
     {
-      
+      // dd($request->all());
       $validator = Validator::make($request->all(), [
           'mobile_no'=>'required|digits:10',
       ]);
@@ -192,18 +192,27 @@ class AuthController extends Controller
       $chkmob = OtpVerification::where('email',$request->email)->where('mob_number',$request->mobile_no)->first(); 
 
         // dd($chkmob);
-        if(!empty($chkmob->otp) && $chkmob->is_verified != 2)
-        {
-            return response()->json(['status'=>0,'message' => array('OTP already send to this email addess '.$request->email)]); 
-        }
+        if ($chkmob!=null) {
+         if(!empty($chkmob->otp) && $chkmob->is_verified == 1)
+          {
+            // dd('OTP already send to this email addess.');
+              return response()->json(['status'=>0,'message' => array('OTP already send to this email addess.'.$request->email)]); 
+          }
+          else if(empty($chkmob->otp) && $chkmob->is_verified == 2)
+          {
+            // dd('This mobile number already verified.');
+              return response()->json(['status'=>0,'message' => array('This mobile number already verified.')]); 
+          }
+        } 
         else
         { 
+          // dd('mail send');
               $user_email = User::where('email',$request->email)->first();
               $chkuser = User::where('phone',$request->mobile_no)->where('id','!=',$user_email->id)->get()->toArray();
               // dd($chkuser);
               if(!empty($chkuser))
               {
-                dd('of');
+                // dd('of');
                 return response()->json(['status'=>0,'message' => array('Mobile number already exists.')]);
 
               
