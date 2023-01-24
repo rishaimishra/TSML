@@ -137,13 +137,14 @@ class AuthController extends Controller
         
         $authChk = Auth::user()->is_loggedin;
         // dd($id);
-        if($authChk == 0)
+        if($authChk == 0 && Auth::user()->jwt_token == NULL)
         {
             $userArr['user_id'] = Auth::user()->id;
             $userArr['user_name'] = Auth::user()->org_name;
             $userArr['user_type'] = Auth::user()->user_type;
             $updata['is_loggedin'] = 1;
             $updata['login_count'] = 0;
+            $updata['jwt_token'] = $jwt_token;
             $upuser = User::where('id',Auth::user()->id)->update($updata);
             return response()->json([
                 'success' => true,
@@ -332,6 +333,7 @@ class AuthController extends Controller
    {
 
        $updata['is_loggedin'] = 0;
+       $updata['jwt_token'] = NULL;
        $upuser = User::where('id',Auth::user()->id)->update($updata);
        auth()->logout();
        
@@ -354,6 +356,7 @@ class AuthController extends Controller
         {
           // dd('ok');
           $updata['is_loggedin'] = 0;
+          $updata['jwt_token'] = NULL;
           $upuser = User::where('email',$chkuser->email)->update($updata);
           
 
