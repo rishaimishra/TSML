@@ -164,7 +164,7 @@ class SecurityQuestionController extends Controller
          // echo "<pre>";print_r($password);exit();
          $email = $request->input('email');
 
-         User::where('email',$email)->update(['password' => $password]);
+         User::where('email',$email)->update(['password' => $password,'login_count' => 0,'user_status' => NULL]);
        
          $cc_email = "";
 
@@ -205,10 +205,15 @@ class SecurityQuestionController extends Controller
               // $input['user_id'] = $value['id'];
               // $input['status'] = 0; 
              // dd($value['answoreone']);
+              // dd($value['securityone']);
+              if(!empty($user))
+              {
           $ans = SecurityQuestionAnswer::where('user_id',$user->id)
           ->where('question_id',$value['securityone'])->first();
-
-          if($value['answoreone'] == $ans->answer)
+          // dd($ans);
+         if(!empty($ans))
+         {
+          if($value['answoreone'] === $ans->answer)
           {
               $val = 1;
           }else{
@@ -218,13 +223,21 @@ class SecurityQuestionController extends Controller
 
           array_push($secu,$val);
         }
+        }
+        }
           // dd($secu);
+        if(!empty($secu) & count($secu) ==2)
+        {
           if(in_array("0", $secu))
           {
              $result = false;
           }else{
              $result = true;
           }
+        }else{
+
+           $result = false;
+        }
 
           \DB::commit();
 

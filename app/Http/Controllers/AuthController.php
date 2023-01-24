@@ -11,6 +11,13 @@ use App\Admin;
 use App\Address;
 use JWTAuth;
 use Validator;
+use App\Models\OtpVerification;
+use App\Mail\Register;
+use App\ServicesMy\MailService;
+use Illuminate\Support\Facades\Hash;
+use Response; 
+use Mail;
+use DB;
  
 class AuthController extends Controller
 {
@@ -173,9 +180,9 @@ class AuthController extends Controller
 
     public function updateMobile(Request $request)
     {
-       
+      
       $validator = Validator::make($request->all(), [
-          'mobile'=>'required|digits:10',
+          'mobile_no'=>'required|digits:10',
       ]);
       
       if ($validator->fails()) {
@@ -190,9 +197,19 @@ class AuthController extends Controller
             return response()->json(['status'=>0,'message' => array('OTP already send to this email addess '.$request->email)]); 
         }
         else
-        {
- 
-              $otp = random_int(100000, 999999); 
+        { 
+              $user_email = User::where('email',$request->email)->first();
+              $chkuser = User::where('phone',$request->mobile_no)->where('id','!=',$user_email->id)->get()->toArray();
+              // dd($chkuser);
+              if(!empty($chkuser))
+              {
+                dd('of');
+                return response()->json(['status'=>0,'message' => array('Mobile number already exists.')]);
+
+              
+            }else{
+               
+                $otp = random_int(100000, 999999); 
 
               $input['mob_number'] = $request->mobile_no;
               $input['email'] = $request->email;
@@ -200,7 +217,7 @@ class AuthController extends Controller
 
               $categoryData = OtpVerification::create($input);  
 
-              $sub = "OTP for registration";
+              $sub = "OTP for Mobile Verification";
               $html = 'mail.Otpverificationmail';
               $data['otp'] = $otp;
               $cc_email = "";
@@ -212,9 +229,11 @@ class AuthController extends Controller
               $userdata['mob_number'] = $request->mobile_no;
               $userdata['email'] = $request->email;
               return response()->json(['status'=>1,'message' =>$msg,'result' =>$userdata],200);
-            
+                
+            }
             
         }
+      }
 
       /**
        * This is for validate user mobile OTP.
@@ -225,7 +244,7 @@ class AuthController extends Controller
       {
         $validator = Validator::make($request->all(), [ 
             'mobile_no' =>'required|digits:10',
-            'email' =>'required|email',
+            // 'email' =>'required|email',
             'email' => ['required', 'string','max:255','regex:/^\w+[-\.\w]*@(?!(?:myemail)\.com$)\w+[-\.\w]*?\.\w{2,4}$/'], 
             'otp' =>'required|digits:6',              
         ],
@@ -293,7 +312,7 @@ class AuthController extends Controller
       // $response['success'] = true;
       // $response['message'] = 'Mobile Number Updated Successfully';
       // return $response;
-    }
+  
  
    /**
     * Log the user out (Invalidate the token).
