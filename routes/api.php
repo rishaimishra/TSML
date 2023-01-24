@@ -19,6 +19,7 @@ Route::get('get_security_questions', 'Api\Modules\Security\SecurityQuestionContr
 Route::post('save_security_qst_ans', 'Api\Modules\Security\SecurityQuestionController@saveSecurityQstAns');
 Route::post('security_qstn_mail', 'Api\Modules\Security\SecurityQuestionController@securityQstnMail');
  Route::post('force_logout', 'AuthController@fologout');
+Route::post('get_save_token','AuthController@getsavetoken');
 Route::post('security_qstn_match', 'Api\Modules\Security\SecurityQuestionController@securityQstnMatch');
 
 Route::post('store-excel-data','Api\Modules\Bulk\BulkController@storExceleData');
