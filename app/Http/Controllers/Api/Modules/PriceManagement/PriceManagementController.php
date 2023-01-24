@@ -506,8 +506,17 @@ class PriceManagementController extends Controller
                 return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $validator->errors()],config('global.failed_status'));
             }
             $priceData = PriceCalculation::where('pro_id',$request->pro_id)->where('cat_id',$request->cat_id)->where('sub_cat_id',$request->sub_cat_id)->where('size',$request->size)->first();
+
+            $userbilltoaddr = DB::table('address')->where('id',$request->location)
+                  ->select('addressone','addresstwo','city','state','pincode')
+                  ->first();
+
+            $usershiptoaddr = DB::table('address')->where('id',$request->destation_location)
+                          ->select('addressone','addresstwo','city','state','pincode')
+                          ->first();
+            // dd($userbilltoaddr,$usershiptoaddr);
             
-            $getdeliverycost = Freights::where('pickup_from',$request->pickup_from)->where('location',$request->location)->where('destation_location',$request->destation_location)->first(); 
+            $getdeliverycost = Freights::where('pickup_from',$request->pickup_from)->where('location',$userbilltoaddr->state)->where('destation_location',$usershiptoaddr->state)->first(); 
              // dd($getdeliverycost);
             if (!empty($priceData)) {
                 $data['bpt_price'] = $priceData->BPT_Price;
