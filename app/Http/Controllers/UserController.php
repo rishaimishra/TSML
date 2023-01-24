@@ -867,7 +867,7 @@ class UserController extends Controller
         }
         else
         {
-            return response()->json(['status'=>0,'message' =>'success','result'=>'It looks like you already signed up, login to your account.'],200);
+            return response()->json(['status'=>0,'message' =>'success','result'=>'It looks like you already signed up, please login to your account.'],200);
             // return response()->json(['status'=>0,'message' => [],'status' => 200]);
         }
 
