@@ -10,7 +10,7 @@ class RemarkController extends Controller
 {
     public function submitremarks(Request $request)
     {       
-    	  
+    	  // dd('ok');
 
          try{ 
 

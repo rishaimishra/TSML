@@ -17,6 +17,8 @@ use Illuminate\Http\Request;
 Route::post('store_security_question', 'Api\Modules\Security\SecurityQuestionController@StoreSecurityQue');
 Route::get('get_security_questions', 'Api\Modules\Security\SecurityQuestionController@getSecurityQue');
 Route::get('get_security_questions_admin', 'Api\Modules\Security\SecurityQuestionController@getSecurityQueAdmin');
+Route::put('edit_questions_admin/{secqueId?}', 'Api\Modules\Security\SecurityQuestionController@editSecurityQue');
+Route::post('update_questions_admin', 'Api\Modules\Security\SecurityQuestionController@updateSecurityQue');
 Route::post('save_security_qst_ans', 'Api\Modules\Security\SecurityQuestionController@saveSecurityQstAns');
 Route::post('security_qstn_mail', 'Api\Modules\Security\SecurityQuestionController@securityQstnMail');
  Route::post('force_logout', 'AuthController@fologout');
@@ -121,7 +123,7 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
    		 Route::get('get_quote_sche_by_id/{id}','Quote\QuoteController@getQuoteScheById');
    		 Route::post('delete_quote_sche','Quote\QuoteController@deleteQuoteSche');
    		 Route::get('kam_quotes_list','Quote\QuoteController@getKamQuotesList');
-   		 Route::get('view_remarks/{rfq_no}','Quote\QuoteController@viewRemarks');
+   		 Route::post('view_remarks','Quote\QuoteController@viewRemarks');
    		 Route::get('get_quote_po_by_id/{id}','Quote\QuoteController@getPoQuoteById');
    		 Route::post('submit_po','Quote\QuoteController@submitPo');
    		 Route::get('get_po_by_id/{id}','Quote\QuoteController@getPoById');
@@ -147,8 +149,8 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
    		 Route::post('sm_remark_save','Requote\RequoteController@smRemarkSave');
           Route::get('sm_remark_by_id/{rfq_no}','Requote\RequoteController@smRemarkById');
 
-          Route::post('submit_remarks','Remark\RemarkController@submitremarks');
-          
+          Route::post('submit_remarks','Remarks\RemarkController@submitremarks');
+
    		 Route::post('get-store-pro-price','PriceManagement\PriceManagementController@getProPrice')->name('get_store_pro_price');
    		 Route::get('get-threshold-price','PriceManagement\PriceManagementController@getThresholdPrice')->name('get_threshold_price');
    		 // Complain Remarks Routes....

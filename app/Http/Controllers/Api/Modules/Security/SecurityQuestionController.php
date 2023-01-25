@@ -13,6 +13,7 @@ use App\ServicesMy\MailService;
 use JWTAuth;
 use Validator;
 use Hash;
+use Response; 
 
 class SecurityQuestionController extends Controller
 {
@@ -90,6 +91,85 @@ class SecurityQuestionController extends Controller
             return response()->json([$response]);
         }
     }
+
+    /**
+       * This is for show Security Question details before edit for admin.
+       *
+       * @param  \App\Product  $product
+       * @return \Illuminate\Http\Response
+      */
+      public function editSecurityQue($secqueId)
+      {
+         
+        $catData = SecurityQuestion::find($secqueId);
+
+        if (!empty($catData)) 
+        {   
+                
+          $getsqdata['security_question_id'] = $catData->id;
+          $getsqdata['s_question'] = $catData->s_question; 
+          $getsqdata['q_status'] = $catData->status;
+
+           
+          return response()->json(['status'=>1,'message' =>'success','result' => $getsqdata]); 
+ 
+        }
+        else{
+          return response()->json(['status'=>0,'message'=>'No data found']);
+        }
+      }
+
+      /**
+       * This is for update Security Question for admin.
+       *
+       * @param  \App\Product  $product
+       * @return \Illuminate\Http\Response
+      */
+
+        public function updateSecurityQue(Request $request)
+        {
+        // dd($request->all());
+          try{
+           $srch_reg=SecurityQuestion::where('id',$request->secqueid)->first();
+           
+           if($srch_reg)
+           { 
+           
+            $validation = \Validator::make($request->all(),[ 
+              's_question'        => 'required',
+              'secqueid'        => 'required'
+            ]);
+
+              if ($validation->fails()) {
+                return response()->json(['status'=>0,'errors'=>$validation->errors()],200);
+              }
+
+              
+              $updatecat['s_question'] = $request->s_question; 
+
+              $categoryData = SecurityQuestion::where('id',$srch_reg->id)->update($updatecat); 
+
+              $catData = SecurityQuestion::where('id',$srch_reg->id)->first();
+
+              
+
+              return response()->json(['status'=>1,'message' =>'Security question updated successfully.'] );
+
+            
+           }
+           else
+           {
+            return response()->json(['status'=>1,'message' =>'This id does not exists for update'] );
+              
+           }
+          
+           
+        } catch (\Throwable $th) {
+           $response['error']['message'] = $th->getMessage();
+           return Response::json($response);
+        } 
+       }
+      
 
     /**
      * This is for show Security Question . 
