@@ -1278,35 +1278,41 @@ class QuoteController extends Controller
 
          // dd('ok');
 
-         $quote = DB::table('remarks')->where('rfq_no',$request->rfq)->where('sche_no',$request->sche_no)
-         ->select('remarks','camremarks','salesremarks','created_at')
+         $quotes = DB::table('remarks')->where('rfq_no',$request->rfq)->where('sche_no',$request->sche_no)->where('from','!=','SM')
+         ->select('remarks','camremarks','salesremarks','created_at') 
          ->orderBy('id','asc')
           ->get();
               // echo "<pre>";print_r($quote);exit();
          // dd($quote);
 
-         foreach ($quote as $key => $value) {
+         foreach ($quotes as $key => $value) {
            
            if($request->user_type == 'C')
-           {
-              $quoteArr[$key]['remarks'] = $value->remarks;
-              $quoteArr[$key]['kamsRemarks'] = $value->camremarks; 
-              $quoteArr[$key]['created_at'] = $value->created_at;
+           { 
+                $quoteArr[$key]['remarks'] = $value->remarks;
+                $quoteArr[$key]['kamsRemarks'] = $value->camremarks; 
+                $quoteArr[$key]['created_at'] = $value->created_at;
+              
            }
            else if($request->user_type == 'Kam')
            {
-              $quoteArr[$key]['remarks'] = $value->remarks;
-              $quoteArr[$key]['kamsRemarks'] = $value->camremarks;
-              $quoteArr[$key]['salesRemarks'] = $value->salesremarks;
-              $quoteArr[$key]['created_at'] = $value->created_at;
+
+               
+                $quoteArr[$key]['remarks'] = $value->remarks;
+                $quoteArr[$key]['kamsRemarks'] = $value->camremarks;
+                $quoteArr[$key]['salesRemarks'] = $value->salesremarks;
+                $quoteArr[$key]['created_at'] = $value->created_at;
+              
+              
 
            }
            else if($request->user_type == 'Sales')
            {
                
-              $quoteArr[$key]['kamsRemarks'] = $value->camremarks;
-              $quoteArr[$key]['salesRemarks'] = $value->salesremarks;
-              $quoteArr[$key]['created_at'] = $value->created_at;
+                $quoteArr[$key]['kamsRemarks'] = $value->camremarks;
+                $quoteArr[$key]['salesRemarks'] = $value->salesremarks;
+                $quoteArr[$key]['created_at'] = $value->created_at;
+               
    
            }
            else if($request->user_type == 'SM')
