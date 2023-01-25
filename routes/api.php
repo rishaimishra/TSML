@@ -146,7 +146,9 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
    		 Route::post('get_price_break','Requote\RequoteController@getPriceBreak');
    		 Route::post('sm_remark_save','Requote\RequoteController@smRemarkSave');
           Route::get('sm_remark_by_id/{rfq_no}','Requote\RequoteController@smRemarkById');
-         
+
+          Route::post('submit_remarks','Remark\RemarkController@submitremarks');
+          
    		 Route::post('get-store-pro-price','PriceManagement\PriceManagementController@getProPrice')->name('get_store_pro_price');
    		 Route::get('get-threshold-price','PriceManagement\PriceManagementController@getThresholdPrice')->name('get_threshold_price');
    		 // Complain Remarks Routes....
