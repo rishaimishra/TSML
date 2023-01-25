@@ -1771,6 +1771,12 @@ class QuoteController extends Controller
              $quote_sches[$key]['sub_cat_name'] = (!empty($value->sub_cat_name)) ? $value->sub_cat_name : '';
              $quote_sches[$key]['pay_term'] = $value->pay_term;
              $quote_sches[$key]['credit_days'] = $value->credit_days;
+             // $quote_sches[$key]['bill_to_addr'] = $value->billtoaddressone.''.$value->billtoaddresstwo
+             //                                       .''.$value->billtocity.''.$value->billtostate.', '.$value->billtopincode;
+             // $quote_sches[$key]['ship_to_addr'] = $value->shiptoaddressone.''.$value->shiptoaddresstwo
+             //                                       .''.$value->shiptocity.''.$value->shiptostate.', '.$value->shiptopincode;
+             // $quote_sches[$key]['bill_to_state'] = $value->billtostate;
+             // $quote_sches[$key]['ship_to_state'] = $value->shiptostate;
         
              
 
@@ -2157,10 +2163,19 @@ class QuoteController extends Controller
 
            $schedules[$key]['sche_ct'] = (!empty($sct)) ? $sct->counts : 0;
            $remarksarr = $this->getremarksarr($value['schedule_no'],$rfq_no);
+           
            // echo "<pre>";print_r($remarksarr);exit();
            $schedules[$key]['remarks'] = $remarksarr['remarks'];
            $schedules[$key]['kamsRemarks'] = $remarksarr['camremarks'];
            $schedules[$key]['salesRemarks'] = $remarksarr['salesremarks'];
+
+           // $bill_to = DB::table('address')->where('id',$value['bill_to'])->first();
+           // $ship_to = DB::table('address')->where('id',$value['ship_to'])->first();
+
+           // $schedules[$key]['bill_to_state'] = $bill_to->state;
+           // $schedules[$key]['bill_to_addr'] = $bill_to->addressone.''.$bill_to->addresstwo.''.$bill_to->city.''. $bill_to->state.', '.$bill_to->pincode;
+           // $schedules[$key]['ship_to_state'] = $ship_to->state;
+           // $schedules[$key]['ship_to_addr'] = $ship_to->addressone.''.$ship_to->addresstwo.''.$ship_to->city.''. $ship_to->state.', '.$ship_to->pincode;
 
       }
 
@@ -2486,7 +2501,7 @@ class QuoteController extends Controller
       $res = DB::table('remarks')
       ->where('to',$type)->orWhere('from', $type)->orderBy('id','desc')
       ->where('rfq_no',$rfq_no)->where('sche_no',$schedule_no)->first();
-
+       // echo "<pre>";print_r($res);exit();
       // foreach ($res as $key => $value) {
         
           $data['remarks'] = $res->remarks;
@@ -2495,7 +2510,7 @@ class QuoteController extends Controller
           $data['from'] = $res->from;
           $data['to'] = $res->to;
 
-
+         // dd($data);
       // }
 
       return $data;
