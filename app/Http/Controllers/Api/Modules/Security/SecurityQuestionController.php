@@ -64,6 +64,38 @@ class SecurityQuestionController extends Controller
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
     */
+    public function getSecurityQueAdmin(Request $request)
+    {
+        
+        try{         
+        $data = SecurityQuestion::orderBy('id','desc')->get();
+
+        $squadata = [];
+        foreach ($data as $key => $value) 
+        {
+
+          $sqdata['security_question_id'] = $value->id;
+          $sqdata['s_question'] = $value->s_question; 
+          $sqdata['q_status'] = $value->status; 
+          
+          $squadata[] = $sqdata;
+        } 
+          
+        return response()->json(['status'=>1,'message' =>'success.','result' => $squadata],200);
+          
+          
+        
+        }catch(\Exception $e){
+            $response['error'] = $e->getMessage();
+            return response()->json([$response]);
+        }
+    }
+
+    /**
+     * This is for show Security Question . 
+     * @param  \App\Product  $product
+     * @return \Illuminate\Http\Response
+    */
     public function getSecurityQue(Request $request)
     {
         

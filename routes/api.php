@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 // Route::post('get-po-list-admin','Api\Modules\PoDetails\PoDetailsController@getPoDetails')->name('get_po_list_admin');
 Route::post('store_security_question', 'Api\Modules\Security\SecurityQuestionController@StoreSecurityQue');
 Route::get('get_security_questions', 'Api\Modules\Security\SecurityQuestionController@getSecurityQue');
+Route::get('get_security_questions_admin', 'Api\Modules\Security\SecurityQuestionController@getSecurityQueAdmin');
 Route::post('save_security_qst_ans', 'Api\Modules\Security\SecurityQuestionController@saveSecurityQstAns');
 Route::post('security_qstn_mail', 'Api\Modules\Security\SecurityQuestionController@securityQstnMail');
  Route::post('force_logout', 'AuthController@fologout');
