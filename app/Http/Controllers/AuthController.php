@@ -152,7 +152,7 @@ class AuthController extends Controller
                   $input['password'] = \Hash::make($temppass);
                   $saveuser = User::where('email',$request->email)->update($input);
                   return response()->json([
-                  'success' => false,'message' => 'Password expired.']);
+                  'success' => false,'status' => 2,'message' => 'Password expired.']);
                }
 
             }
