@@ -51,6 +51,65 @@ class AuthController extends Controller
       ]);
   }
 
+  /**
+    * Get a JWT via given credentials.
+    *
+    * @return \Illuminate\Http\JsonResponse
+    */
+   public function sendLoginOtp(Request $request)
+   {
+     
+     $validator = Validator::make($request->all(), [
+            'email' => 'required|string|email|max:255',
+            'password'=> 'required'
+        ]);
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
+        }
+ 
+        $input = $request->only('email', 'password');
+        $jwt_token = null;
+
+        if (!$jwt_token = JWTAuth::attempt($input)) {
+            
+            $chkuser = User::where('email',$request->email)->first();
+             
+           
+            if ($chkuser == null) {
+              return response()->json([
+                'success' => false,'message' => 'Invalid Email']);
+            }
+            $chkuserpass  = \Hash::check($request->password, $chkuser->password);
+            if ($chkuserpass == false) {
+                return response()->json([ 
+                'success' => false,'message' => 'Invalid Password']);
+               
+              } 
+            }
+            else{ 
+                  $otp = random_int(100000, 999999); 
+
+                   
+                  // $input['email'] = $request->email;
+                  $inputotp['login_otp'] = $otp;
+                  // dd($inputotp);
+                  $categoryData = User::where('email',$request->email)->update($inputotp);  
+
+                  $sub = "OTP For Login";
+                  $html = 'mail.Otpverificationmail';
+                  $data['otp'] = $otp;
+                  $cc_email = "";
+                  $email = $request->email;
+
+                  (new MailService)->dotestMail($sub,$html,$email,$data,$cc_email); 
+         
+                  $msg = "OTP has been send to this email address ".$request->email." successfully."; 
+                  $userdata['email'] = $request->email;
+                  return response()->json(['status'=>1,'message' =>$msg,'result' =>$userdata]);
+              } 
+
+   }
+
    /**
     * Get a JWT via given credentials.
     *
@@ -139,18 +198,30 @@ class AuthController extends Controller
         // dd($id);
         if($authChk == 0 && Auth::user()->jwt_token == NULL)
         {
-            $userArr['user_id'] = Auth::user()->id;
-            $userArr['user_name'] = Auth::user()->org_name;
-            $userArr['user_type'] = Auth::user()->user_type;
-            $updata['is_loggedin'] = 1;
-            $updata['login_count'] = 0;
-            $updata['jwt_token'] = $jwt_token;
-            $upuser = User::where('id',Auth::user()->id)->update($updata);
-            return response()->json([
-                'success' => true,
-                'data' => $userArr,
-                'token' => $jwt_token,
+          // dd(Auth::user()->login_otp);
+            if (Auth::user()->login_otp == $request->logotp) {
+              // dd('ok to login');
+              $userArr['user_id'] = Auth::user()->id;
+              $userArr['user_name'] = Auth::user()->org_name;
+              $userArr['user_type'] = Auth::user()->user_type;
+              $updata['is_loggedin'] = 1;
+              $updata['login_count'] = 0;
+              $updata['login_otp'] = NULL;
+              $updata['jwt_token'] = $jwt_token;
+              $upuser = User::where('id',Auth::user()->id)->update($updata);
+              return response()->json([
+                  'success' => true,
+                  'data' => $userArr,
+                  'token' => $jwt_token,
+              ]);
+            }
+            else{
+              return response()->json([
+                'success' => false,
+                'message' => 'Invalid OTP please check',
             ]);
+            }
+            
       }else{
           
            return response()->json([
