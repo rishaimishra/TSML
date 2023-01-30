@@ -917,6 +917,7 @@ class UserController extends Controller
                  // dd($request->password);
                 
                 $update['password'] = Hash::make($request->password);
+                $update['login_attempt'] = 2;
                
                 // dd($update);
                 $user = User::Where('id',$chkOtp->id)->update($update);
