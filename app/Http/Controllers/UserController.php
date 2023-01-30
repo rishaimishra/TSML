@@ -9,6 +9,7 @@ use App\Models\OtpVerification;
 use App\Mail\Register;
 use App\ServicesMy\MailService;
 use Illuminate\Support\Facades\Hash;
+use App\Models\RegistrationLog;
 use App\Address;
 use App\User;
 use JWTAuth;
@@ -919,6 +920,9 @@ class UserController extends Controller
                
                 // dd($update);
                 $user = User::Where('id',$chkOtp->id)->update($update);
+                $today = date('Y-m-d');
+                RegistrationLog::where('user_email',$request->email)->update(['created' => $today]);
+
                 if($user) {
                     return response()->json(['status'=>1,'message' =>'Password changed successfully !!'],200);
                      
