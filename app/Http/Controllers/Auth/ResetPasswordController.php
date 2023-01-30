@@ -51,7 +51,7 @@ class ResetPasswordController extends Controller
         $validator = Validator::make($request->all(), [
                 'email' =>'required|string|email|max:255',
                 'otp' =>'required|numeric|digits:6',
-                'password' =>'required|string|min:6|required_with:password-confirm', 
+                'password' =>'required|string|min:10|required_with:password-confirm', 
                 'password_confirm' =>'required|required_with:password|same:password',   
             ],
             [   'otp.required'=>'OTP is required.',

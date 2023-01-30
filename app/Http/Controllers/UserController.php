@@ -260,7 +260,7 @@ class UserController extends Controller
                 // );
                 $validator = Validator::make($request->all(), [ 
                     'current_password' =>'required|string|min:6',
-                    'password' =>'required|string|min:6',  
+                    'password' =>'required|string|min:10',  
                 ],
                 [   
                     'current_password.required'=>'The current password field is required',
@@ -327,7 +327,7 @@ class UserController extends Controller
             $validator = Validator::make($request->all(), [
                 // 'name'        => 'required', 
                 'email'        => 'required|unique:users,email',   
-                'password'     => 'required',  
+                'password'     => 'required|min:10',  
                 // 'address_proof_file' => 'required|mimes:jpg,jpeg,png,bmp',
                 'phone'        => 'required|unique:users,phone',
                 'company_pan'  => 'required|unique:users,company_pan', 
