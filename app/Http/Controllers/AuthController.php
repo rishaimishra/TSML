@@ -72,6 +72,29 @@ class AuthController extends Controller
         $input = $request->only('email', 'password');
         $jwt_token = null;
 
+
+        // --------- registration logs ------------------------
+            $chklog = RegistrationLog::where('user_email',$request->email)->first();
+            if(!empty($chklog))
+            {  
+
+              $date1 = date_create($chklog->created);
+              $date2 = date_create(date('Y-m-d'));
+              $diff = date_diff($date1,$date2);
+              // dd($diff->format("%R%a"));
+               if($diff->format("%R%a") > 60)
+               {
+                  $temppass = rand(100000,999999);
+                  $input['password'] = \Hash::make($temppass);
+                  $saveuser = User::where('email',$request->email)->update($input);
+                  return response()->json([
+                  'success' => false,'status' => 2,'message' => 'Password has been expired. Please reset your password.']);
+               }
+
+            }
+
+            // -----------------------------------------------------
+
         if (!$jwt_token = JWTAuth::attempt($input)) {
             
             $chkuser = User::where('email',$request->email)->first();
@@ -89,21 +112,50 @@ class AuthController extends Controller
               } 
             }
             else{ 
-                  $otp = random_int(100000, 999999); 
-                  $inputotp['login_otp'] = $otp; 
-                  $categoryData = User::where('email',$request->email)->update($inputotp); 
-                  $sub = "OTP For Login";
-                  $html = 'mail.Otpverificationmail';
-                  $data['otp'] = $otp;
-                  $cc_email = "";
-                  $email = $request->email;
+                    // --------- registration logs ------------------------
+                $chklog = RegistrationLog::where('user_email',$request->email)->first();
+                if(!empty($chklog))
+                {  
 
-                  (new MailService)->dotestMail($sub,$html,$email,$data,$cc_email); 
-         
-                  $msg = "OTP has been send to this email address ".$request->email." successfully."; 
-                  $userdata['email'] = $request->email;
-                  $userdata['otp_status'] = 1;
-                  return response()->json(['status'=>1,'message' =>$msg,'result' =>$userdata]);
+                  $date1 = date_create($chklog->created);
+                  $date2 = date_create(date('Y-m-d'));
+                  $diff = date_diff($date1,$date2);
+                  // dd($diff->format("%R%a"));
+                   if($diff->format("%R%a") > 60)
+                   {
+                      $temppass = rand(100000,999999);
+                      $input['password'] = \Hash::make($temppass);
+                      $saveuser = User::where('email',$request->email)->update($input);
+                      return response()->json([
+                      'success' => false,'status' => 2,'message' => 'Password has been expired. Please reset your password.']);
+                   }
+                   else{
+
+                      $getuser = User::where('email',$request->email)->first();
+
+                      $otp = random_int(100000, 999999); 
+                      $inputotp['login_otp'] = $otp; 
+                      $categoryData = User::where('email',$request->email)->update($inputotp); 
+                      $sub = "OTP For Login";
+                      $html = 'mail.Otpverificationmail';
+                      $data['otp'] = $otp;
+                      $cc_email = "";
+                      $email = $request->email;
+
+                      (new MailService)->dotestMail($sub,$html,$email,$data,$cc_email); 
+             
+                      $msg = "OTP has been send to this email address ".$request->email." successfully."; 
+                      $userdata['email'] = $request->email;
+                      $userdata['otp_status'] = 1;
+                      $userdata['login_attempt'] = $getuser->login_attempt;
+                      return response()->json(['status'=>1,'message' =>$msg,'result' =>$userdata]);
+                   }
+
+                }
+
+            // -----------------------------------------------------
+
+
               } 
 
    }
