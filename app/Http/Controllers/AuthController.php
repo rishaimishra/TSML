@@ -42,8 +42,7 @@ class AuthController extends Controller
       $user->save();
       $user = User::first();
       $token = JWTAuth::fromUser($user);
-
-      // dd($token);
+ 
 
       return response()->json([
           'success' => true,
@@ -88,13 +87,8 @@ class AuthController extends Controller
             }
             else{ 
                   $otp = random_int(100000, 999999); 
-
-                   
-                  // $input['email'] = $request->email;
-                  $inputotp['login_otp'] = $otp;
-                  // dd($inputotp);
-                  $categoryData = User::where('email',$request->email)->update($inputotp);  
-
+                  $inputotp['login_otp'] = $otp; 
+                  $categoryData = User::where('email',$request->email)->update($inputotp); 
                   $sub = "OTP For Login";
                   $html = 'mail.Otpverificationmail';
                   $data['otp'] = $otp;
@@ -105,6 +99,7 @@ class AuthController extends Controller
          
                   $msg = "OTP has been send to this email address ".$request->email." successfully."; 
                   $userdata['email'] = $request->email;
+                  $userdata['otp_status'] = 1;
                   return response()->json(['status'=>1,'message' =>$msg,'result' =>$userdata]);
               } 
 
