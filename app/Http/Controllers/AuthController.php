@@ -139,6 +139,28 @@ class AuthController extends Controller
         $jwt_token = null;
         
         // dd($jwt_token);
+
+          // --------- registration logs ------------------------
+            $chklog = RegistrationLog::where('user_email',$request->email)->first();
+            if(!empty($chklog))
+            {  
+
+              $date1 = date_create($chklog->created);
+              $date2 = date_create(date('Y-m-d'));
+              $diff = date_diff($date1,$date2);
+              // dd($diff->format("%R%a"));
+               if($diff->format("%R%a") > 60)
+               {
+                  $temppass = rand(100000,999999);
+                  $input['password'] = \Hash::make($temppass);
+                  $saveuser = User::where('email',$request->email)->update($input);
+                  return response()->json([
+                  'success' => false,'message' => 'Password expired.']);
+               }
+
+            }
+
+            // -----------------------------------------------------
    
         if (!$jwt_token = JWTAuth::attempt($input)) {
             // dd($jwt_token);
@@ -153,19 +175,7 @@ class AuthController extends Controller
                 'success' => false,'message' => 'Invalid Email']);
             }
 
-            // --------- registration logs ------------------------
-            $chklog = RegistrationLog::where('email',$request->email)->first();
-            if(!empty($chklog))
-            {  
 
-              $date1=date_create($chklog->created);
-              $date2=date_create(date('Y-m-d'));
-              $diff=date_diff($date1,$date2);
-              dd($diff->format("%R%a days"));
-               // if()
-            }
-
-            // -----------------------------------------------------
 
             $chkuserpass  = \Hash::check($request->password, $chkuser->password);
             if ($chkuserpass == false) {
