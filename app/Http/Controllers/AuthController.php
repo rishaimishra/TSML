@@ -162,13 +162,13 @@ class AuthController extends Controller
               $chkusers = User::where('id',$userid)->update($cval);
               $countchk = User::where('id',$userid)->first();
                
-              if ($countchk->login_count==2) { 
+              if ($countchk->login_count==4) { 
                $datass['user_status'] = $chkuser->user_status;
                 $datass['user_email'] = $chkuser->email;
                 return response()->json([
                 'success' => false,'message' => 'Invalid password you have only one attempt left.','result' => $datass]); 
               }
-              if ($countchk->login_count==3) {
+              if ($countchk->login_count==5) {
                 $upuser['user_status'] = 2;
                 $chkusers = User::where('id',$userid)->update($upuser);
                 $userdata = User::where('id',$userid)->first();
@@ -177,7 +177,7 @@ class AuthController extends Controller
                 return response()->json([
                   'success' => false,'message' => 'Your account has been blocked.','result' => $data]);
               } 
-              if ($countchk->login_count>3) {
+              if ($countchk->login_count>5) {
               $userdata = User::where('id',$userid)->first();
                 $data['user_status'] = $userdata->user_status;
                 $data['user_email'] = $userdata->email; 
