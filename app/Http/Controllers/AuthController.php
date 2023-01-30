@@ -12,6 +12,7 @@ use App\Address;
 use JWTAuth;
 use Validator;
 use App\Models\OtpVerification;
+use App\Models\RegistrationLog;
 use App\Mail\Register;
 use App\ServicesMy\MailService;
 use Illuminate\Support\Facades\Hash;
@@ -151,6 +152,21 @@ class AuthController extends Controller
               return response()->json([
                 'success' => false,'message' => 'Invalid Email']);
             }
+
+            // --------- registration logs ------------------------
+            $chklog = RegistrationLog::where('email',$request->email)->first();
+            if(!empty($chklog))
+            {  
+
+              $date1=date_create($chklog->created);
+              $date2=date_create(date('Y-m-d'));
+              $diff=date_diff($date1,$date2);
+              dd($diff->format("%R%a days"));
+               // if()
+            }
+
+            // -----------------------------------------------------
+
             $chkuserpass  = \Hash::check($request->password, $chkuser->password);
             if ($chkuserpass == false) {
 
@@ -511,6 +527,49 @@ class AuthController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Invalid id',
+            ]);
+
+        }
+       
+       
+       
+   }
+
+
+       /**
+    * Log registration date.
+    *
+    * @return \Illuminate\Http\JsonResponse
+    */
+   public function regisdatelog(Request $request)
+   {
+
+       $email = $request->input('email');
+       // dd($email);
+        $chkuser = User::where('email',$email)->first();
+   
+        if(!empty($chkuser))
+        {
+
+          // dd('ok');
+          $updata['user_email'] = $request->input('email');
+          $updata['user_id'] = $chkuser->id;
+          $updata['created'] = date('Y-m-d');
+          $updata['status'] = 1;
+
+          // dd($updata);
+          $upuser = RegistrationLog::create($updata);
+          
+
+          return response()->json([
+                'success' => true,
+                'message' => 'Logout Successfully.',
+            ]);
+        }else{
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid email',
             ]);
 
         }
