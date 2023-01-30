@@ -467,8 +467,8 @@ class UserController extends Controller
                 foreach ($address as $key => $value) {
                     $normal_address = new Address;
                     $normal_address->user_id =  $user_id;
-                    $normal_address->first_name =  $value['first_name'];
-                    $normal_address->last_name =  $value['last_name'];
+                    $normal_address->first_name =  "";
+                    $normal_address->last_name =  "";
                     $normal_address->addressone =  $value['addressone'];
                     $normal_address->addresstwo =  $value['addresstwo'];
                     $normal_address->city =  $value['city'];
@@ -486,8 +486,8 @@ class UserController extends Controller
                     if ($value['billing']=="Y") {
                     $billing = new Address;
                     $billing->user_id =  $user_id;
-                    $billing->first_name =  $value['first_name'];
-                    $billing->last_name =  $value['last_name'];
+                    $billing->first_name = "";
+                    $billing->last_name =  "";
                     $billing->addressone =  $value['addressone'];
                     $billing->addresstwo =  $value['addresstwo'];
                     $billing->city =  $value['city'];
@@ -513,8 +513,8 @@ class UserController extends Controller
                     
                     $normal_address = new Address;
                     $normal_address->user_id =  $user_id;
-                    $normal_address->first_name =  $value['first_name'];
-                    $normal_address->last_name =  $value['last_name'];
+                    $normal_address->first_name =  "";
+                    $normal_address->last_name =  "";
                     $normal_address->addressone =  $value['addressone'];
                     $normal_address->addresstwo =  $value['addresstwo'];
                     $normal_address->city =  $value['city'];
@@ -529,11 +529,11 @@ class UserController extends Controller
                  }
            }
             // send-mail
-            $data = [
-                'email'=>$request->email,
-                'first_name'=>$request->first_name,
-                'last_name'=>$request->last_name,
-             ];
+            // $data = [
+            //     'email'=>$request->email,
+            //     'first_name'=>$request->first_name,
+            //     'last_name'=>$request->last_name,
+            //  ];
 
             // Mail::send(new Register($data));
 
