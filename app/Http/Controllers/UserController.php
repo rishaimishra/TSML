@@ -343,7 +343,7 @@ class UserController extends Controller
 
             // $userData = $request->all();
             $userData = [];
-            $userData['name'] = $request->name;
+            $userData['name'] = "";
             $userData['email'] = $request->email;
             $userData['phone'] = $request->phone;
             $userData['password'] = $request->password;
@@ -360,8 +360,8 @@ class UserController extends Controller
             $userData['company_name'] = $request->company_name;
             $userData['business_nature'] = $request->business_nature; 
             $userData['is_tcs_tds_applicable'] = $request->is_tcs_tds_applicable; 
-            $userData['first_name'] = $request->first_name; 
-            $userData['last_name'] = $request->last_name; 
+            $userData['first_name'] = ""; 
+            $userData['last_name'] = ""; 
             $userData['addressone'] = $request->addressone; 
             $userData['addresstwo'] = $request->addresstwo; 
             $userData['city'] = $request->city; 
