@@ -233,6 +233,7 @@ class AuthController extends Controller
               return response()->json([
                   'success' => true,
                   'data' => $userArr,
+                  'login_attempt' => Auth::user()->login_attempt,
                   'token' => $jwt_token,
               ]);
             }

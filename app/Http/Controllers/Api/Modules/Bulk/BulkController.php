@@ -48,6 +48,7 @@ class BulkController extends Controller
                 $user->gstin = $val[31];
                 $user->phone = $val[25];
                 $user->company_gst = $val[31];
+                $user->login_attempt = 1;
                 $user->save();
                 }
 
