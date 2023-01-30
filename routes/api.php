@@ -39,6 +39,7 @@ Route::post('regis_date_log','AuthController@regisdatelog');
 Route::post('/register', 'UserController@store');
 Route::get('register_email', 'UserController@registerEmail');
 Route::post('login', 'AuthController@login');
+Route::post('send-login-otp', 'AuthController@sendLoginOtp')->name('send_login_otp');
 Route::post('send-mobile-otp', 'UserController@sendOtpToMobile')->name('send_mobile_otp');
 Route::post('chk_email', 'UserController@chkEmail');
 Route::post('verify-mobile-otp', 'UserController@verifyMobileOtp')->name('verify_mobile_otp');
