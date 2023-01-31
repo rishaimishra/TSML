@@ -1338,11 +1338,17 @@ class QuoteController extends Controller
            }
            else if($request->user_type == 'SM')
            {
-               
-              $quoteArr[$key]['kamsRemarks'] = $value->camremarks; 
-              $quoteArr[$key]['to'] = $value->to; 
-              $quoteArr[$key]['from'] = $value->from;
-              $quoteArr[$key]['created_at'] = $value->created_at;
+              $quoteskam = DB::table('remarks')->where('rfq_no',$request->rfq)->where('sche_no',$request->sche_no)->where('to','=','SM') 
+                 ->select('remarks','camremarks','salesremarks','created_at','to','from','rfq_no') 
+                 ->orderBy('id','asc')
+                  ->get();
+                  // dd($quoteskam);
+               foreach ($quoteskam as $key => $value) {
+                  $quoteArr[$key]['kamsRemarks'] = $value->camremarks; 
+                  $quoteArr[$key]['to'] = $value->to; 
+                  $quoteArr[$key]['from'] = $value->from;
+                  $quoteArr[$key]['created_at'] = $value->created_at;
+                }
    
            }
             
