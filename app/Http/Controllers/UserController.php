@@ -146,7 +146,7 @@ class UserController extends Controller
 
                 (new MailService)->dotestMail($sub,$html,$email,$data,$cc_email); 
        
-                $msg = "OTP has been send to this email address ".$request->email." successfully.";
+                $msg = "OTP has been sent to this email address ".$request->email." successfully.";
                 $userdata['mob_number'] = $request->mobile_no;
                 $userdata['email'] = $request->email;
                 return response()->json(['status'=>1,'message' =>$msg,'result' =>$userdata],200);
@@ -217,7 +217,7 @@ class UserController extends Controller
                 }
                 else
                 {
-                    return response()->json(['status'=>0,'message' => array('OTP already send to this mobile number '.$request->mobile_no)]);
+                    return response()->json(['status'=>0,'message' => array('OTP already sent to this mobile number '.$request->mobile_no)]);
                 }
 
             }

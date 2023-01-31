@@ -132,7 +132,7 @@ class AuthController extends Controller
                     
                     (new MailService)->dotestMail($sub,$html,$email,$data,$cc_email); 
            
-                    $msg = "OTP has been send to this email address ".$request->email." successfully.";
+                    $msg = "OTP has been sent to this email address ".$request->email." successfully.";
 
                     $getuser = User::where('email',$request->email)->first(); 
                     $userdata['email'] = $request->email;
