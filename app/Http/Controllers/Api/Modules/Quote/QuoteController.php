@@ -1273,7 +1273,7 @@ class QuoteController extends Controller
        try{ 
 
          
-           // echo "<pre>";print_r($user_id);exit();
+           // echo "<pre>";print_r($request->sche_no);exit();
          $quoteArr = array();
 
          // dd('ok');
@@ -1282,7 +1282,7 @@ class QuoteController extends Controller
          ->select('remarks','camremarks','salesremarks','created_at') 
          ->orderBy('id','asc')
           ->get();
-              // echo "<pre>";print_r($quote);exit();
+              // echo "<pre>";print_r($quotes);exit();
          // dd($quote);
 
          foreach ($quotes as $key => $value) {
@@ -2529,17 +2529,30 @@ class QuoteController extends Controller
   public function getremarksarr($schedule_no,$rfq_no)
   {
       $type = Auth::user()->user_type;
-      $res = DB::table('remarks')
-      ->where('to',$type)->orWhere('from', $type)->orderBy('id','desc')
+      // --------- customer -------------------
+      $resC = DB::table('remarks')
+      ->where('from','C')->orderBy('id','desc')
+      ->where('rfq_no',$rfq_no)->where('sche_no',$schedule_no)->first();
+      // ----------- cams remarks -----------------------------
+      $resCa = DB::table('remarks');
+      if($type == 'C')
+      {
+        $resCa = $resCa->where('to','C');
+      }
+      $resCa = $resCa->where('from','Kam')->orderBy('id','desc')
+      ->where('rfq_no',$rfq_no)->where('sche_no',$schedule_no)->first();
+      // ----------- sales remarks -----------------------------
+      $resS = DB::table('remarks')
+      ->where('from','Sales')->orderBy('id','desc')
       ->where('rfq_no',$rfq_no)->where('sche_no',$schedule_no)->first();
        // echo "<pre>";print_r($res);exit();
       // foreach ($res as $key => $value) {
         
-          $data['remarks'] = $res->remarks;
-          $data['camremarks'] = $res->camremarks;
-          $data['salesremarks'] = $res->salesremarks;
-          $data['from'] = $res->from;
-          $data['to'] = $res->to;
+          $data['remarks'] = $resC->remarks;
+          $data['camremarks'] = (!empty($resCa)) ? $resCa->camremarks : '';
+          $data['salesremarks'] = $resS->salesremarks;
+          // $data['from'] = $res->from;
+          // $data['to'] = $res->to;
 
          // dd($data);
       // }
