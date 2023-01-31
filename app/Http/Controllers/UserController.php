@@ -119,7 +119,7 @@ class UserController extends Controller
         // dd($chkmob);
         if(!empty($chkmob->otp) && $chkmob->is_verified != 2)
         {
-            return response()->json(['status'=>0,'message' => array('OTP already send to this email addess '.$request->email)]); 
+            return response()->json(['status'=>0,'message' => array('OTP already sent to this email addess '.$request->email)]); 
         }
         else
         {
