@@ -1279,7 +1279,7 @@ class QuoteController extends Controller
          // dd('ok');
 
          $quotes = DB::table('remarks')->where('rfq_no',$request->rfq)->where('sche_no',$request->sche_no)->where('from','!=','SM')
-         ->select('remarks','camremarks','salesremarks','created_at') 
+         ->select('remarks','camremarks','salesremarks','created_at','to','from') 
          ->orderBy('id','asc')
           ->get();
               // echo "<pre>";print_r($quotes);exit();
@@ -1288,10 +1288,27 @@ class QuoteController extends Controller
          foreach ($quotes as $key => $value) {
            
            if($request->user_type == 'C')
-           { 
-                $quoteArr[$key]['remarks'] = $value->remarks;
-                $quoteArr[$key]['kamsRemarks'] = $value->camremarks; 
-                $quoteArr[$key]['created_at'] = $value->created_at;
+           {  
+            // dd($request->rfq);
+                 $quotesn = DB::table('remarks')->where('rfq_no',$request->rfq)->where('sche_no',$request->sche_no)->where('from','!=','SM')
+                 ->where(function ($query) {
+                      $query->where('from','=','C')
+                            ->orWhere('to','=','C');
+                  })
+                  
+                 ->select('remarks','camremarks','salesremarks','created_at','to','from','rfq_no') 
+                 ->orderBy('id','asc')
+                  ->get();
+                   
+                   foreach ($quotesn as $key => $value) {
+                    $quoteArr[$key]['remarks'] = $value->remarks;
+                    $quoteArr[$key]['kamsRemarks'] = $value->camremarks;
+                    $quoteArr[$key]['to'] = $value->to; 
+                    $quoteArr[$key]['from'] = $value->from;
+                    $quoteArr[$key]['created_at'] = $value->created_at;
+                   }
+
+                
               
            }
            else if($request->user_type == 'Kam')
@@ -1301,6 +1318,8 @@ class QuoteController extends Controller
                 $quoteArr[$key]['remarks'] = $value->remarks;
                 $quoteArr[$key]['kamsRemarks'] = $value->camremarks;
                 $quoteArr[$key]['salesRemarks'] = $value->salesremarks;
+                $quoteArr[$key]['to'] = $value->to; 
+                $quoteArr[$key]['from'] = $value->from;
                 $quoteArr[$key]['created_at'] = $value->created_at;
               
               
@@ -1311,6 +1330,8 @@ class QuoteController extends Controller
                
                 $quoteArr[$key]['kamsRemarks'] = $value->camremarks;
                 $quoteArr[$key]['salesRemarks'] = $value->salesremarks;
+                $quoteArr[$key]['to'] = $value->to; 
+                $quoteArr[$key]['from'] = $value->from;
                 $quoteArr[$key]['created_at'] = $value->created_at;
                
    
@@ -1319,6 +1340,8 @@ class QuoteController extends Controller
            {
                
               $quoteArr[$key]['kamsRemarks'] = $value->camremarks; 
+              $quoteArr[$key]['to'] = $value->to; 
+              $quoteArr[$key]['from'] = $value->from;
               $quoteArr[$key]['created_at'] = $value->created_at;
    
            }
@@ -2550,7 +2573,7 @@ class QuoteController extends Controller
         
           $data['remarks'] = $resC->remarks;
           $data['camremarks'] = (!empty($resCa)) ? $resCa->camremarks : '';
-          $data['salesremarks'] = $resS->salesremarks;
+          $data['salesremarks'] = (!empty($resS)) ? $resS->salesremarks: '';
           // $data['from'] = $res->from;
           // $data['to'] = $res->to;
 
