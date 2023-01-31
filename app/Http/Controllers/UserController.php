@@ -178,10 +178,14 @@ class UserController extends Controller
         ]
         );
 
-        if ($validator->fails()) {
-            $response['error']['validation'] = $validator->errors();
-            return Response::json($response);
-        }
+        if ($validator->fails()) { 
+              return response()->json(['status'=>0,'message' =>config('global.failed_msg'),'result' => $validator->errors()],config('global.failed_status'));
+          }
+
+        // if ($validator->fails()) {
+        //     $response['error']['validation'] = $validator->errors();
+        //     return Response::json($response);
+        // }
 
         $chkmob = OtpVerification::where('email',$request->email)->where('mob_number',$request->mobile_no)->first();
         // dd($chkmob);
