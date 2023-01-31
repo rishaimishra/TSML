@@ -170,7 +170,7 @@ class UserController extends Controller
             'mobile_no' =>'required|digits:10',
             'email' =>'required|email',
             'email' => ['required', 'string','max:255','regex:/^\w+[-\.\w]*@(?!(?:myemail)\.com$)\w+[-\.\w]*?\.\w{2,4}$/'], 
-            'otp' =>'required|digits:6',              
+            'otp' =>'required',              
         ],
         [   
             'mobile_no.required'=>'Mobile is required',
@@ -199,10 +199,11 @@ class UserController extends Controller
                     {
                         $input['is_verified'] = 2;
                         $input['otp'] = '';
-
+                        $userd['email'] = $request->email;
+                        $userd['mob_number'] = $request->mobile_no;
                         $categoryData = OtpVerification::where('mob_number',$request->mobile_no)->where('otp',$chkmob->otp)->update($input); 
                  
-                        return response()->json(['status'=>1,'message' =>'Verification successfully.','result' => $chkmob],200);
+                        return response()->json(['status'=>1,'message' =>'Verification successfully.','result' => $userd],200);
                     }
                     else
                     {
