@@ -2643,4 +2643,30 @@ class QuoteController extends Controller
       return $data;
   }
 
+
+
+    /*
+      ---------------- first time quote submission -------------------
+
+  */
+      public function getRfqSt($rfqno)
+      {
+       // echo "<pre>";print_r($request->all());exit();
+
+       try{ 
+            
+            $sts = $this->schedule_status($rfqno);
+
+            return response()->json(['status'=>1,
+              'message' =>'success',
+              'result' => $sts],
+              config('global.success_status'));
+
+
+      }catch(\Exception $e){
+
+       return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
+     }
+   }
+
 }
