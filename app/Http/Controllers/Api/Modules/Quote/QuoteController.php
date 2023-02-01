@@ -1802,7 +1802,9 @@ class QuoteController extends Controller
 
           $res = DB::table('quote_schedules')
           ->leftjoin('sub_categorys','quote_schedules.sub_cat_id','sub_categorys.id')
-          ->select('quote_schedules.*','sub_categorys.sub_cat_name')
+          ->leftjoin('address as addr1','quote_schedules.bill_to','addr1.id')
+          ->leftjoin('address as addr2','quote_schedules.ship_to','addr2.id')
+          ->select('quote_schedules.*','addr1.id as billto','addr1.state as billtostate','addr1.addressone as billtoaddressone','addr1.addresstwo as billtoaddresstwo','addr1.city as billtocity','addr1.pincode as billtopincode','addr2.id as shito','addr2.state as shiptostate','addr2.addressone as shiptoaddressone','addr2.addresstwo as shiptoaddresstwo','addr2.city as shiptocity','addr2.pincode as shiptopincode','sub_categorys.sub_cat_name')
           ->where('quote_schedules.quote_id',$qid)->where('quote_schedules.quote_status',1)->whereNull('quote_schedules.deleted_at')->get();
 
           foreach ($res as $key => $value) {
@@ -1831,12 +1833,12 @@ class QuoteController extends Controller
              $quote_sches[$key]['sub_cat_name'] = (!empty($value->sub_cat_name)) ? $value->sub_cat_name : '';
              $quote_sches[$key]['pay_term'] = $value->pay_term;
              $quote_sches[$key]['credit_days'] = $value->credit_days;
-             // $quote_sches[$key]['bill_to_addr'] = $value->billtoaddressone.''.$value->billtoaddresstwo
-             //                                       .''.$value->billtocity.''.$value->billtostate.', '.$value->billtopincode;
-             // $quote_sches[$key]['ship_to_addr'] = $value->shiptoaddressone.''.$value->shiptoaddresstwo
-             //                                       .''.$value->shiptocity.''.$value->shiptostate.', '.$value->shiptopincode;
-             // $quote_sches[$key]['bill_to_state'] = $value->billtostate;
-             // $quote_sches[$key]['ship_to_state'] = $value->shiptostate;
+             $quote_sches[$key]['bill_to_addr'] = $value->billtoaddressone.''.$value->billtoaddresstwo
+                                                   .''.$value->billtocity.''.$value->billtostate.', '.$value->billtopincode;
+             $quote_sches[$key]['ship_to_addr'] = $value->shiptoaddressone.''.$value->shiptoaddresstwo
+                                                   .''.$value->shiptocity.''.$value->shiptostate.', '.$value->shiptopincode;
+             $quote_sches[$key]['bill_to_state'] = $value->billtostate;
+             $quote_sches[$key]['ship_to_state'] = $value->shiptostate;
         
              
 
@@ -2229,13 +2231,13 @@ class QuoteController extends Controller
            $schedules[$key]['kamsRemarks'] = $remarksarr['camremarks'];
            $schedules[$key]['salesRemarks'] = $remarksarr['salesremarks'];
 
-           // $bill_to = DB::table('address')->where('id',$value['bill_to'])->first();
-           // $ship_to = DB::table('address')->where('id',$value['ship_to'])->first();
+           $bill_to = DB::table('address')->where('id',$value['bill_to'])->first();
+           $ship_to = DB::table('address')->where('id',$value['ship_to'])->first();
 
-           // $schedules[$key]['bill_to_state'] = $bill_to->state;
-           // $schedules[$key]['bill_to_addr'] = $bill_to->addressone.''.$bill_to->addresstwo.''.$bill_to->city.''. $bill_to->state.', '.$bill_to->pincode;
-           // $schedules[$key]['ship_to_state'] = $ship_to->state;
-           // $schedules[$key]['ship_to_addr'] = $ship_to->addressone.''.$ship_to->addresstwo.''.$ship_to->city.''. $ship_to->state.', '.$ship_to->pincode;
+           $schedules[$key]['bill_to_state'] = $bill_to->state;
+           $schedules[$key]['bill_to_addr'] = $bill_to->addressone.''.$bill_to->addresstwo.''.$bill_to->city.''. $bill_to->state.', '.$bill_to->pincode;
+           $schedules[$key]['ship_to_state'] = $ship_to->state;
+           $schedules[$key]['ship_to_addr'] = $ship_to->addressone.''.$ship_to->addresstwo.''.$ship_to->city.''. $ship_to->state.', '.$ship_to->pincode;
 
       }
 
