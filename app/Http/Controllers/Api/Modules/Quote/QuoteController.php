@@ -24,9 +24,9 @@ use Mail;
 class QuoteController extends Controller
 {
 
-  public function downloadPdf($id)
+  public function downloadPdf($id,$usertype)
   {
- 
+     
     $quote = DB::table('orders')
             ->leftjoin('quotes','orders.rfq_no','quotes.rfq_no')
             ->leftjoin('users','quotes.user_id','users.id')
@@ -66,7 +66,7 @@ class QuoteController extends Controller
       $date =  date_create($value->po_date);
       $po_dt = date_format($date,"d-m-Y");
       $result[$key]['po_date'] = $po_dt;
-      $result[$key]['schedule'] = $this->getPoSchedulesPdf($value->qid);
+      $result[$key]['schedule'] = $this->getPoSchedulesPdf($value->qid,$value->rfq_no,$usertype);
        
     }
 
@@ -97,7 +97,7 @@ class QuoteController extends Controller
     return $pdf->download('po_report.pdf');
   }
 
-  public function getPoSchedulesPdf($qid)
+  public function getPoSchedulesPdf($qid,$rfq_no,$usertypeget)
       {
           $quote_sches = array();
 
@@ -105,7 +105,7 @@ class QuoteController extends Controller
           ->leftjoin('sub_categorys','quote_schedules.sub_cat_id','sub_categorys.id')
           ->select('quote_schedules.*','sub_categorys.sub_cat_name')
           ->where('quote_schedules.quote_id',$qid)->where('quote_schedules.quote_status',1)->whereNull('quote_schedules.deleted_at')->get();
-
+          // dd($res);
           foreach ($res as $key => $value) {
              
              $quote_sches[$key]['id'] = $value->id;
@@ -120,9 +120,9 @@ class QuoteController extends Controller
              $quote_sches[$key]['location'] = $value->location;
              $quote_sches[$key]['bill_to'] = $value->bill_to;
              $quote_sches[$key]['ship_to'] = $value->ship_to;
-             $quote_sches[$key]['remarks'] = $value->remarks;
-             $quote_sches[$key]['kamsRemarks'] = $value->kamsRemarks;
-             $quote_sches[$key]['salesRemarks'] = $value->salesRemarks;
+             // $quote_sches[$key]['remarks'] = $value->remarks;
+             // $quote_sches[$key]['kamsRemarks'] = $value->kamsRemarks;
+             // $quote_sches[$key]['salesRemarks'] = $value->salesRemarks;
              $quote_sches[$key]['delivery'] = $value->delivery;
              $quote_sches[$key]['valid_till'] = $value->valid_till;
              $quote_sches[$key]['quote_status'] = $value->quote_status;
@@ -132,11 +132,53 @@ class QuoteController extends Controller
              $quote_sches[$key]['sub_cat_name'] = (!empty($value->sub_cat_name)) ? $value->sub_cat_name : '';
         
             $quote_sches[$key]['delivery_betweene'] = $this->getQuotedelByIdpdf($value->schedule_no);
+            $remarksarr = $this->getremarksarrpdf($value->schedule_no,$rfq_no,$usertypeget);
+           // dd($remarksarr);
+           // echo "<pre>";print_r($remarksarr);exit();
+           $quote_sches[$key]['remarks'] = $remarksarr['remarks'];
+           $quote_sches[$key]['kamsRemarks'] = $remarksarr['camremarks'];
+           // $schedules[$key]['salesRemarks'] = $remarksarr['salesremarks'];
 
           }
 
           return $quote_sches;
       }
+
+      public function getremarksarrpdf($schedule_no,$rfq_no,$usertypeget)
+      {
+          $type = $usertypeget;
+          // --------- customer -------------------
+          $resC = DB::table('remarks')
+          ->where('from','C')->orderBy('id','desc')
+          ->where('rfq_no',$rfq_no)->where('sche_no',$schedule_no)->first();
+          // ----------- cams remarks -----------------------------
+          $resCa = DB::table('remarks');
+          if($type == 'C')
+          {
+            $resCa = $resCa->where('to','C');
+          }
+          $resCa = $resCa->where('from','Kam')->orderBy('id','desc')
+          ->where('rfq_no',$rfq_no)->where('sche_no',$schedule_no)->first();
+          // ----------- sales remarks -----------------------------
+          $resS = DB::table('remarks')
+          ->where('from','Sales')->orderBy('id','desc')
+          ->where('rfq_no',$rfq_no)->where('sche_no',$schedule_no)->first();
+           // echo "<pre>";print_r($res);exit();
+          // foreach ($res as $key => $value) {
+            
+              $data['remarks'] = $resC->remarks;
+              $data['camremarks'] = (!empty($resCa)) ? $resCa->camremarks : '';
+              $data['salesremarks'] = (!empty($resS)) ? $resS->salesremarks: '';
+              // $data['from'] = $res->from;
+              // $data['to'] = $res->to;
+
+             // dd($data);
+          // }
+
+          return $data;
+      }
+
+
 
        public function getQuotedelByIdpdf($sche)
     {
@@ -227,6 +269,8 @@ class QuoteController extends Controller
        return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
      }
    }
+
+
 
    
     /*
