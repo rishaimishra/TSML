@@ -150,7 +150,7 @@
 
 		                    <tr>
 		                        <td colspan="5">
-		                            <label style="font-size: 14px; white-space: nowrap;">KAM Remarks</label>
+		                            <label style="font-size: 14px; white-space: nowrap;">CAM Remarks</label>
 		                            <div style="border: 1.5px solid #ccc; padding: 4px;">{{$showshed['kamsRemarks']}}
 									</div>
 		                        </td>

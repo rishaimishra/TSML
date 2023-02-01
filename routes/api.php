@@ -92,7 +92,7 @@ Route::group(['namespace'=>'Api\Modules'],function(){
 
 //  });
 
-Route::get('download-po-pdf/{id}','Api\Modules\Quote\QuoteController@downloadPdf')->name('downloadPdf');
+//Route::get('download-po-pdf/{id}','Api\Modules\Quote\QuoteController@downloadPdf')->name('downloadPdf');
 Route::post('sc_excel_submit','Api\Modules\Temp\TemporaryController@scExcelSubmit');
 Route::get('sc_excel_download','Api\Modules\Temp\TemporaryController@scExceldown'); 
 Route::post('so-excel-submit','Api\Modules\Temp\SoTemporaryController@SoExcelSubmit');
@@ -150,7 +150,7 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
    		 Route::post('get_price_break','Requote\RequoteController@getPriceBreak');
    		 Route::post('sm_remark_save','Requote\RequoteController@smRemarkSave');
           Route::get('sm_remark_by_id/{rfq_no}','Requote\RequoteController@smRemarkById');
-
+          Route::get('download-po-pdf/{id}/{usertype?}','Quote\QuoteController@downloadPdf')->name('downloadPdf');
           Route::post('submit_remarks','Remarks\RemarkController@submitremarks');
           Route::get('get_rfq_st/{rfq_no}','Quote\QuoteController@getRfqSt');
 
