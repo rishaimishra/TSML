@@ -69,7 +69,7 @@ class QuoteEmailController extends Controller
          
          $user = User::where('id',$user_id)->first();
 
-         $cam = User::where('zone',$user->zone)->where('id','!=',$user_id)->where('id','!=',$kam_id)->where('user_type','Kam')->get()->toArray();
+         $cam = User::where('zone',$user->zone)->where('id','!=',$user_id)->where('user_type','Kam')->get()->toArray();
 
          foreach ($cam as $key => $value) {
              
