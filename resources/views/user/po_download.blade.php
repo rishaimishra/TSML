@@ -58,12 +58,12 @@
 		            <table class="" style="width:100%; margin-top: 0px; font-size: 12px">
 		                <tbody>
 		                    <tr>
-		                        <td colspan="5">
+		                        <td colspan="6">
 		                            <hr>
 		                        </td>
 		                    </tr>
 		                    <tr>
-		                    	<td>
+		                    	<td colspan="3">
 		                            <label style="font-size: 14px; white-space: nowrap;">Sub-Category Name</label>
 		                            <input style="width: 100%;" type="text" name="" value="{{$showshed['sub_cat_name']}}">
 		                        </td>
@@ -78,10 +78,6 @@
 		                        <td>
 		                            <label style="font-size: 14px; white-space: nowrap;">Expected Ex-Works Price</label>
 		                            <input style="width: 100%;" type="text" name="" value="{{$showshed['expected_price']}}">
-		                        </td>
-		                        <td>
-		                            <label style="font-size: 14px; white-space: nowrap;">Delivery Method</label>
-		                            <input style="width: 100%;" type="text" name="" value="{{$showshed['delivery']}}">
 		                        </td>
 		                    </tr>
 		                    <tr>
@@ -101,9 +97,13 @@
 		                            <label style="font-size: 14px; white-space: nowrap;">Valid Till</label>
 		                            <input style="width: 100%;" type="text" name="" value="{{date('d-m-Y', strtotime($showshed['valid_till']))}}">
 		                        </td>
+		                        <td>
+		                            <label style="font-size: 14px; white-space: nowrap;">Delivery Method</label>
+		                            <input style="width: 100%;" type="text" name="" value="{{$showshed['delivery']}}">
+		                        </td>
 		                    </tr>
 		                    <tr>
-		                        <td colspan="5">		                        	
+		                        <td colspan="6">		                        	
 		                            <label style="font-size: 14px; white-space: nowrap; width: 100%; float: left;">Delivery Between</label>
 		                            <div style="clear: both;"></div>
 		                            <!-- @foreach($showshed['delivery_betweene'] as $showshetd)
@@ -129,32 +129,33 @@
 		                        </td>
 		                    </tr>
 		                    <tr>
-		                        <td colspan="5">
+		                        <td colspan="6">
 		                            <label style="font-size: 14px; white-space: nowrap;">Bill To</label>
 		                            <input style="width: 100%;" type="text" name="" value="{{$data['bill_to']}}">
 		                        </td>
 		                    </tr>
 		                    <tr>
-		                        <td colspan="5">
+		                        <td colspan="6">
 		                            <label style="font-size: 14px; white-space: nowrap;">Ship To</label>
 		                            <input style="width: 100%;" type="text" name="" value="{{$data['ship_to']}}">
 		                        </td>
 		                    </tr>
 		                    <tr>
-		                        <td colspan="5">
+		                        <td colspan="6">
 		                            <label style="font-size: 14px; white-space: nowrap;">Customer Remarks</label>
 		                            <div style="border: 1.5px solid #ccc; padding: 4px;">{{$showshed['remarks']}}
 		                            </div>
 		                        </td>
 		                    </tr>
-
+		                    @if($showshed['kamsRemarks'])
 		                    <tr>
-		                        <td colspan="5">
+		                        <td colspan="6">
 		                            <label style="font-size: 14px; white-space: nowrap;">CAM Remarks</label>
 		                            <div style="border: 1.5px solid #ccc; padding: 4px;">{{$showshed['kamsRemarks']}}
 									</div>
 		                        </td>
 		                    </tr>
+		                    @endif
 		                </tbody> 
 		            </table> 
 	            @endforeach 
