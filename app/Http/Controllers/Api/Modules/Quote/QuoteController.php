@@ -82,8 +82,8 @@ class QuoteController extends Controller
                   ->first();
 
           // echo "<pre>";print_r($result);exit(); 
-    $fulladdress_bill_to =  $useraddr->addressone.', '.$useraddr->addresstwo.', '.$useraddr->city.', '.$useraddr->state.', '.$useraddr->pincode;
-    $usershiptoaddr_ship_to =  $useraddr->addressone.', '.$useraddr->addresstwo.', '.$useraddr->city.', '.$useraddr->state.', '.$useraddr->pincode;
+    $fulladdress_bill_to =  $userbilltoaddr->addressone.', '.$userbilltoaddr->addresstwo.', '.$userbilltoaddr->city.', '.$userbilltoaddr->state.', '.$userbilltoaddr->pincode;
+    $usershiptoaddr_ship_to =  $usershiptoaddr->addressone.', '.$usershiptoaddr->addresstwo.', '.$usershiptoaddr->city.', '.$usershiptoaddr->state.', '.$usershiptoaddr->pincode;
     $data['bill_to'] =$fulladdress_bill_to;
     $data['ship_to'] = $usershiptoaddr_ship_to;
     $data['po_no'] = $id;
