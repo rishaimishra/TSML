@@ -70,14 +70,22 @@ class QuoteController extends Controller
        
     }
 
-    $useraddr = User::where('id',$result[0]['user_id'])
+   $billto = $result[$key]['schedule'][0]['bill_to'];
+    $shipto = $result[$key]['schedule'][0]['ship_to'];
+    // dd($shipto);
+    $userbilltoaddr = DB::table('address')->where('id',$billto)
+                  ->select('addressone','addresstwo','city','state','pincode')
+                  ->first();
+
+    $usershiptoaddr = DB::table('address')->where('id',$shipto)
                   ->select('addressone','addresstwo','city','state','pincode')
                   ->first();
 
           // echo "<pre>";print_r($result);exit(); 
-    $fulladdress =  $useraddr->addressone.', '.$useraddr->addresstwo.', '.$useraddr->city.', '.$useraddr->state.', '.$useraddr->pincode;
-    $data['bill_to'] =$fulladdress;
-    $data['ship_to'] = $fulladdress;
+    $fulladdress_bill_to =  $useraddr->addressone.', '.$useraddr->addresstwo.', '.$useraddr->city.', '.$useraddr->state.', '.$useraddr->pincode;
+    $usershiptoaddr_ship_to =  $useraddr->addressone.', '.$useraddr->addresstwo.', '.$useraddr->city.', '.$useraddr->state.', '.$useraddr->pincode;
+    $data['bill_to'] =$fulladdress_bill_to;
+    $data['ship_to'] = $usershiptoaddr_ship_to;
     $data['po_no'] = $id;
     $data['po_date'] = $po_dt;
     $data['user_name'] = $quote[0]->uname; 
