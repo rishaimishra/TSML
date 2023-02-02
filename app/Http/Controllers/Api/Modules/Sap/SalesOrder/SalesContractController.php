@@ -11,6 +11,7 @@ use App\Models\ScPriceDetail;
 use App\Models\SalesOrder;
 use App\Models\ScPermissible;
 use App\Models\ScmaterialDescription;
+use App\ServicesMy\MailService;
 use DB;
 
 class SalesContractController extends Controller
@@ -109,7 +110,7 @@ class SalesContractController extends Controller
 	                      $priceDet['amt'] = $v['amt'];
 
 
-	                      // ScPriceDetail::create($priceDet);
+	                      ScPriceDetail::create($priceDet);
 	                     
                       }
 
@@ -570,4 +571,26 @@ class SalesContractController extends Controller
 
            return $sum;
       }
+
+
+    // --------------------  sc excel mail ------------------------------------
+    public function scExcelMail(Request $request)
+    {
+         $cc_email = array();
+
+
+
+         $sub = 'Sales Contract excel';
+ 
+         $html = 'mail.scexcelmail';
+
+         $data = "";
+         $email = $request->email;
+         $attach = $request->attach;
+
+         (new MailService)->addattachmentmail($sub,$html,$email,$data,$cc_email,$attach);
+
+         $msg = "Mail sent successfully";
+         return response()->json(['status'=>1,'message' =>$msg],200);
+    }
 }

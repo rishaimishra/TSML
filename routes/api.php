@@ -95,7 +95,7 @@ Route::group(['namespace'=>'Api\Modules'],function(){
 
 Route::get('download-po-pdf/{id}/{usertype?}','Api\Modules\Quote\QuoteController@downloadPdf')->name('downloadPdf');
 Route::post('sc_excel_submit','Api\Modules\Temp\TemporaryController@scExcelSubmit');
-Route::get('sc_excel_download','Api\Modules\Temp\TemporaryController@scExceldown'); 
+Route::post('scexceldownload','Api\Modules\Temp\TemporaryController@scExceldown'); 
 Route::post('so-excel-submit','Api\Modules\Temp\SoTemporaryController@SoExcelSubmit');
 Route::get('so-excel-download/{contract_no?}','Api\Modules\Temp\SoTemporaryController@SoExcelDownload'); 
  
@@ -235,6 +235,7 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
 
    		Route::get('get_so_sc/{sc_no}','Sap\SalesOrder\SalesContractController@getSoSc');
    		Route::get('get_po_summary/{po_no}','Sap\SalesOrder\SapSummaryController@getPoSummary');
+         Route::post('sc_excel_mail','Sap\SalesOrder\SalesContractController@scExcelMail');
    		
    		
    		//------------------- Sap Routes --------------------------//

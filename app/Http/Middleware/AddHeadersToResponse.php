@@ -16,8 +16,8 @@ class AddHeadersToResponse
     public function handle($request, Closure $next)
     {
         $response = $next($request);
-        $response->header('Expect-CT', 'max-age=604800, enforce');
-        $response->header('Feature-Policy', 'geolocation self');
+        // $response->header('Expect-CT', 'max-age=604800, enforce');
+        // $response->header('Feature-Policy', 'geolocation self');
 
         return $response;
     }
