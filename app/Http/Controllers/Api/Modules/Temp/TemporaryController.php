@@ -77,7 +77,7 @@ class TemporaryController extends Controller
     	 // echo "<pre>";print_r($data);exit();
 
             $file = time().'sc.xlsx';
-    	 	return $this->scExceldown($ids,$file);
+    	 	// $this->scExceldown($ids,$file);
             $excel['ids'] = $ids;
             $excel['file'] = $file;
     	 	return response()->json(['status'=>1, 'message' =>'success','result' => $excel],config('global.success_status'));
@@ -85,12 +85,12 @@ class TemporaryController extends Controller
     }
 
 
-    public function scExceldown($ids,$file)
+    public function scExceldown(Request $request)
     {  
     	// $ids = [1,2];
      //    $file = time().'sc.xlsx';
-        // $ids = $request->ids;
-        // $file = $request->file;
+        $ids = $request->ids;
+        $file = $request->file;
     	// dd($ids);
 
     	return Excel::download(new ExportDocs($ids), $file);
