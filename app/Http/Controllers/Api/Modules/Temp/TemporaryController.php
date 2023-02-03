@@ -88,8 +88,9 @@ class TemporaryController extends Controller
     public function scExceldown(Request $request)
     {  
     	// $ids = [1,2];
-        $ids = $request->input('ids');
-        $file = $request->input('file');
+     //    $file = time().'sc.xlsx';
+        $ids = $request->ids;
+        $file = $request->file;
     	// dd($ids);
 
     	return Excel::download(new ExportDocs($ids), $file);
