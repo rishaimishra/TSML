@@ -237,6 +237,8 @@ Route::group(['prefix' => 'user','middleware' => ['assign.guard:users', 'jwtmidd
    		Route::get('get_so_sc/{sc_no}','Sap\SalesOrder\SalesContractController@getSoSc');
    		Route::get('get_po_summary/{po_no}','Sap\SalesOrder\SapSummaryController@getPoSummary');
          Route::post('sc_excel_mail','Sap\SalesOrder\SalesContractController@scExcelMail');
+         Route::get('get_all_excelsc','Sap\SalesOrder\SalesContractController@getallexcelsc');
+         Route::post('up_excelsc','Sap\SalesOrder\SalesContractController@upexcelsc');
    		
    		
    		//------------------- Sap Routes --------------------------//

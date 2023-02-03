@@ -595,4 +595,78 @@ class SalesContractController extends Controller
          $msg = "Mail sent successfully";
          return response()->json(['status'=>1,'message' =>$msg],200);
     }
+
+
+     // ---------------------------- prepare so from sc ---------------------------
+
+      public function getallexcelsc()
+      {
+
+          try{   
+                 $res = DB::table('sc_excel_datas')
+                 // ->leftjoin('orders','sc_excel_datas.Cust_Referance','orders.cus_po_no')
+                 // ->leftjoin('quotes','orders.rfq_no','quotes.rfq_no')
+                 // ->leftjoin('users','quotes.user_id','users.id')
+                 // ->select('sc_excel_datas.id','sc_excel_datas.Cust_Referance')
+                 // ->whereNull('quotes.deleted_at')
+                 ->get();
+              
+               // echo "<pre>";print_r($res);exit();
+              foreach ($res as $key => $value) {
+                  
+                  $resa = DB::table('orders')
+                 ->leftjoin('quotes','orders.rfq_no','quotes.rfq_no')
+                 ->leftjoin('users','quotes.user_id','users.id')
+                 ->select('orders.po_date','users.org_name')->where('orders.cus_po_no',$value->Cust_Referance)
+                 ->whereNull('quotes.deleted_at')->first();
+
+
+                  $data[$key]['id'] = $value->id;
+                  $data[$key]['cus_po_no'] = $value->Cust_Referance;
+                  $data[$key]['po_date'] = $resa->po_date;
+                  $data[$key]['cus_name'] = $resa->org_name;
+                  $data[$key]['Material'] = $value->Material;
+                  $data[$key]['Plant'] = $value->Plant;
+                  $data[$key]['sc_no'] = $value->sc_no;
+                  $data[$key]['ordr_no'] = $value->ordr_no;
+
+              }
+              return response()->json(['status'=>1,
+                'message' =>'success',
+                'result' => $data],
+                config('global.success_status'));
+
+
+        }catch(\Exception $e){
+
+         return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
+       }
+
+         
+      }
+      // --------------------------------------------------------------------
+
+     // ---------------------------- update excel sc ---------------------------
+
+      public function upexcelsc(Request $request)
+      {
+
+          try{   
+                 $res = DB::table('sc_excel_datas')
+                 ->where('id',$request->id)->update(['sc_no' =>$request->sc_no,'ordr_no' => $request->ordr_no]);
+
+              return response()->json(['status'=>1,
+                'message' =>'success',
+                'result' => 'Updated'],
+                config('global.success_status'));
+
+
+        }catch(\Exception $e){
+
+         return response()->json(['status'=>0,'message' =>'error','result' => $e->getMessage()],config('global.failed_status'));
+       }
+
+         
+      }
+      // --------------------------------------------------------------------
 }

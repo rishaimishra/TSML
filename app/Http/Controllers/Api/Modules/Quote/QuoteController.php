@@ -2100,7 +2100,7 @@ class QuoteController extends Controller
               
             $plants = Plant::where('type',$type)
                   ->orderBy('name')
-                  ->select('id','name')
+                  ->select('id','name','code')
                   ->get();
 
 
@@ -2108,6 +2108,7 @@ class QuoteController extends Controller
                  
                  $arr[$key]['id'] = $value->id;
                  $arr[$key]['name'] = $value->name;
+                 $arr[$key]['code'] = $value->code;
             }
           // echo "<pre>";print_r($plants);exit();
        
