@@ -19,7 +19,7 @@ class CorsMiddleware
         $url = $request->url();
         $uriSegments = explode("/", parse_url($url, PHP_URL_PATH));
         // dd($uriSegments[2]);
-        if ($uriSegments[2] === 'scexceldownload') {
+        if ($uriSegments[2] === 'scexceldownload' || $uriSegments[2] === 'sc_excel_submit') {
               return $next($request);
          }
          

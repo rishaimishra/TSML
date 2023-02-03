@@ -18,7 +18,7 @@ class AddHeadersToResponse
         $url = $request->url();
         $uriSegments = explode("/", parse_url($url, PHP_URL_PATH));
         // dd($uriSegments[3]);
-        if ($uriSegments[2] === 'scexceldownload') {
+        if ($uriSegments[2] === 'scexceldownload' || $uriSegments[2] === 'sc_excel_submit') {
               return $next($request);
          }
         $response = $next($request);
