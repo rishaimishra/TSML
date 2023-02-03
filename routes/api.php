@@ -24,6 +24,7 @@ Route::post('security_qstn_mail', 'Api\Modules\Security\SecurityQuestionControll
  Route::post('force_logout', 'AuthController@fologout');
 Route::post('get_save_token','AuthController@getsavetoken');
 Route::post('security_qstn_match', 'Api\Modules\Security\SecurityQuestionController@securityQstnMatch');
+Route::post('resest_pass_mail', 'UserController@resestpassMail');
 
 Route::post('store-excel-data','Api\Modules\Bulk\BulkController@storExceleData');
 

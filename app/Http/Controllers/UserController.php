@@ -898,13 +898,13 @@ class UserController extends Controller
 
         $validator = Validator::make($request->all(), [
                 'email' =>'required|string|email|max:255',
-                // 'otp' =>'required|numeric|digits:6',
+                'otp' =>'required|numeric|digits:6',
                 'password' =>'required|string|min:6|required_with:password-confirm', 
                 'password_confirm' =>'required|required_with:password|same:password',   
             ],
             [ 
-              // 'otp.required'=>'OTP is required.',
-                // 'otp.digits'=>'Enter your 6 digits OTP.',
+              'otp.required'=>'OTP is required.',
+                'otp.digits'=>'Enter your 6 digits OTP.',
                 'password_confirm.same'=>'The confirm password and password must match.',
                 'password_confirm.required'=>'The confirm password field is required'
             ]
@@ -914,7 +914,11 @@ class UserController extends Controller
                 $response['error']['validation'] = $validator->errors();
                 return Response::json($response);
             }
-
+     
+     $chkreset = DB::table('reset_otps')->where('email',$request->email)->where('otp',$request->otp)->where('status',1)->first();
+  // dd($chkreset);
+     if(!empty($chkreset))
+     {
         $chkOtp = User::where('email',@$request->email)->first();
         // dd($chkOtp);
        
@@ -928,9 +932,10 @@ class UserController extends Controller
                 $user = User::Where('id',$chkOtp->id)->update($update);
                 $today = date('Y-m-d');
                 RegistrationLog::where('user_email',$request->email)->update(['created' => $today]);
+                DB::table('reset_otps')->where('id',$chkreset->id)->update(['status'=> 2]);
 
                 if($user) {
-                    return response()->json(['status'=>1,'message' =>'Password changed successfully !!'],200);
+                    return response()->json(['status'=>1,'message' =>'Password has been changed !!'],200);
                      
                 } else {
                     $response['error']['message'] = "Somthing went be wrong";
@@ -942,8 +947,37 @@ class UserController extends Controller
             } 
         
 
-        
+        }
+        else {
+                $response['error']['message'] = "OTP not matched";
+                return Response::json($response);  
+            } 
 
 
+    }
+
+
+        // --------------------  sc excel mail ------------------------------------
+    public function resestpassMail(Request $request)
+    {
+         $cc_email = array();
+         
+         $rand = rand(100000,999999);
+         $res = DB::table('reset_otps')->insert(['email' => $request->email,'otp' => $rand,'status' => 1]);
+         
+         // echo "<pre>";print_r($data);exit();
+
+         $sub = 'Reset Password OTP';
+ 
+         $html = 'mail.resetpasswordotpmail';
+
+         $data['otp'] = $rand;
+         $email = $request->email;
+
+
+         (new MailService)->dotestMail($sub,$html,$email,$data,$cc_email);
+
+         $msg = "Mail sent successfully";
+         return response()->json(['status'=>1,'message' =>$msg],200);
     }
 }

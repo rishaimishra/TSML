@@ -578,15 +578,17 @@ class SalesContractController extends Controller
     {
          $cc_email = array();
 
-
+         $res = DB::table('sc_excel_datas')->whereIn('id',$request->ids)->get()->toArray();
+        $data = $res;
+         // echo "<pre>";print_r($data);exit();
 
          $sub = 'Sales Contract excel';
  
          $html = 'mail.scexcelmail';
 
-         $data = "";
-         $email = $request->email;
-         $attach = $request->attach;
+         
+         $email = "srvmondal88@gmail.com";
+         $attach = "";
 
          (new MailService)->addattachmentmail($sub,$html,$email,$data,$cc_email,$attach);
 
