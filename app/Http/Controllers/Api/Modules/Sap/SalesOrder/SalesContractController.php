@@ -587,7 +587,7 @@ class SalesContractController extends Controller
          $html = 'mail.scexcelmail';
 
          
-         $email = "srvmondal88@gmail.com";
+         $email = "mihirbhunia.partners@tatasteelmining.com";
          $attach = "";
 
          (new MailService)->addattachmentmail($sub,$html,$email,$data,$cc_email,$attach);
@@ -652,6 +652,11 @@ class SalesContractController extends Controller
       {
 
           try{   
+
+            $chk = DB::table('sc_excel_datas')->where('sc_no',$request->sc_no)->orWhere('ordr_no',$request->ordr_no)->get();
+              // echo "<pre>";print_r($chk);exit();
+            if(empty($chk))
+            {
                  $res = DB::table('sc_excel_datas')
                  ->where('id',$request->id)->update(['sc_no' =>$request->sc_no,'ordr_no' => $request->ordr_no]);
 
@@ -659,6 +664,14 @@ class SalesContractController extends Controller
                 'message' =>'success',
                 'result' => 'Updated'],
                 config('global.success_status'));
+            }
+            else{
+                   return response()->json(['status'=>1,
+                'message' =>'Not Updated',
+                'result' => 'Sales Contract or Sales order No. already exists'],
+                config('global.success_status'));
+
+            }
 
 
         }catch(\Exception $e){
