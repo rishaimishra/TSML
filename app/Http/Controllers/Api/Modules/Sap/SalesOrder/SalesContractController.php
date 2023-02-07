@@ -629,6 +629,8 @@ class SalesContractController extends Controller
                   $data[$key]['Plant'] = $value->Plant;
                   $data[$key]['sc_no'] = $value->sc_no;
                   $data[$key]['ordr_no'] = $value->ordr_no;
+                  $data[$key]['finance_no'] = $value->finance_no;
+                  $data[$key]['payment_proc'] = $value->payment_proc;
 
               }
               return response()->json(['status'=>1,
@@ -653,12 +655,16 @@ class SalesContractController extends Controller
 
           try{   
 
-            $chk = DB::table('sc_excel_datas')->where('sc_no',$request->sc_no)->orWhere('ordr_no',$request->ordr_no)->get();
+
+            if(empty($request->ordr_no) && empty($request->finance_no) &&empty($request->payment_proc))
+            {
+                 $chk = DB::table('sc_excel_datas')->where('sc_no',$request->sc_no)->get()->toArray();
               // echo "<pre>";print_r($chk);exit();
+            
             if(empty($chk))
             {
                  $res = DB::table('sc_excel_datas')
-                 ->where('id',$request->id)->update(['sc_no' =>$request->sc_no,'ordr_no' => $request->ordr_no]);
+                 ->where('id',$request->id)->update(['sc_no' =>$request->sc_no,'ordr_no' => $request->ordr_no,'finance_no' => $request->finance_no,'payment_proc' => $request->payment_proc]);
 
               return response()->json(['status'=>1,
                 'message' =>'success',
@@ -668,10 +674,21 @@ class SalesContractController extends Controller
             else{
                    return response()->json(['status'=>1,
                 'message' =>'Not Updated',
-                'result' => 'Sales Contract or Sales order No. already exists'],
+                'result' => 'Sales Contract Number already exists.'],
                 config('global.success_status'));
 
             }
+          }else{
+
+                $res = DB::table('sc_excel_datas')
+                 ->where('id',$request->id)->update(['sc_no' =>$request->sc_no,'ordr_no' => $request->ordr_no,'finance_no' => $request->finance_no,'payment_proc' => $request->payment_proc]);
+
+              return response()->json(['status'=>1,
+                'message' =>'success',
+                'result' => 'Updated'],
+                config('global.success_status'));
+
+          }
 
 
         }catch(\Exception $e){

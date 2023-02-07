@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1a6734a7a98d9f90c7eda848a0f448cd",
+    "content-hash": "92e406af0dec204852e079927407ce92",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -71,6 +71,62 @@
                 }
             ],
             "time": "2020-12-27T12:05:53+00:00"
+        },
+        {
+            "name": "brainfoolong/cryptojs-aes-php",
+            "version": "2.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/brainfoolong/cryptojs-aes-php.git",
+                "reference": "b73384d8c683d80a682521c827e16dba692ced10"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/brainfoolong/cryptojs-aes-php/zipball/b73384d8c683d80a682521c827e16dba692ced10",
+                "reference": "b73384d8c683d80a682521c827e16dba692ced10",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-openssl": "*",
+                "php": ">=7.0.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Nullix\\CryptoJsAes\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Roland Eigelsreiter",
+                    "homepage": "https://github.com/brainfoolong/cryptojs-aes-php",
+                    "role": "Developer"
+                }
+            ],
+            "description": "CryptoJS 3.x AES encryption/decryption on client side with Javascript and on server side with PHP",
+            "homepage": "https://github.com/brainfoolong/cryptojs-aes-php",
+            "keywords": [
+                "aes",
+                "encryption",
+                "javascript",
+                "php"
+            ],
+            "support": {
+                "issues": "https://github.com/brainfoolong/cryptojs-aes-php/issues",
+                "source": "https://github.com/brainfoolong/cryptojs-aes-php/tree/2.1.1"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/brainfoolong",
+                    "type": "github"
+                }
+            ],
+            "time": "2021-01-15T10:16:05+00:00"
         },
         {
             "name": "composer/semver",
