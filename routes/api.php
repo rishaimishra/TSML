@@ -50,6 +50,8 @@ Route::post('password-reset', 'UserController@passreset');
 Route::get('get_user_by_id/{id}', 'UserController@getUserById');
 Route::get('test', 'UserController@test');
 Route::get('test_mail', 'UserController@testmail');
+
+// ------------------ rfq mails --------------------------------------------------
 Route::post('quote_gen_mail', 'Api\Modules\QuoteEmail\QuoteEmailController@quotePoMail');
 Route::post('sale_accpt_mail', 'Api\Modules\QuoteEmail\QuoteEmailController@saleAccptMail');
 Route::post('accepted_price_mail', 'Api\Modules\QuoteEmail\QuoteEmailController@acceptedPriceMail');

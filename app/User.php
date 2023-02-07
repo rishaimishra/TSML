@@ -6,6 +6,8 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Support\Facades\Crypt;
+
 
 
 class User extends Authenticatable implements JWTSubject
@@ -97,4 +99,11 @@ class User extends Authenticatable implements JWTSubject
            $this->attributes['password'] = bcrypt($password);
        }
    }
+
+   public function setEmailAttribute($value)
+   {
+
+      $this->attribute['email'] = Crypt::encryptString($request->email); 
+   }
+
 }
