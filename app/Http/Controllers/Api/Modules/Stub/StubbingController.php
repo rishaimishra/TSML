@@ -154,16 +154,19 @@ class StubbingController extends Controller
 
     public function sapSalesContarct(Request $request)
     {
-         dd($request->scData);
+
+       // echo "<pre>";print_r($request->scData);exit();
         $curl = curl_init();
 
-          curl_setopt_array($curl, array(
-          CURLOPT_URL => 'https://15.207.150.126:50001/RESTAdapter/SalesContract',
+        curl_setopt_array($curl, array(
+          CURLOPT_URL => 'https://esalesdev.tatasteelmining.com:50001/RESTAdapter/SalesContract',
           CURLOPT_RETURNTRANSFER => true,
           CURLOPT_ENCODING => '',
           CURLOPT_MAXREDIRS => 10,
           CURLOPT_TIMEOUT => 0,
           CURLOPT_FOLLOWLOCATION => true,
+          CURLOPT_SSL_VERIFYPEER => 0,
+          CURLOPT_SSL_VERIFYHOST => 0,
           CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
           CURLOPT_CUSTOMREQUEST => 'POST',
           CURLOPT_POSTFIELDS =>json_encode($request->scData),
@@ -173,15 +176,25 @@ class StubbingController extends Controller
           ),
         ));
 
-        // $response = curl_exec($curl);
-         
-        // curl_close($curl);
-        // echo $response;
+        $response = curl_exec($curl);
 
-          
-          $response = json_decode(curl_exec($curl));
-          echo $response;
-          curl_close($curl);
+        curl_close($curl);
+        echo $response;
+
+
+            //  curl_setopt($curl, CURLOPT_VERBOSE, true);
+            // $streamVerboseHandle = fopen('php://temp', 'w+');
+            // curl_setopt($curl, CURLOPT_STDERR, $streamVerboseHandle);
+
+            //            $result = curl_exec($curl);if ($result === FALSE) {
+            //             printf("cUrl error (#%d): %s<br>\n",
+            //                    curl_errno($curl),
+            //                    htmlspecialchars(curl_error($curl)))
+            //                    ;
+            //         }rewind($streamVerboseHandle);$verboseLog = stream_get_contents($streamVerboseHandle);
+            //         echo "cUrl verbose information:\n", 
+            //              "<pre>", htmlspecialchars($verboseLog), "</pre>\n";
+            //              curl_close($curl);
 
       }
 }
