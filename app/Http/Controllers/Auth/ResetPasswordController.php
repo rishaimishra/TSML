@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\ResetsPasswords;
 use App\Mail\ForgotPasswordMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Nullix\CryptoJsAes\CryptoJsAes;
 use App\User;
 use Validator;
 use Response; 
@@ -47,8 +48,13 @@ class ResetPasswordController extends Controller
         // [   'otp.required'=>'OTP is required.',
         //     'password_confirm.same'=>'The confirm password and password must match.',
         //     'password_confirm.required'=>'The confirm password field is required']);
+           $encrypted = json_encode($request->all());
+        // $json = json_encode($encrypted1);
+           $password = "123456";
 
-        $validator = Validator::make($request->all(), [
+           $decrypted = CryptoJsAes::decrypt($encrypted, $password);
+
+        $validator = Validator::make($decrypted, [
                 'email' =>'required|string|email|max:255',
                 'otp' =>'required|numeric|digits:6',
                 'password' =>'required|string|min:10|required_with:password-confirm', 
@@ -66,7 +72,7 @@ class ResetPasswordController extends Controller
                 return Response::json($response);
             }
 
-        $chkOtp = User::where('remember_token',@$request->otp)->where('email',@$request->email)->first();
+        $chkOtp = User::where('remember_token',$decrypted['otp'])->where('email',$decrypted['email'])->first();
         // dd($chkOtp);
         if(!@$chkOtp){
             $response['error']['message'] = "Invalid OTP or email please check !!";
@@ -74,10 +80,10 @@ class ResetPasswordController extends Controller
              
         }
         else{
-            if($request->password == $request->password_confirm && $request->password){
+            if($decrypted['password'] == $decrypted['password_confirm'] && $decrypted['password']){
                  // dd($request->password);
-                $remember_token = $request->otp; 
-                $update['password'] = Hash::make($request->password);
+                $remember_token = $decrypted['otp']; 
+                $update['password'] = Hash::make($decrypted['password']);
                 $update['remember_token'] = '';
                 // dd($update);
                 $user = User::Where('remember_token',$remember_token)->update($update);

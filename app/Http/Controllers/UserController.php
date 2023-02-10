@@ -10,6 +10,7 @@ use App\Mail\Register;
 use App\ServicesMy\MailService;
 use Illuminate\Support\Facades\Hash;
 use App\Models\RegistrationLog;
+use Nullix\CryptoJsAes\CryptoJsAes;
 use App\Address;
 use App\User;
 use JWTAuth;
@@ -98,8 +99,14 @@ class UserController extends Controller
     */
     public function sendOtpToMobile(Request $request)
     {
-        
-        $validator = Validator::make($request->all(), [ 
+        $encrypted = json_encode($request->all());
+        // $json = json_encode($encrypted1);
+        $password = "123456";
+
+        $decrypted = CryptoJsAes::decrypt($encrypted, $password);
+
+
+        $validator = Validator::make($decrypted, [ 
             'mobile_no' =>'required|digits:10',
             'email' => ['required', 'string','max:255','regex:/^\w+[-\.\w]*@(?!(?:myemail)\.com$)\w+[-\.\w]*?\.\w{2,4}$/'],
               
@@ -114,12 +121,12 @@ class UserController extends Controller
             return Response::json($response);
         }
 
-        $chkmob = OtpVerification::where('email',$request->email)->where('mob_number',$request->mobile_no)->first(); 
+        $chkmob = OtpVerification::where('email',$decrypted['email'])->where('mob_number',$decrypted['mobile_no'])->first(); 
 
         // dd($chkmob);
         if(!empty($chkmob->otp) && $chkmob->is_verified != 2)
         {
-            return response()->json(['status'=>0,'message' => array('OTP already sent to this email addess '.$request->email)]); 
+            return response()->json(['status'=>0,'message' => array('OTP already sent to this email addess '.$decrypted['email'])]); 
         }
         else
         {
@@ -132,8 +139,8 @@ class UserController extends Controller
             {
                 $otp = random_int(100000, 999999); 
 
-                $input['mob_number'] = $request->mobile_no;
-                $input['email'] = $request->email;
+                $input['mob_number'] = $decrypted['mobile_no'];
+                $input['email'] = $decrypted['email'];
                 $input['otp'] = $otp;
 
                 $categoryData = OtpVerification::create($input);  
@@ -142,14 +149,16 @@ class UserController extends Controller
                 $html = 'mail.Otpverificationmail';
                 $data['otp'] = $otp;
                 $cc_email = "";
-                $email = $request->email;
+                $email = $decrypted['email'];
 
                 (new MailService)->dotestMail($sub,$html,$email,$data,$cc_email); 
        
-                $msg = "OTP has been sent to this email address ".$request->email." successfully.";
-                $userdata['mob_number'] = $request->mobile_no;
-                $userdata['email'] = $request->email;
-                return response()->json(['status'=>1,'message' =>$msg,'result' =>$userdata],200);
+                $msg = "OTP has been sent to this email address ".$decrypted['email']." successfully.";
+                $userdata['mob_number'] = $decrypted['mobile_no'];
+                $userdata['email'] = $decrypted['email'];
+
+                $encrypted = CryptoJsAes::encrypt($userdata, $password);
+                return response()->json(['status'=>1,'message' =>$msg,'result' =>$encrypted],200);
             }
             
            
@@ -166,7 +175,13 @@ class UserController extends Controller
     */
     public function verifyMobileOtp(Request $request)
     {
-        $validator = Validator::make($request->all(), [ 
+        $encrypted = json_encode($request->all());
+        // $json = json_encode($encrypted1);
+        $password = "123456";
+
+        $decrypted = CryptoJsAes::decrypt($encrypted, $password);
+
+        $validator = Validator::make($decrypted, [ 
             'mobile_no' =>'required|digits:10',
             'email' =>'required|email',
             'email' => ['required', 'string','max:255','regex:/^\w+[-\.\w]*@(?!(?:myemail)\.com$)\w+[-\.\w]*?\.\w{2,4}$/'], 
@@ -187,7 +202,7 @@ class UserController extends Controller
         //     return Response::json($response);
         // }
 
-        $chkmob = OtpVerification::where('email',$request->email)->where('mob_number',$request->mobile_no)->first();
+        $chkmob = OtpVerification::where('email',$decrypted['email'])->where('mob_number',$decrypted['mobile_no'])->first();
         // dd($chkmob);
         if (!empty($chkmob)) 
         {
@@ -199,15 +214,16 @@ class UserController extends Controller
             {
                 if(!empty($chkmob->otp) && $chkmob->is_verified != 2)
                 {
-                    if ($chkmob->otp == $request->otp) 
+                    if ($chkmob->otp == $decrypted['otp']) 
                     {
                         $input['is_verified'] = 2;
                         $input['otp'] = '';
-                        $userd['email'] = $request->email;
-                        $userd['mob_number'] = $request->mobile_no;
-                        $categoryData = OtpVerification::where('mob_number',$request->mobile_no)->where('otp',$chkmob->otp)->update($input); 
-                 
-                        return response()->json(['status'=>1,'message' =>'Verification successfully.','result' => $userd],200);
+                        $userd['email'] = $decrypted['email'];
+                        $userd['mob_number'] = $decrypted['mobile_no'];
+                        $categoryData = OtpVerification::where('mob_number',$decrypted['mobile_no'])->where('otp',$chkmob->otp)->update($input); 
+                        
+                        $encrypt = CryptoJsAes::encrypt($userd, $password);
+                        return response()->json(['status'=>1,'message' =>'Verification successfully.','result' => $encrypt],200);
                     }
                     else
                     {
@@ -217,7 +233,9 @@ class UserController extends Controller
                 }
                 else
                 {
-                    return response()->json(['status'=>0,'message' => array('OTP already sent to this mobile number '.$request->mobile_no)]);
+                    $encrypted = CryptoJsAes::encrypt($decrypted['mobile_no'], $password);
+
+                    return response()->json(['status'=>0,'message' => array('OTP already sent to this mobile number '.$decrypted['mobile_no'])]);
                 }
 
             }
@@ -328,6 +346,8 @@ class UserController extends Controller
     */
    public function store(Request $request)
    {
+
+         
         try {
 
             $validator = Validator::make($request->all(), [
@@ -886,6 +906,12 @@ class UserController extends Controller
 
    public function passreset(Request $request)
     {
+
+        $encrypted = json_encode($request->all());
+        // $json = json_encode($encrypted1);
+        $password = "123456";
+
+        $decrypted = CryptoJsAes::decrypt($encrypted, $password);
         // dd($request->all());
         // $this->validate($request, [
         //     'otp' =>'required|numeric|min:6|max:6',
@@ -896,7 +922,7 @@ class UserController extends Controller
         //     'password_confirm.same'=>'The confirm password and password must match.',
         //     'password_confirm.required'=>'The confirm password field is required']);
 
-        $validator = Validator::make($request->all(), [
+        $validator = Validator::make($decrypted, [
                 'email' =>'required|string|email|max:255',
                 'otp' =>'required|numeric|digits:6',
                 'password' =>'required|string|min:6|required_with:password-confirm', 
@@ -915,23 +941,23 @@ class UserController extends Controller
                 return Response::json($response);
             }
      
-     $chkreset = DB::table('reset_otps')->where('email',$request->email)->where('otp',$request->otp)->where('status',1)->first();
+     $chkreset = DB::table('reset_otps')->where('email',$decrypted['email'])->where('otp',$decrypted['otp'])->where('status',1)->first();
   // dd($chkreset);
      if(!empty($chkreset))
      {
-        $chkOtp = User::where('email',@$request->email)->first();
+        $chkOtp = User::where('email',$decrypted['email'])->first();
         // dd($chkOtp);
        
-            if($request->password == $request->password_confirm && $request->password){
+            if($decrypted['password'] == $decrypted['password_confirm'] && $decrypted['password']){
                  // dd($request->password);
                 
-                $update['password'] = Hash::make($request->password);
+                $update['password'] = Hash::make($decrypted['password']);
                 $update['login_attempt'] = 2;
                
                 // dd($update);
                 $user = User::Where('id',$chkOtp->id)->update($update);
                 $today = date('Y-m-d');
-                RegistrationLog::where('user_email',$request->email)->update(['created' => $today]);
+                RegistrationLog::where('user_email',$decrypted['email'])->update(['created' => $today]);
                 DB::table('reset_otps')->where('id',$chkreset->id)->update(['status'=> 2]);
 
                 if($user) {
@@ -960,10 +986,16 @@ class UserController extends Controller
         // --------------------  sc excel mail ------------------------------------
     public function resestpassMail(Request $request)
     {
+        $encrypted = json_encode($request->all());
+        // $json = json_encode($encrypted1);
+        $password = "123456";
+
+        $decrypted = CryptoJsAes::decrypt($encrypted, $password);
+
          $cc_email = array();
          
          $rand = rand(100000,999999);
-         $res = DB::table('reset_otps')->insert(['email' => $request->email,'otp' => $rand,'status' => 1]);
+         $res = DB::table('reset_otps')->insert(['email' => $decrypted['email'],'otp' => $rand,'status' => 1]);
          
          // echo "<pre>";print_r($data);exit();
 
@@ -972,7 +1004,7 @@ class UserController extends Controller
          $html = 'mail.resetpasswordotpmail';
 
          $data['otp'] = $rand;
-         $email = $request->email;
+         $email = $decrypted['email'];
 
 
          (new MailService)->dotestMail($sub,$html,$email,$data,$cc_email);

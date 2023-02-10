@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use App\ServicesMy\MailService;
+use Nullix\CryptoJsAes\CryptoJsAes;
 use App\User;
 use Validator;
 use Response; 
@@ -49,8 +50,14 @@ class ForgotPasswordController extends Controller
 
     public function sendResetLinkEmail(Request $request)
     { 
+        $encrypted = json_encode($request->all());
+        // $json = json_encode($encrypted1);
+        $password = "123456";
 
-        $validator = Validator::make($request->all(), [
+        $decrypted = CryptoJsAes::decrypt($encrypted, $password);
+        // dd($decrypted['email']);
+
+        $validator = Validator::make($decrypted, [
                 'email' => ['required', 'string', 'email', 'max:255','regex:/^\w+[-\.\w]*@(?!(?:myemail)\.com$)\w+[-\.\w]*?\.\w{2,4}$/'],   
             ]);
 
@@ -59,8 +66,8 @@ class ForgotPasswordController extends Controller
                 return Response::json($response);
             }
 
-        $data['email'] = $request->email;
-        $user = User::where('email',$request->email)->first();
+        $data['email'] = $decrypted['email'];
+        $user = User::where('email',$decrypted['email'])->first();
          
         if(!@$user){
             $response['error']['message'] = "No record found.";
@@ -69,7 +76,7 @@ class ForgotPasswordController extends Controller
         
         $vcode = random_int(100000, 999999); 
         
-        User::where('email',$request->email)->update(['remember_token'=>$vcode]);
+        User::where('email',$decrypted['email'])->update(['remember_token'=>$vcode]);
         // $data['OTP'] =  $vcode;
         // $data['name'] = $user->name;
         // $data['email'] = $user->email;
